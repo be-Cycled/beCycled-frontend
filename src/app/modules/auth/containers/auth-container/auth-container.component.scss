@@ -1,12 +1,5 @@
-.additional-data {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-}
-
-.container {
-  position: absolute;
+:host {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -16,18 +9,24 @@
   align-items: center;
 }
 
-.form-container {
-  width: 100%;
-  padding: 0 2rem;
-  max-width: 350px;
+.additional-data {
+  position: absolute;
+  bottom: 0;
 }
 
-.login-form-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+:host ::ng-deep {
+  .form-container {
+    width: 100%;
+    max-width: 300px;
+  }
 
-.title {
-  text-align: center;
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    text-align: center;
+  }
 }

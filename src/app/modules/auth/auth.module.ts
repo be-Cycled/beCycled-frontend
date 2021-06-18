@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common'
+import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiButtonModule, TuiLinkModule } from '@taiga-ui/core'
@@ -25,7 +26,8 @@ import { AuthorizationService } from './services/authorization/authorization.ser
     TuiLinkModule,
     TuiInputPasswordModule,
     ReactiveFormsModule,
-    TuiButtonModule
+    TuiButtonModule,
+    HttpClientModule
   ],
   providers: [
     AuthorizationService,

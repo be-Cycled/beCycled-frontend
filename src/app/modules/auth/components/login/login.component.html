@@ -13,7 +13,7 @@
     <tui-input-password formControlName="password">Пароль</tui-input-password>
     <tui-field-error formControlName="password"></tui-field-error>
   </p>
-  <div class="login-form-actions">
+  <div class="form-actions">
     <a tuiLink routerLink="/auth/registration">Регистрация</a>
     <button tuiButton [showLoader]="isButtonLoaderShow | async" size="m" type="button" (click)="onClickSubmitButton()">Войти</button>
   </div>
