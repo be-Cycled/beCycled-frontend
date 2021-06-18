@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import mapboxgl from 'mapbox-gl'
 
 @Component({
   selector: 'cy-competition',
@@ -8,10 +9,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 })
 export class CompetitionComponent implements OnInit {
 
-  constructor() {
-  }
+  public map: mapboxgl.Map | null = null
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 
 }

@@ -8,9 +8,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 })
 export class AfficheContainerComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
 
 }
