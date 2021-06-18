@@ -10,6 +10,10 @@ import { CompetitionComponent } from './competition/competition.component'
   ],
   imports: [
     CommonModule
+  ],
+  exports: [
+    WorkoutComponent,
+    CompetitionComponent
   ]
 })
 export class EventCardModule {
