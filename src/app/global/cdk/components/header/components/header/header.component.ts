@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
+import { Router } from '@angular/router'
+import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { User } from '../../../../../domain'
-import { DEFAULT_AVATAR } from '../../../../../models'
+import { BrowserStorage, DEFAULT_AVATAR, takeBrowserStorageKey } from '../../../../../models'
 import { UserHolderService } from '../../../../../services'
 
 @Component({
@@ -34,10 +36,14 @@ export class HeaderComponent {
     map((userLogin: string) => `/users/${ userLogin }`)
   )
 
-  constructor(private userHolderService: UserHolderService) {
+  constructor(private userHolderService: UserHolderService,
+              @Inject(LOCAL_STORAGE)
+              private localStorage: Storage,
+              private router: Router) {
   }
 
   public onClickLogoutButton(): void {
-
+    this.localStorage.removeItem(takeBrowserStorageKey(BrowserStorage.accessToken))
+    this.router.navigate([ '/auth/login' ])
   }
 }
