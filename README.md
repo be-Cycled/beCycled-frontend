@@ -1,4 +1,21 @@
-# BeCycled
+# 🏂🏼 beCycled 📱
+
+PWA-приложение для работы с сервисом.
+
+## Локальная сборка и запуск
+
+```bash
+$ npm install
+$ npm run start
+```
+
+## Сборка Docker образа
+
+```bash
+$ docker build -t becycled-frontend .
+```
+
+---
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.13.
 
