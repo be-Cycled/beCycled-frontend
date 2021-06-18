@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
 import mapboxgl from 'mapbox-gl'
-import { Competition } from '../../../../domain'
+import { Competition, SportType } from '../../../../domain'
+import { ISO8601 } from '../../../../models'
 
 @Component({
   selector: 'cy-competition',
@@ -9,6 +10,13 @@ import { Competition } from '../../../../domain'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompetitionComponent implements OnInit {
+
+  public sportTypeMap: any = {
+    [ SportType.bicycle ]: 'Велосипед',
+    [ SportType.rollerblade ]: 'Роликовые коньки',
+    [ SportType.run ]: 'Бег',
+    [ SportType.ski ]: 'Лыжи'
+  }
 
   public map: mapboxgl.Map | null = null
 
@@ -165,11 +173,18 @@ export class CompetitionComponent implements OnInit {
     }
   }
 
-  public bounds: any = this.geoJson.geometry.coordinates.reduce((bounds: mapboxgl.LngLatBounds, coord: any) => {
-      return bounds.extend(coord)
-    },
-    new mapboxgl.LngLatBounds(this.geoJson.geometry.coordinates[ 0 ], this.geoJson.geometry.coordinates[ 0 ]))
-
   public ngOnInit(): void {
+  }
+
+  public generateBounds(coordinates: any): any {
+    return coordinates.reduce((bounds: mapboxgl.LngLatBounds, coord: any) => {
+        return bounds.extend(coord)
+      },
+      new mapboxgl.LngLatBounds(coordinates[ 0 ], coordinates[ 0 ]))
+  }
+
+  public generateWorkoutStartTime(date: ISO8601): string {
+    const parsedDate: Date = new Date(date)
+    return new Intl.DateTimeFormat('ru-RU', { hour: 'numeric', minute: 'numeric' }).format(parsedDate)
   }
 }

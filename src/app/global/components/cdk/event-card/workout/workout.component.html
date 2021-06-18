@@ -5,11 +5,11 @@
   size="l"
   [hoverable]="true"
 >
-  <h3 class="tui-island__title">10:00</h3>
+  <h3 class="tui-island__title">{{ generateWorkoutStartTime(workout.startDate) }}</h3>
   <p class="tui-island__category">Тренировка</p>
   <mgl-map
     [style]="'mapbox://styles/mapbox/streets-v11'"
-    [fitBounds]="bounds"
+    [fitBounds]="generateBounds(geoJson.geometry.coordinates)"
     [fitBoundsOptions]="{ padding: 8 }"
     [attributionControl]="false"
     [scrollZoom]="false"
@@ -38,7 +38,7 @@
         emoji_people
       </span>
       <span>
-        Вид спорта: {{ workout.sportType }}
+        Вид спорта: {{ sportTypeMap[workout.sportType] }}
       </span>
     </li>
     <li>
