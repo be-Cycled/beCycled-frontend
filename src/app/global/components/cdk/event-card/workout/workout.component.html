@@ -11,6 +11,8 @@
     [fitBounds]="bounds"
     [fitBoundsOptions]="{ padding: 5 }"
     [attributionControl]="false"
+    [scrollZoom]="false"
+    [dragPan]="false"
     (mapLoad)="map = $event"
   >
     <mgl-geojson-source
