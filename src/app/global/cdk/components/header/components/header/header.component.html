@@ -1,1 +1,51 @@
-<p>header works!</p>
+<div class="logo-container">
+  <a routerLink="/">
+    <img src="/assets/full-logo.svg" alt="Логотип beCycled">
+  </a>
+</div>
+
+<nav class="main-navigation">
+  <ul class="main-navigation-list">
+    <li class="main-navigation-list-item">
+      <a tuiLink routerLink="/">Афиша</a>
+    </li>
+    <li class="main-navigation-list-item">
+      <a tuiLink routerLink="/feed">Лента</a>
+    </li>
+    <li class="main-navigation-list-item">
+      <a tuiLink routerLink="/communities">Сообщества</a>
+    </li>
+    <li class="main-navigation-list-item">
+      <a tuiLink routerLink="/routes">Маршруты</a>
+    </li>
+    <li class="main-navigation-list-item">
+      <a tuiLink routerLink="/posts">Статьи</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="user-info-container" *ngIf="isUserAuthorized | async">
+  <tui-hosted-dropdown [content]="dropdownContentRef">
+    <button tuiIconButton appearance="icon" type="button" shape="rounded" [icon]="iconRef"></button>
+  </tui-hosted-dropdown>
+
+  <ng-template #iconRef>
+    <tui-avatar
+      size="s"
+      [avatarUrl]="userAvatar | async"
+      [rounded]="true"
+    ></tui-avatar>
+  </ng-template>
+
+  <ng-template #dropdownContentRef>
+    <tui-data-list role="menu">
+      <a tuiOption role="menuitem" [routerLink]="profileRouterLink | async">Мой профиль</a>
+      <button type="button" tuiOption role="menuitem" (click)="onClickLogoutButton()">Выйти</button>
+    </tui-data-list>
+  </ng-template>
+</div>
+
+<div class="unauthorized-user-info-container" *ngIf="isUserUnauthorized | async">
+  <a class="login-button" routerLink="/auth/login" size="m" tuiButton>Войти</a>
+  <a class="register-button" routerLink="/auth/registration" size="m" tuiButton appearance="outline">Зарегистрироваться</a>
+</div>
