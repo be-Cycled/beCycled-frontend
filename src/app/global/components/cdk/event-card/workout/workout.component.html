@@ -32,9 +32,29 @@
     </mgl-layer>
   </mgl-map>
   <ul>
-    <li>Вид спорта: {{ workout.sportType }}</li>
-    <li>Место сбора: {{ workout.venue }}</li>
-    <li>Описание: {{ workout.description }}</li>
-    <li>Участники: {{ workout.userIds.length }}</li>
+    <li>
+      <span class="material-icons">
+        emoji_people
+      </span>
+      Вид спорта: {{ workout.sportType }}
+    </li>
+    <li>
+      <span class="material-icons">
+        place
+      </span>
+      Место сбора: {{ workout.venue }}
+    </li>
+    <li>
+      <span class="material-icons">
+        description
+      </span>
+      Описание: {{ workout.description }}
+    </li>
+    <li>
+      <span class="material-icons">
+        groups
+      </span>
+      Участники: {{ workout.userIds.length }}
+    </li>
   </ul>
 </a>
