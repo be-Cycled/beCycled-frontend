@@ -1,22 +1,20 @@
-<ul>
-  <li class="event-item" *ngFor="let day of calendar | async">
-    <h2 class="date">
-      {{ getWorkoutListDate(day.date) }}
-    </h2>
-    <ul class="event-list">
-      <li class="event-item" *ngFor="let event of day.events">
-        <ng-container [ngSwitch]="event.type">
+<section class="events-wrapper" *ngFor="let day of calendar | async">
+  <h2 class="date">
+    {{ getWorkoutListDate(day.date) }}
+  </h2>
+  <ul class="event-list">
+    <li class="event-item" *ngFor="let event of day.events">
+      <ng-container [ngSwitch]="event.type">
 
-          <ng-template [ngSwitchCase]="'WORKOUT'">
-            <cy-workout [workout]="event.value"></cy-workout>
-          </ng-template>
+        <ng-template [ngSwitchCase]="'WORKOUT'">
+          <cy-workout [workout]="event.value"></cy-workout>
+        </ng-template>
 
-          <ng-template [ngSwitchCase]="'COMPETITION'">
-            <cy-competition [competition]="event.value"></cy-competition>
-          </ng-template>
+        <ng-template [ngSwitchCase]="'COMPETITION'">
+          <cy-competition [competition]="event.value"></cy-competition>
+        </ng-template>
 
-        </ng-container>
-      </li>
-    </ul>
-  </li>
-</ul>
+      </ng-container>
+    </li>
+  </ul>
+</section>

@@ -5,7 +5,7 @@
   size="l"
   [hoverable]="true"
 >
-  <h3>10:00</h3>
+  <h3 class="tui-island__title">10:00</h3>
   <mgl-map
     [style]="'mapbox://styles/mapbox/streets-v11'"
     [fitBounds]="bounds"
@@ -31,30 +31,54 @@
     >
     </mgl-layer>
   </mgl-map>
-  <ul>
+  <ul class="icon-list">
     <li>
       <span class="material-icons">
         emoji_people
       </span>
-      Вид спорта: {{ workout.sportType }}
+      <span>
+        Вид спорта: {{ workout.sportType }}
+      </span>
+    </li>
+    <li>
+      <span class="material-icons">
+        moving
+      </span>
+      <span>
+        Дистанция: 50 км
+      </span>
+    </li>
+    <li>
+      <span class="material-icons">
+        access_time
+      </span>
+      <span>
+        Длительность: {{ workout.duration }}
+      </span>
     </li>
     <li>
       <span class="material-icons">
         place
       </span>
-      Место сбора: {{ workout.venue }}
+      <span>
+        Место сбора: {{ workout.venue }}
+      </span>
     </li>
     <li>
       <span class="material-icons">
         description
       </span>
-      Описание: {{ workout.description }}
+      <span>
+        Описание: {{ workout.description }}
+      </span>
     </li>
     <li>
       <span class="material-icons">
-        groups
+        group
       </span>
-      Участники: {{ workout.userIds.length }}
+      <span>
+        Участники: {{ workout.userIds.length }}
+      </span>
     </li>
   </ul>
 </a>
