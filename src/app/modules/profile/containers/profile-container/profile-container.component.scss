@@ -1,5 +1,6 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
 }
 
@@ -35,4 +36,38 @@
 
 .activities-filter-container {
   margin-bottom: 1rem;
+}
+
+.main-info-section {
+  margin-bottom: 1rem;
+}
+
+.user-login {
+  margin-bottom: 0;
+}
+
+@media screen and (min-width: 599px) {
+  :host {
+    flex-direction: row;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .main-info-section {
+    max-width: 250px;
+    margin-right: 1rem;
+  }
+
+  .user-communities-section {
+    flex-grow: 1;
+  }
+
+  .avatar-and-name-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .avatar-container img {
+    max-width: 100%;
+  }
 }

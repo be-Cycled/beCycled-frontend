@@ -19,7 +19,7 @@
       <li class="tui-list__item">
         <span>Телефон: </span>
         <span>
-          <a tuiLink [attr.href]="'tel:' + (phone | async)">{{ phone | async }}</a>
+          <a tuiLink [attr.href]="'tel:' + (phone | async)">{{ phone | async | tuiFormatPhone }}</a>
         </span>
       </li>
       <li class="tui-list__item">
@@ -30,7 +30,7 @@
       </li>
     </ul>
   </div>
-  <div class="info-section user-communities-container">
+  <div class="info-section user-communities-section">
     <h3 class="user-communities-title">Сообщества</h3>
     <ul class="community-list">
       <li class="community-list-item">
