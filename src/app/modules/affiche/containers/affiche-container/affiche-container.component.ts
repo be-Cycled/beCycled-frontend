@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { ISO8601 } from '../../../../global/models'
 import { Competition, Workout } from '../../../../global/domain'
+import { combineLatest, Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { AfficheService } from '../../services/affiche.service'
 
 enum EventType {
   workout = 'WORKOUT',
@@ -27,9 +30,62 @@ type SomeWrappedEvent = WrappedEvent<EventType.workout, Workout> | WrappedEvent<
 })
 export class AfficheContainerComponent implements OnInit {
 
-  public eventType: { workout: EventType; competition: EventType } = {
-    workout: EventType.workout,
-    competition: EventType.competition
+  public calendar: Observable<EventListByDay[]> = combineLatest([
+    this.afficheService.getWorkouts(),
+    this.afficheService.getCompetitions()
+  ]).pipe(
+    map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+      const wrappedWorkouts: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => {
+        return {
+          type: EventType.workout,
+          value: workout
+        }
+      })
+
+      const wrappedCompetitions: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => {
+        return {
+          type: EventType.competition,
+          value: competition
+        }
+      })
+
+      const sortedEvents: SomeWrappedEvent[] = [ ...wrappedWorkouts, ...wrappedCompetitions ]
+        .sort((a: SomeWrappedEvent, b: SomeWrappedEvent) =>
+          new Date(a.value.startDate).getTime() - new Date(b.value.startDate).getTime())
+
+      const eventsCalendar: EventListByDay[] = []
+
+      let currentDate: null | ISO8601 = null
+      let currentCalendarItemIndex: number = 0
+
+      sortedEvents.forEach((event: SomeWrappedEvent) => {
+        if (currentDate === null) {
+          currentDate = event.value.startDate
+
+          eventsCalendar.push({
+            date: event.value.startDate,
+            events: [ event ]
+          })
+        } else {
+          if (this.checkEqualDates(currentDate, event.value.startDate)) {
+            eventsCalendar[ currentCalendarItemIndex ].events.push(event)
+          } else {
+            currentDate = event.value.startDate
+            currentCalendarItemIndex += 1
+
+            eventsCalendar.push({
+              date: event.value.startDate,
+              events: [ event ]
+            })
+          }
+        }
+      })
+
+      return eventsCalendar
+    })
+  )
+
+  constructor(private afficheService: AfficheService) {
   }
 
   public ngOnInit(): void {

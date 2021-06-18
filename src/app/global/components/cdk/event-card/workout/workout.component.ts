@@ -172,5 +172,4 @@ export class WorkoutComponent implements OnInit {
 
   public ngOnInit(): void {
   }
-
 }

@@ -1,1 +1,16 @@
-<p>works</p>
+<a
+  *ngIf="competition"
+  href="#"
+  tuiIsland
+  size="l"
+  [hoverable]="true"
+>
+  <h3>10:00</h3>
+
+  <ul>
+    <li>Вид спорта: {{ competition.sportType }}</li>
+    <li>Место сбора: {{ competition.venue }}</li>
+    <li>Описание: {{ competition.description }}</li>
+    <li>Участники: {{ competition.userIds.length }}</li>
+  </ul>
+</a>
