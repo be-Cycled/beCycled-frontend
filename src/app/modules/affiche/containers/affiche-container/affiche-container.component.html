@@ -1,1 +1,20 @@
-<p>affiche-container works!</p>
+<ul>
+  <li *ngFor="let day of calendar | async">
+    {{ day.date }}
+    <ul class="event-list">
+      <li class="event-item" *ngFor="let event of day.events">
+        <ng-container [ngSwitch]="event.type">
+
+          <ng-template [ngSwitchCase]="'WORKOUT'">
+            <cy-workout [workout]="event.value"></cy-workout>
+          </ng-template>
+
+          <ng-template [ngSwitchCase]="'COMPETITION'">
+            <cy-competition [competition]="event.value"></cy-competition>
+          </ng-template>
+
+        </ng-container>
+      </li>
+    </ul>
+  </li>
+</ul>

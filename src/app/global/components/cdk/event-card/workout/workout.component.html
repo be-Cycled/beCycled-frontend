@@ -1,0 +1,40 @@
+<a
+  *ngIf="workout"
+  href="#"
+  tuiIsland
+  size="l"
+  [hoverable]="true"
+>
+  <h3>10:00</h3>
+  <mgl-map
+    [style]="'mapbox://styles/mapbox/streets-v11'"
+    [fitBounds]="bounds"
+    [fitBoundsOptions]="{ padding: 5 }"
+    [attributionControl]="false"
+    [scrollZoom]="false"
+    [dragPan]="false"
+    (mapLoad)="map = $event"
+  >
+    <mgl-geojson-source
+      id="geojson-route"
+      [data]="geoJson"
+    >
+    </mgl-geojson-source>
+    <mgl-layer
+      id="route"
+      type="line"
+      source="geojson-route"
+      [paint]="{
+      'line-color': '#627BC1',
+      'line-width': 2
+    }"
+    >
+    </mgl-layer>
+  </mgl-map>
+  <ul>
+    <li>Вид спорта: {{ workout.sportType }}</li>
+    <li>Место сбора: {{ workout.venue }}</li>
+    <li>Описание: {{ workout.description }}</li>
+    <li>Участники: {{ workout.userIds.length }}</li>
+  </ul>
+</a>
