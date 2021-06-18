@@ -1,16 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 @Component({
   selector: 'cy-auth-container',
   templateUrl: './auth-container.component.html',
   styleUrls: ['./auth-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class AuthContainerComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: `cy-auth-container`
   }
+})
+export class AuthContainerComponent {
 
 }

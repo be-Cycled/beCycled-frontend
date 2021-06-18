@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
+import { TuiButtonModule } from '@taiga-ui/core'
 import { ProfileContainerComponent } from './containers/profile-container/profile-container.component'
 
 import { ProfileRoutingModule } from './profile-routing.module'
@@ -11,7 +12,8 @@ import { ProfileRoutingModule } from './profile-routing.module'
   ],
   imports: [
     CommonModule,
-    ProfileRoutingModule
+    ProfileRoutingModule,
+    TuiButtonModule
   ]
 })
 export class ProfileModule { }

@@ -1,0 +1,27 @@
+<figure>
+  <img src="/assets/full-logo.svg" alt="Логотип beCycled">
+</figure>
+
+<h1 class="title">Регистрация</h1>
+
+<form [formGroup]="registrationForm">
+  <p class="field">
+    <tui-input formControlName="email">Эл. почта</tui-input>
+    <tui-field-error formControlName="email"></tui-field-error>
+  </p>
+  <p class="field">
+    <tui-input formControlName="login">Логин</tui-input>
+    <tui-field-error formControlName="login"></tui-field-error>
+  </p>
+  <p class="field">
+    <tui-input-password formControlName="password">Пароль</tui-input-password>
+  </p>
+  <p class="field">
+    <tui-input-password formControlName="confirmPassword">Повторите пароль</tui-input-password>
+    <tui-error *ngIf="isPassEqualError | async" [error]="errorMessage"></tui-error>
+  </p>
+  <div class="form-actions">
+    <a tuiLink routerLink="/auth/login">Авторизация</a>
+    <button tuiButton [showLoader]="isButtonLoaderShow | async" size="m" type="button" (click)="onClickSubmitButton()">Зарегестрироваться</button>
+  </div>
+</form>

@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.avatar-container img {
+  max-width: 100px;
+  border-radius: 50%;
+}
+
+.avatar-and-name-container {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-container {
+  margin-right: 1rem;
+}
+
+.user-login {
+  color: var(--tui-base-07);
+}
+
+.edit-button {
+  width: 100%;
+}
+
+.info-section:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.community-list-item img {
+  max-width: 50px;
+}

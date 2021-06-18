@@ -4,7 +4,7 @@ import { ProfileContainerComponent } from './containers/profile-container/profil
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':login',
     component: ProfileContainerComponent
   }
 ]
