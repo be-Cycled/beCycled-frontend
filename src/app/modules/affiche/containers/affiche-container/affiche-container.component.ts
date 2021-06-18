@@ -98,4 +98,14 @@ export class AfficheContainerComponent implements OnInit {
     return firstDate.getFullYear() === secondDate.getFullYear() && firstDate.getMonth() === secondDate.getMonth() && firstDate.getDate() === secondDate.getDate()
   }
 
+  public getWorkoutListDate(dateISO: string): string {
+    const currentDate: Date = new Date()
+    const date: Date = new Date(dateISO)
+
+    if (currentDate.getFullYear() === date.getFullYear()) {
+      return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long' }).format(date)
+    }
+
+    return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(date)
+  }
 }

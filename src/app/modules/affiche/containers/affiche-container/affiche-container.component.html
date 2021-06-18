@@ -1,6 +1,8 @@
 <ul>
-  <li *ngFor="let day of calendar | async">
-    {{ day.date }}
+  <li class="event-item" *ngFor="let day of calendar | async">
+    <h2 class="date">
+      {{ getWorkoutListDate(day.date) }}
+    </h2>
     <ul class="event-list">
       <li class="event-item" *ngFor="let event of day.events">
         <ng-container [ngSwitch]="event.type">

@@ -14,3 +14,26 @@
   padding-top: 16px;
   padding-bottom: 16px;
 }
+
+.event-item {
+  position: relative;
+}
+
+.date {
+  position: sticky;
+  z-index: 1;
+
+  width: fit-content;
+  padding: 8px 16px;
+  margin: 24px auto;
+
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--header-font-color);
+
+  background-color: rgba(240, 242, 243, 0.8);
+  border-radius: 20px;
+}
