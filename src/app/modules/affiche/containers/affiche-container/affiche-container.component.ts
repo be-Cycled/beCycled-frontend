@@ -27,7 +27,19 @@ type SomeWrappedEvent = WrappedEvent<EventType.workout, Workout> | WrappedEvent<
 })
 export class AfficheContainerComponent implements OnInit {
 
+  public eventType: { workout: EventType; competition: EventType } = {
+    workout: EventType.workout,
+    competition: EventType.competition
+  }
+
   public ngOnInit(): void {
+  }
+
+  private checkEqualDates(a: ISO8601, b: ISO8601): boolean {
+    const firstDate: Date = new Date(a)
+    const secondDate: Date = new Date(b)
+
+    return firstDate.getFullYear() === secondDate.getFullYear() && firstDate.getMonth() === secondDate.getMonth() && firstDate.getDate() === secondDate.getDate()
   }
 
 }
