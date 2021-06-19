@@ -1,6 +1,6 @@
 :host {
   display: block;
-  padding: 18px 0 70px;
+  padding: 18px 0;
 }
 
 .event-list {
@@ -32,4 +32,10 @@
 
   background-color: rgba(240, 242, 243, 0.8);
   border-radius: 20px;
+}
+
+@media (max-width: 599px) {
+  :host {
+    padding: 18px 0 70px;
+  }
 }
