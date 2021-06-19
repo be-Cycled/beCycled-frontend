@@ -21,4 +21,8 @@ export class WorkoutService {
   public getWorkouts(): Observable<Workout[]> {
     return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/all`)
   }
+
+  public getById(id: number): Observable<Workout> {
+    return this.httpClient.get<Workout>(`${ this.config.baseApiUrl }/workouts/${ id }`)
+  }
 }

@@ -1,18 +1,20 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { Competition, MapboxRouteInfo, Route, SportType, Workout } from '../../../../global/domain'
 import mapboxgl, { AnyLayer } from 'mapbox-gl'
-import { Competition, MapboxRouteInfo, Route, SportType } from '../../../../domain'
-import { ISO8601 } from '../../../../models'
-import { defer, Observable, ObservedValueOf } from 'rxjs'
-import { map, shareReplay } from 'rxjs/operators'
-import { RouteService } from '../../../../domain/services/route/route.service'
+import { Observable, ObservedValueOf } from 'rxjs'
+import { ActivatedRoute, ParamMap } from '@angular/router'
+import { map, shareReplay, switchMap } from 'rxjs/operators'
+import { RouteService } from '../../../../global/domain/services/route/route.service'
+import { ISO8601 } from '../../../../global/models'
+import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 
 @Component({
-  selector: 'cy-competition',
-  templateUrl: './competition.component.html',
-  styleUrls: [ './competition.component.scss' ],
+  selector: 'cy-competition-page',
+  templateUrl: './competition-page.component.html',
+  styleUrls: [ './competition-page.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CompetitionComponent implements OnInit {
+export class CompetitionPageComponent implements OnInit {
 
   public sportTypeMap: any = {
     [ SportType.bicycle ]: 'Велосипед',
@@ -23,10 +25,14 @@ export class CompetitionComponent implements OnInit {
 
   public map: mapboxgl.Map | null = null
 
-  @Input()
-  public competition: Competition | null = null
+  public competition$: Observable<Competition> = this.activatedRoute.paramMap.pipe(
+    map((paramMap: ParamMap) => paramMap.get('id')),
+    switchMap((id: string | null) => this.competitionService.getById(Number.parseInt(id!, 10))),
+    shareReplay(1)
+  )
 
-  public route: Observable<Route> = defer(() => this.routeService.getById(this.competition?.routeId!)).pipe(
+  public route: Observable<Route> = this.competition$.pipe(
+    switchMap((workout: Workout) => this.routeService.getById(workout.routeId)),
     shareReplay(1)
   )
 
@@ -50,7 +56,9 @@ export class CompetitionComponent implements OnInit {
     map((coordinates: number[][]) => this.generateGeoJson(coordinates))
   )
 
-  constructor(private routeService: RouteService) {
+  constructor(private routeService: RouteService,
+              private activatedRoute: ActivatedRoute,
+              private competitionService: CompetitionService) {
   }
 
   public ngOnInit(): void {
@@ -63,9 +71,15 @@ export class CompetitionComponent implements OnInit {
       new mapboxgl.LngLatBounds(coordinates[ 0 ], coordinates[ 0 ]))
   }
 
-  public generateCompetitionStartTime(date: ISO8601): string {
+  public generateWorkoutStartTime(date: ISO8601): string {
     const parsedDate: Date = new Date(date)
-    return new Intl.DateTimeFormat('ru-RU', { hour: 'numeric', minute: 'numeric' }).format(parsedDate)
+    return new Intl.DateTimeFormat('ru-RU', {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(parsedDate)
   }
 
   public generateGeoJson(coordinates: number[][]): any {

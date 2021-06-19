@@ -1,6 +1,6 @@
 <a
   *ngIf="competition"
-  href="#"
+  href="/competitions/{{ competition.id }}"
   tuiIsland
   size="l"
   [hoverable]="true"
@@ -12,9 +12,11 @@
     [fitBounds]="bounds | async"
     [fitBoundsOptions]="{ padding: 8, linear: true }"
     [attributionControl]="false"
+    [interactive]="false"
     [scrollZoom]="false"
     [dragPan]="false"
-    (mapLoad)="map = $event"
+    [doubleClickZoom]="false"
+    (mapLoad)="changeMapLanguage($event)"
   >
     <mgl-geojson-source
       id="geojson-route"
@@ -29,6 +31,7 @@
       'line-color': '#FC6719',
       'line-width': 2
     }"
+      se
     >
     </mgl-layer>
   </mgl-map>

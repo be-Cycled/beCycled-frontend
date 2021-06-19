@@ -21,4 +21,8 @@ export class CompetitionService {
   public getCompetitions(): Observable<Competition[]> {
     return this.httpClient.get<Competition[]>(`${ this.config.baseApiUrl }/competitions/all`)
   }
+
+  public getById(id: number): Observable<Competition> {
+    return this.httpClient.get<Competition>(`${ this.config.baseApiUrl }/competitions/${ id }`)
+  }
 }

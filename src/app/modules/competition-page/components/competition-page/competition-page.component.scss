@@ -1,10 +1,15 @@
+:host {
+  display: block;
+  padding: 18px 18px 90px;
+}
+
 .tui-island__category {
   margin-bottom: 18px;
 }
 
 mgl-map {
   width: 100%;
-  height: 150px;
+  height: 400px;
   margin-bottom: 18px;
 
   border-radius: var(--tui-radius-l);
@@ -22,4 +27,10 @@ mgl-map {
   display: block;
   margin-right: 6px;
   color: var(--icon-color);
+}
+
+@media (min-width: 600px) {
+  :host {
+    padding: 36px;
+  }
 }

@@ -9,6 +9,8 @@ import { FeedModule } from './modules/feed/feed.module'
 import { PostsModule } from './modules/posts/posts.module'
 import { ProfileModule } from './modules/profile/profile.module'
 import { RoutesModule } from './modules/routes/routes.module'
+import { WorkoutPageModule } from './modules/workout-page/workout-page.module'
+import { CompetitionPageModule } from './modules/competition-page/competition-page.module'
 
 const routes: Routes = [
   {
@@ -56,6 +58,14 @@ const routes: Routes = [
     resolve: {
       user: UserByTokenResolver
     }
+  },
+  {
+    path: 'workouts',
+    loadChildren: () => import('./modules/workout-page/workout-page.module').then((module: { WorkoutPageModule: WorkoutPageModule }) => module.WorkoutPageModule)
+  },
+  {
+    path: 'competitions',
+    loadChildren: () => import('./modules/competition-page/competition-page.module').then((module: { CompetitionPageModule: CompetitionPageModule }) => module.CompetitionPageModule)
   }
 ]
 
