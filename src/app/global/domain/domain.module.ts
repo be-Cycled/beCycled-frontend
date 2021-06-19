@@ -5,6 +5,7 @@ import { AuthInterceptor } from '../interceptors'
 import { UserService } from './services'
 import { CommunityService } from './services/community/community.service'
 import { CompetitionService } from './services/competition/competition.service'
+import { PostService } from './services/post/post.service'
 import { RouteService } from './services/route/route.service'
 import { WorkoutService } from './services/workout/workout.service'
 
@@ -20,6 +21,7 @@ import { WorkoutService } from './services/workout/workout.service'
     CommunityService,
     WorkoutService,
     CompetitionService,
+    PostService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

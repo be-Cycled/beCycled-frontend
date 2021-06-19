@@ -1,0 +1,26 @@
+:host {
+  display: grid;
+  grid-template-columns: repeat(3, 300px);
+  gap: 1rem;
+}
+
+figure.poster {
+  margin: -20px -20px 0 -20px;
+  text-align: center;
+}
+
+figure.poster img {
+  max-width: 100%;
+  border-radius: var(--tui-radius-l) var(--tui-radius-l) 0 0;
+}
+
+.title {
+  grid-column-start: span 3;
+}
+
+@media screen and (min-width: 599px) {
+  :host {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}
