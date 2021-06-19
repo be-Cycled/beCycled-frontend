@@ -1,6 +1,8 @@
-<form class="filter" [formGroup]="form">
+<form [formGroup]="form">
   <tui-filter
+    class="filter"
     formControlName="filters"
+    size="m"
     [identityMatcher]="identityMatcher"
     [content]="content"
     [badgeHandler]="badgeHandler"

@@ -28,12 +28,12 @@ export class AfficheContainerComponent implements OnInit {
 
   public items: FilterTag[] = [
     {
-      title: 'Тренировки,',
+      title: 'Тренировки',
       value: EventType.workout,
       count: 0
     },
     {
-      title: 'Соревнования,',
+      title: 'Соревнования',
       value: EventType.competition,
       count: 0
     }
@@ -55,12 +55,12 @@ export class AfficheContainerComponent implements OnInit {
     tap(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
       return this.items = [
         {
-          title: 'Тренировки,',
+          title: 'Тренировки',
           value: EventType.workout,
           count: workouts.length
         },
         {
-          title: 'Соревнования,',
+          title: 'Соревнования',
           value: EventType.competition,
           count: competitions.length
         }
