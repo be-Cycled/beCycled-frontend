@@ -1,4 +1,5 @@
 import { SportType } from '../event-card'
+import { CommunityType } from './community-type.enum'
 
 export interface Community {
   id: number
@@ -11,4 +12,5 @@ export interface Community {
   url: string
   description: string
   createdAt: string
+  communityType: CommunityType
 }
