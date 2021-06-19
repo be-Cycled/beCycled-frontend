@@ -1,6 +1,6 @@
 <a
   *ngIf="workout"
-  href="workouts/{{ workout.id }}"
+  [routerLink]="[ '/', 'workouts', workout.id ]"
   tuiIsland
   size="l"
   [hoverable]="true"

@@ -4,6 +4,7 @@ import { WorkoutComponent } from './workout/workout.component'
 import { CompetitionComponent } from './competition/competition.component'
 import { TuiIslandModule } from '@taiga-ui/kit'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
+import { RouterModule } from '@angular/router'
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
   imports: [
     CommonModule,
     TuiIslandModule,
-    NgxMapboxGLModule
+    NgxMapboxGLModule,
+    RouterModule
   ],
   exports: [
     WorkoutComponent,
