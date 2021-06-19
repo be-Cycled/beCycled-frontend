@@ -44,6 +44,6 @@ export class HeaderComponent {
 
   public onClickLogoutButton(): void {
     this.localStorage.removeItem(takeBrowserStorageKey(BrowserStorage.accessToken))
-    this.router.navigate([ '/auth/login' ])
+    this.userHolderService.updateUser(null)
   }
 }
