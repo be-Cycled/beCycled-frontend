@@ -1,0 +1,72 @@
+:host {
+  display: block;
+  padding: 1rem 1rem calc(72px + 1rem) 1rem;
+}
+
+section.header {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.avatar img {
+  width: 100px;
+  border-radius: 50%;
+}
+
+.avatar {
+  margin-right: 1rem;
+}
+
+.community-additional li {
+  display: flex;
+  align-items: center;
+}
+
+.join-button {
+  --tui-primary: var(--cy-primary);
+}
+
+.join-button.is-user-joined {
+  --tui-primary: var(--cy-success);
+}
+
+.event-list-item,
+.sidebar-section:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-section.users {
+  position: relative;
+}
+
+.view-more-users-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 1rem 1rem 0 0;
+}
+
+@media screen and (min-width: 599px) {
+  :host {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .body {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    width: 300px;
+  }
+
+  .main-thread {
+    flex-grow: 1;
+    margin-right: 1rem;
+  }
+}

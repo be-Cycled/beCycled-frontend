@@ -1,0 +1,31 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result {
+  overflow-x: auto;
+}
+
+.filter {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.search-input,
+.community-type-select {
+  order: -1;
+}
+
+@media screen and (min-width: 599px) {
+  :host {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}
