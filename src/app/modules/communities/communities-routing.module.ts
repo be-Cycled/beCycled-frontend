@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
+import { CommunityCreationComponent } from './components/community-creation/community-creation.component'
 import { CommunitiesContainerComponent } from './containers/communities-container/communities-container.component'
 import { SingleCommunityContainerComponent } from './containers/single-community-container/single-community-container.component'
 
@@ -11,6 +12,10 @@ const routes: Routes = [
   {
     path: ':nickname',
     component: SingleCommunityContainerComponent
+  },
+  {
+    path: 'create',
+    component: CommunityCreationComponent
   }
 ]
 
