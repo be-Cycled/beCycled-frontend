@@ -2,8 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { ISO8601 } from '../../../../global/models'
 import { Competition, Workout } from '../../../../global/domain'
 import { combineLatest, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { map, shareReplay, startWith, tap } from 'rxjs/operators'
 import { AfficheService } from '../../services/affiche.service'
+import { FormControl, FormGroup } from '@angular/forms'
+import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
 
 enum EventType {
   workout = 'WORKOUT',
@@ -20,6 +22,12 @@ interface EventListByDay {
   events: SomeWrappedEvent[]
 }
 
+interface FilterTag {
+  title: string
+  value: EventType
+  count: number
+}
+
 type SomeWrappedEvent = WrappedEvent<EventType.workout, Workout> | WrappedEvent<EventType.competition, Competition>
 
 @Component({
@@ -30,11 +38,59 @@ type SomeWrappedEvent = WrappedEvent<EventType.workout, Workout> | WrappedEvent<
 })
 export class AfficheContainerComponent implements OnInit {
 
-  public calendar: Observable<EventListByDay[]> = combineLatest([
+  public items: FilterTag[] = [
+    {
+      title: 'Тренировки,',
+      value: EventType.workout,
+      count: 0
+    },
+    {
+      title: 'Соревнования,',
+      value: EventType.competition,
+      count: 0
+    }
+  ]
+
+  public form: FormGroup = new FormGroup({
+    filters: new FormControl(this.items)
+  })
+
+  public identityMatcher: TuiIdentityMatcher<FilterTag> = (
+    item1: FilterTag,
+    item2: FilterTag
+  ) => item1.title === item2.title
+
+  public events: Observable<[ Workout[], Competition[] ]> = combineLatest([
     this.afficheService.getWorkouts(),
     this.afficheService.getCompetitions()
   ]).pipe(
-    map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+    tap(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+      return this.items = [
+        {
+          title: 'Тренировки,',
+          value: EventType.workout,
+          count: workouts.length
+        },
+        {
+          title: 'Соревнования,',
+          value: EventType.competition,
+          count: competitions.length
+        }
+      ]
+    }),
+    shareReplay(1)
+  )
+
+  public calendar: Observable<EventListByDay[]> = combineLatest([
+    this.events,
+    this.form.valueChanges.pipe(
+      startWith({ filters: this.items })
+    )
+  ]).pipe(
+    map(([ [ workouts, competitions ], { filters } ]: [ [ Workout[], Competition[] ], { filters: FilterTag[] } ]) => {
+      const isWorkoutFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.workout).length !== 0
+      const isCompetitionFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.competition).length !== 0
+
       const wrappedWorkouts: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => {
         return {
           type: EventType.workout,
@@ -49,7 +105,19 @@ export class AfficheContainerComponent implements OnInit {
         }
       })
 
-      const sortedEvents: SomeWrappedEvent[] = [ ...wrappedWorkouts, ...wrappedCompetitions ]
+      let sortedEvents: SomeWrappedEvent[]
+
+      if (isWorkoutFilterActivated && isCompetitionFilterActivated || !isWorkoutFilterActivated && !isCompetitionFilterActivated) {
+        sortedEvents = [ ...wrappedWorkouts, ...wrappedCompetitions ]
+      } else {
+        if (isWorkoutFilterActivated) {
+          sortedEvents = [ ...wrappedWorkouts ]
+        } else {
+          sortedEvents = [ ...wrappedCompetitions ]
+        }
+      }
+
+      sortedEvents.slice()
         .sort((a: SomeWrappedEvent, b: SomeWrappedEvent) =>
           new Date(a.value.startDate).getTime() - new Date(b.value.startDate).getTime())
 
@@ -90,6 +158,8 @@ export class AfficheContainerComponent implements OnInit {
 
   public ngOnInit(): void {
   }
+
+  public badgeHandler: TuiHandler<Record<string, any>, number> = (item: Record<string, any>) => item.count
 
   private checkEqualDates(a: ISO8601, b: ISO8601): boolean {
     const firstDate: Date = new Date(a)

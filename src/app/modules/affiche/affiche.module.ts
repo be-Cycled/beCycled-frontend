@@ -7,6 +7,8 @@ import { EventCardModule } from '../../global/components/cdk/event-card/event-ca
 import { HttpClientModule } from '@angular/common/http'
 import { AfficheService } from './services/affiche.service'
 import { RouteService } from '../../global/domain/services/route/route.service'
+import { TuiFilterModule } from '@taiga-ui/kit'
+import { ReactiveFormsModule } from '@angular/forms'
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { RouteService } from '../../global/domain/services/route/route.service'
     CommonModule,
     AfficheRoutingModule,
     EventCardModule,
-    HttpClientModule
+    HttpClientModule,
+    TuiFilterModule,
+    ReactiveFormsModule
   ],
   providers: [
     AfficheService,
