@@ -19,7 +19,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-08-29T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -34,12 +34,12 @@
       "cratedAd": "2021-08-28T05:15:09Z"
     },
     {
-      "id": 2,
+      "id": 1,
       "userId": 1,
       "communityId": 1,
       "private": false,
-      "startDate": "2021-08-30T05:15:09Z",
-      "routeId": 1,
+      "startDate": "2021-08-29T05:15:09Z",
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -49,7 +49,67 @@
         4,
         5
       ],
-      "duration": 120,
+      "duration": 137,
+      "description": "Маршрут кайф",
+      "cratedAd": "2021-08-28T05:15:09Z"
+    },
+    {
+      "id": 1,
+      "userId": 1,
+      "communityId": 1,
+      "private": false,
+      "startDate": "2021-08-29T05:15:09Z",
+      "routeId": 3,
+      "sportType": "BICYCLE",
+      "venue": "У магазина",
+      "userIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "duration": 223,
+      "description": "Маршрут кайф",
+      "cratedAd": "2021-08-28T05:15:09Z"
+    },
+    {
+      "id": 1,
+      "userId": 1,
+      "communityId": 1,
+      "private": false,
+      "startDate": "2021-08-29T05:15:09Z",
+      "routeId": 3,
+      "sportType": "BICYCLE",
+      "venue": "У магазина",
+      "userIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "duration": 320,
+      "description": "Маршрут кайф",
+      "cratedAd": "2021-08-28T05:15:09Z"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "communityId": 1,
+      "private": false,
+      "startDate": "2021-08-30T05:15:09Z",
+      "routeId": 3,
+      "sportType": "BICYCLE",
+      "venue": "У магазина",
+      "userIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "duration": 525,
       "description": "Маршрут кайф",
       "cratedAd": "2021-09-28T05:15:09Z"
     },
@@ -59,7 +119,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-09-01T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -69,7 +129,7 @@
         4,
         5
       ],
-      "duration": 120,
+      "duration": 122,
       "description": "Маршрут кайф",
       "cratedAd": "2021-08-28T05:15:09Z"
     }
@@ -81,7 +141,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-09-10T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -91,7 +151,7 @@
         4,
         5
       ],
-      "duration": 120,
+      "duration": 121,
       "description": "Маршрут кайф",
       "cratedAd": "2021-08-28T05:15:09Z",
       "startList": [
