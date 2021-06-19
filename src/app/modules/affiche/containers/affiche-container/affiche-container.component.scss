@@ -1,6 +1,15 @@
 :host {
   display: block;
   padding: 18px 0;
+
+  & .event-list {
+    max-width: none;
+    justify-items: center;
+  }
+
+  & .event-item {
+    width: 320px;
+  }
 }
 
 .filter {
@@ -28,5 +37,24 @@
 @media (max-width: 599px) {
   :host {
     padding: 12px 0 70px;
+  }
+}
+
+@media (min-width: 768px) {
+  :host {
+    & .event-list {
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 16px;
+      max-width: 672px;
+    }
+  }
+}
+
+@media (min-width: 1366px) {
+  :host {
+    & .event-list {
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 1328px;
+    }
   }
 }
