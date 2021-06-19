@@ -50,4 +50,8 @@ export class CommunityService {
   public getUsersByCommunity(nickname: string): Observable<User[]> {
     return this.httpClient.get<User[]>(`${ this.config.baseApiUrl }/communities/nickname/${ nickname }/users`)
   }
+
+  public getCommunitiesByUser(login: string): Observable<Community[]> {
+    return this.httpClient.get<Community[]>(`${ this.config.baseApiUrl }/communities/user/${ login }`)
+  }
 }

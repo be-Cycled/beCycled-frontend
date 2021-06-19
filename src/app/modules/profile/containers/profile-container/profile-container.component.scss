@@ -30,12 +30,16 @@
   margin-bottom: 1rem;
 }
 
-.community-list-item img {
+.community-avatar {
   max-width: 50px;
+  border-radius: 50%;
 }
 
 .activities-filter-container {
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .main-info-section {
@@ -44,6 +48,10 @@
 
 .user-login {
   margin-bottom: 0;
+}
+
+.user-activities-section {
+  flex-grow: 1;
 }
 
 @media screen and (min-width: 599px) {
