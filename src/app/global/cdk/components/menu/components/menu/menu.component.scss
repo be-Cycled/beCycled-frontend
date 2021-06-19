@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  width: calc(100% - 1rem);
+  padding: 0 0.5rem;
+}
+
+.menu-nav-list {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.menu-nav-list.extra-menu {
+  justify-content: flex-start;
+}
+
+.menu-nav-list.extra-menu .menu-nav-list-item:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.icon-description {
+  font-size: 13px;
+}

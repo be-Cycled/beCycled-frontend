@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  height: 100%;
+
+  overflow: auto;
+}
+
+.event-list {
+  display: grid;
+  grid-row-gap: 16px;
+  max-width: 800px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}

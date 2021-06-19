@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.logo-container {
+  width: 150px;
+  margin-right: 1rem;
+}
+
+.main-navigation-list {
+  display: flex;
+}
+
+.main-navigation-list-item:not(:last-child) {
+  margin-right: 1rem;
+}
+
+.main-navigation {
+  flex-grow: 1;
+}
+
+.login-button {
+  margin-right: 1rem;
+}

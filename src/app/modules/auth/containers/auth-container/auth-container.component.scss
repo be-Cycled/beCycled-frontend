@@ -1,0 +1,32 @@
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.additional-data {
+  position: absolute;
+  bottom: 0;
+}
+
+:host ::ng-deep {
+  .form-container {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    text-align: center;
+  }
+}
