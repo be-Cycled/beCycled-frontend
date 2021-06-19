@@ -1,9 +1,12 @@
 :host {
-  display: block;
   position: fixed;
   bottom: 0;
+
+  display: block;
   width: calc(100% - 1rem);
-  padding: 0 0.5rem;
+  padding: 0.5rem;
+
+  background-color: #ffffff;
 }
 
 .menu-nav-list {

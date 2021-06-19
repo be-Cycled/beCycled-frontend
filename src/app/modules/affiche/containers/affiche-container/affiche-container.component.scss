@@ -1,8 +1,6 @@
 :host {
   display: block;
-  height: 100%;
-
-  overflow: auto;
+  padding: 18px 0;
 }
 
 .event-list {
@@ -20,12 +18,14 @@
 }
 
 .date {
+  position: sticky;
+  top: 18px;
+  z-index: 1;
+
   width: fit-content;
   padding: 8px 16px;
-  margin: 24px auto;
+  margin: 12px auto;
 
-  font-weight: 700;
-  font-size: 20px;
   line-height: 1;
   text-align: center;
   text-transform: uppercase;
