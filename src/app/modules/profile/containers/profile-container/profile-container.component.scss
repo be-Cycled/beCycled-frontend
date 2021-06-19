@@ -63,6 +63,33 @@
   justify-content: space-between;
 }
 
+.community-list {
+  display: flex;
+}
+
+.community-list-item {
+  position: relative;
+
+  width: 50px;
+  height: 50px;
+  margin-left: -12px;
+
+  border-radius: 50%;
+  border: 4px solid var(--background);
+
+  overflow: hidden;
+
+  & img {
+    display: block;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.community-list-item:first-child {
+  margin-left: 0;
+}
+
 @media screen and (min-width: 599px) {
   :host {
     flex-direction: row;
@@ -86,5 +113,19 @@
 
   .avatar-container img {
     max-width: 100%;
+  }
+}
+
+@media (min-width: 930px) {
+  .main-info-section {
+    margin-right: 32px;
+  }
+
+  .event-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 16px;
+    max-width: 672px;
+    margin-right: 16px;
   }
 }
