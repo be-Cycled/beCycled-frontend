@@ -1,1 +1,19 @@
-<p>posts-container works!</p>
+<h1 class="title">Статьи</h1>
+
+<tui-island class="post" size="l" *ngFor="let post of posts | async">
+  <figure class="poster">
+    <img [attr.src]="post.poster" alt="">
+  </figure>
+  <h2 class="tui-island__title">{{ post.title }}</h2>
+  <a tuiLink [routerLink]="[ '/', 'posts', post.id ]" class="more-link">Подробнее...</a>
+  <!--<a
+    tuiButton
+    [routerLink]="[ '/', 'posts', post.id ]"
+    type="button"
+    class="tui-island__footer-button"
+    appearance="flat"
+    size="m"
+  >
+    Подробнее...
+  </a>-->
+</tui-island>

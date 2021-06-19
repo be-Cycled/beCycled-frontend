@@ -1,16 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { Observable } from 'rxjs'
+import { Post } from '../../../../global/domain/models/post'
+import { PostService } from '../../../../global/domain/services/post/post.service'
 
 @Component({
   selector: 'cy-posts-container',
   templateUrl: './posts-container.component.html',
-  styleUrls: ['./posts-container.component.scss'],
+  styleUrls: [ './posts-container.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PostsContainerComponent implements OnInit {
+export class PostsContainerComponent {
 
-  constructor() { }
+  public posts: Observable<Post[]> = this.postService.getAll()
 
-  ngOnInit(): void {
+  constructor(private postService: PostService) {
   }
-
 }

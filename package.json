@@ -1,6 +1,6 @@
 {
   "name": "be-cycled",
-  "version": "0.0.0",
+  "version": "0.5.0",
   "scripts": {
     "start": "ng serve --port 5000",
     "start:fake-backend": "json-server --watch ./src/mocks/db.json --port 5100",
