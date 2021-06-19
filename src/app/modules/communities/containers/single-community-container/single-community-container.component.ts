@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs'
-import { catchError, map, take, tap } from 'rxjs/operators'
+import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators'
 import { Community, CommunityType, Competition, SportType, User, Workout } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
@@ -76,6 +76,28 @@ export class SingleCommunityContainerComponent {
 
   public sportTypes: Observable<SportType[]> = this.communityHolder.pipe(
     map((community: Community) => community.sportTypes)
+  )
+
+  public communityUsers: Observable<User[]> = this.communityHolder.pipe(
+    // distinctUntilChanged((a: Community, b: Community) => a.userIds.every((value: number) => b.userIds.includes(value)))
+    switchMap(({ nickname }: Community) => this.communityService.getUsersByCommunity(nickname)),
+    shareReplay(1)
+  )
+
+  public someFirstUsers: Observable<User[]> = this.communityUsers.pipe(
+    map((users: User[]) => users.slice(0, 5))
+  )
+
+  public userCount: Observable<number> = this.communityUsers.pipe(
+    map((users: User[]) => users.length)
+  )
+
+  public showMoreUsers: Observable<boolean> = this.userCount.pipe(
+    map((userCount: number) => userCount > 5)
+  )
+
+  public moreUserCount: Observable<number> = this.userCount.pipe(
+    map((userCount: number) => userCount - 5)
   )
 
   constructor(private activatedRoute: ActivatedRoute,

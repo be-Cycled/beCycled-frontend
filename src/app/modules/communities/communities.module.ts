@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiLetModule, TuiMapperPipeModule } from '@taiga-ui/cdk'
 import { TuiButtonModule, TuiDataListModule, TuiLinkModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
-import { TuiDataListWrapperModule, TuiFilterModule, TuiInputModule, TuiIslandModule, TuiSelectModule } from '@taiga-ui/kit'
+import { TuiAvatarModule, TuiDataListWrapperModule, TuiFilterModule, TuiInputModule, TuiIslandModule, TuiSelectModule } from '@taiga-ui/kit'
 import { EventCardModule } from '../../global/components/cdk/event-card/event-card.module'
 
 import { CommunitiesRoutingModule } from './communities-routing.module'
@@ -33,7 +33,8 @@ import { SingleCommunityResolver } from './resolvers/single-community/single-com
     TuiLinkModule,
     TuiIslandModule,
     EventCardModule,
-    TuiLetModule
+    TuiLetModule,
+    TuiAvatarModule
   ],
   providers: [
     SingleCommunityResolver

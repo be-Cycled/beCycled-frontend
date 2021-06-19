@@ -52,5 +52,18 @@
         </li>
       </ul>
     </tui-island>
+    <tui-island class="sidebar-section users">
+      <div class="view-more-users-container" *ngIf="showMoreUsers | async">
+        <a tuiLink icon="tuiIconArrowRight">{{ moreUserCount | async }}</a>
+      </div>
+      <h3 class="tui-island__title">Участники</h3>
+      <ul class="user-list">
+        <li class="user-list-item" *ngFor="let user of someFirstUsers | async">
+          <a [routerLink]="[ '/', 'users', user.login ]">
+            <tui-avatar size="m" [avatarUrl]="user.avatar"></tui-avatar>
+          </a>
+        </li>
+      </ul>
+    </tui-island>
   </aside>
 </section>

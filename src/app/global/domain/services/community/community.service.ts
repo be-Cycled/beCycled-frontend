@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { ConfigService } from '../../../services'
-import { Community } from '../../models'
+import { Community, User } from '../../models'
 
 @Injectable()
 export class CommunityService {
@@ -45,5 +45,9 @@ export class CommunityService {
       ...community,
       userIds: community.userIds.filter((id: number) => id !== userId)
     })
+  }
+
+  public getUsersByCommunity(nickname: string): Observable<User[]> {
+    return this.httpClient.get<User[]>(`${ this.config.baseApiUrl }/communities/nickname/${ nickname }/users`)
   }
 }
