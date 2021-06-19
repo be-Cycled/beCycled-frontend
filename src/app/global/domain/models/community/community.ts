@@ -1,0 +1,14 @@
+import { SportType } from '../event-card'
+
+export interface Community {
+  id: number
+  name: string
+  nickname: string
+  avatar: string
+  ownerUserId: number
+  userIds: number[]
+  sportTypes: SportType[]
+  url: string
+  description: string
+  createdAt: string
+}
