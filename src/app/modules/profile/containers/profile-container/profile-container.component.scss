@@ -54,6 +54,15 @@
   flex-grow: 1;
 }
 
+.name-container {
+  width: 100%;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
 @media screen and (min-width: 599px) {
   :host {
     flex-direction: row;
