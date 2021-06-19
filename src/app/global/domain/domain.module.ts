@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { UserService } from './services'
+import { RouteService } from './services/route/route.service'
 import { CommunityService } from './services/community/community.service'
 
 @NgModule({
@@ -12,6 +13,7 @@ import { CommunityService } from './services/community/community.service'
   ],
   providers: [
     UserService,
+    RouteService,
     CommunityService
   ]
 })

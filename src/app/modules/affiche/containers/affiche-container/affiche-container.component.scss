@@ -1,16 +1,45 @@
 :host {
   display: block;
-  height: 100%;
+  padding: 18px 0;
+}
 
-  overflow: auto;
+.filter {
+  margin: 0 auto;
 }
 
 .event-list {
   display: grid;
   grid-row-gap: 16px;
-  max-width: 800px;
+  max-width: 320px;
   margin-right: auto;
   margin-left: auto;
   padding-top: 16px;
   padding-bottom: 16px;
+}
+
+.event-item {
+  position: relative;
+}
+
+.date {
+  position: sticky;
+  top: 18px;
+  z-index: 1;
+
+  width: fit-content;
+  padding: 8px 16px;
+  margin: 12px auto;
+
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+
+  background-color: rgba(240, 242, 243, 0.8);
+  border-radius: 20px;
+}
+
+@media (max-width: 599px) {
+  :host {
+    padding: 18px 0 70px;
+  }
 }
