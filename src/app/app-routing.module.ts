@@ -47,11 +47,17 @@ const routes: Routes = [
   },
   {
     path: 'users',
-    loadChildren: () => import('./modules/profile/profile.module').then((module: { ProfileModule: ProfileModule }) => module.ProfileModule)
+    loadChildren: () => import('./modules/profile/profile.module').then((module: { ProfileModule: ProfileModule }) => module.ProfileModule),
+    resolve: {
+      user: UserByTokenResolver
+    }
   },
   {
     path: 'routes',
-    loadChildren: () => import('./modules/routes/routes.module').then((module: { RoutesModule: RoutesModule }) => module.RoutesModule)
+    loadChildren: () => import('./modules/routes/routes.module').then((module: { RoutesModule: RoutesModule }) => module.RoutesModule),
+    resolve: {
+      user: UserByTokenResolver
+    }
   },
   {
     path: 'workouts',

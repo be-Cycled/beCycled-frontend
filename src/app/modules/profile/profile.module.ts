@@ -1,8 +1,18 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
-import { TuiButtonModule, TuiFormatPhonePipeModule, TuiLinkModule } from '@taiga-ui/core'
-import { TuiFilterModule, TuiIslandModule } from '@taiga-ui/kit'
+import { TuiLetModule } from '@taiga-ui/cdk'
+import { TuiButtonModule, TuiFormatPhonePipeModule, TuiGroupModule, TuiLinkModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
+import {
+  TuiFieldErrorModule,
+  TuiFilterModule,
+  TuiInputFileModule,
+  TuiInputInlineModule,
+  TuiInputModule,
+  TuiInputPhoneModule,
+  TuiIslandModule,
+  TuiTextAreaModule
+} from '@taiga-ui/kit'
 import { EventCardModule } from '../../global/components/cdk/event-card/event-card.module'
 import { ProfileContainerComponent } from './containers/profile-container/profile-container.component'
 
@@ -22,7 +32,16 @@ import { ProfileRoutingModule } from './profile-routing.module'
     ReactiveFormsModule,
     TuiIslandModule,
     TuiFormatPhonePipeModule,
-    EventCardModule
+    EventCardModule,
+    TuiLetModule,
+    TuiInputFileModule,
+    TuiInputInlineModule,
+    TuiInputModule,
+    TuiTextfieldControllerModule,
+    TuiGroupModule,
+    TuiTextAreaModule,
+    TuiInputPhoneModule,
+    TuiFieldErrorModule
   ]
 })
 export class ProfileModule { }

@@ -1,34 +1,72 @@
-<section class="main-info-section">
+<section class="main-info-section" [formGroup]="editForm" *tuiLet="isEditMode | async as isEdit">
   <div class="info-section avatar-and-name-container">
     <div class="avatar-container">
-      <img [attr.src]="avatarUrl | async" alt="">
+      <img [attr.src]="avatar | async" alt="">
+      <tui-input-file
+        *ngIf="isEdit"
+        [formControl]="avatarFileReader"
+        accept="image/*"
+        [maxFileSize]="maxFileSize"
+        link="Выберите файл"
+        label="или перетащите его (макс. 1Мб)"
+      ></tui-input-file>
     </div>
     <div class="name-container">
-      <h1 class="user-name">{{ fullName | async }}</h1>
+      <h1 class="user-name">
+        <ng-container *ngIf="isEdit">
+          <div tuiGroup class="group" [collapsed]="true">
+            <div>
+              <tui-input class="tui-group__inherit-item" tuiTextfieldSize="s" formControlName="firstName">Имя</tui-input>
+            </div>
+            <div>
+              <tui-input class="tui-group__inherit-item" tuiTextfieldSize="s" formControlName="lastName">Фамилия</tui-input>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isEdit">
+          {{ fullName | async }}
+        </ng-container>
+      </h1>
       <h2 class="user-login">{{ login | async }}</h2>
     </div>
   </div>
   <div class="info-section description-container">
-    <p>{{ about | async }}</p>
+    <p *ngIf="isEdit">
+      <tui-text-area formControlName="about">О себе</tui-text-area>
+    </p>
+    <p *ngIf="!isEdit">{{ about | async }}</p>
   </div>
-  <div class="info-section edit-button-container">
-    <button class="edit-button" tuiButton size="s" type="button" iconRight="tuiIconEdit">Редактировать</button>
-  </div>
+  <ng-container *ngIf="!isEdit">
+    <div *ngIf="isCanEdit | async" class="info-section edit-button-container">
+      <button (click)="onClickEditButton()" class="edit-button" tuiButton size="s" type="button" iconRight="tuiIconEdit">Редактировать</button>
+    </div>
+  </ng-container>
   <div class="info-section secondary-info">
     <ul class="tui-list">
       <li class="tui-list__item">
         <span>Телефон: </span>
         <span>
-          <a tuiLink [attr.href]="'tel:' + (phone | async)">{{ phone | async | tuiFormatPhone }}</a>
+          <tui-input-phone *ngIf="isEdit" tuiTextfieldSize="s" formControlName="phone">Телефон</tui-input-phone>
+          <tui-field-error *ngIf="isEdit" formControlName="phone"></tui-field-error>
+
+          <a tuiLink *ngIf="!isEdit" [attr.href]="'tel:' + (phone | async)">{{ phone | async | tuiFormatPhone }}</a>
         </span>
       </li>
       <li class="tui-list__item">
         <span>Эл. Почта: </span>
         <span>
-          <a tuiLink [attr.href]="'mailto:' + (email | async)">{{ email | async }}</a>
+          <tui-input *ngIf="isEdit" tuiTextfieldSize="s" formControlName="email">Эл. почта</tui-input>
+          <tui-field-error *ngIf="isEdit" formControlName="email"></tui-field-error>
+
+          <a *ngIf="!isEdit" tuiLink [attr.href]="'mailto:' + (email | async)">{{ email | async }}</a>
         </span>
       </li>
     </ul>
+  </div>
+  <div *ngIf="isEdit" class="edit-actions">
+    <button tuiButton (click)="onClickCancelButton()" size="s" appearance="secondary" type="button">Отменить</button>
+    <button tuiButton (click)="onClickSaveButton()" size="s" type="button">Сохранить</button>
   </div>
   <div class="info-section user-communities-section">
     <h3 class="user-communities-title">Сообщества</h3>

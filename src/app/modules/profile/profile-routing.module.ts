@@ -8,7 +8,7 @@ const routes: Routes = [
     path: ':login',
     component: ProfileContainerComponent,
     resolve: {
-      user: UserByLoginResolver
+      profileUser: UserByLoginResolver
     }
   }
 ]
