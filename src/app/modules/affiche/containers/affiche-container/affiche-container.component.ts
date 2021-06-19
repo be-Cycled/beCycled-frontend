@@ -54,16 +54,18 @@ export class AfficheContainerComponent implements OnInit {
     this.competitionService.getCompetitions()
   ]).pipe(
     tap(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+      const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
+
       return this.items = [
         {
           title: 'Тренировки',
           value: EventType.workout,
-          count: workouts.length
+          count: workouts.filter((item: Workout) => new Date(item.startDate).getTime() >= currentTime).length
         },
         {
           title: 'Соревнования',
           value: EventType.competition,
-          count: competitions.length
+          count: competitions.filter((item: Competition) => new Date(item.startDate).getTime() >= currentTime).length
         }
       ]
     }),
@@ -77,22 +79,27 @@ export class AfficheContainerComponent implements OnInit {
     )
   ]).pipe(
     map(([ [ workouts, competitions ], { filters } ]: [ [ Workout[], Competition[] ], { filters: FilterTag[] } ]) => {
+      const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
       const isWorkoutFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.workout).length !== 0
       const isCompetitionFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.competition).length !== 0
 
-      const wrappedWorkouts: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => {
-        return {
-          type: EventType.workout,
-          value: workout
-        }
-      })
+      const wrappedWorkouts: WrappedEvent<EventType.workout, Workout>[] = workouts
+        .filter((item: Workout) => new Date(item.startDate).getTime() >= currentTime)
+        .map((workout: Workout) => {
+          return {
+            type: EventType.workout,
+            value: workout
+          }
+        })
 
-      const wrappedCompetitions: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => {
-        return {
-          type: EventType.competition,
-          value: competition
-        }
-      })
+      const wrappedCompetitions: WrappedEvent<EventType.competition, Competition>[] = competitions
+        .filter((item: Competition) => new Date(item.startDate).getTime() >= currentTime)
+        .map((competition: Competition) => {
+          return {
+            type: EventType.competition,
+            value: competition
+          }
+        })
 
       let sortedEvents: SomeWrappedEvent[]
 

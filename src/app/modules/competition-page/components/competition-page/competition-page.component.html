@@ -1,0 +1,79 @@
+<tui-island *tuiLet="competition$ | async as competition">
+  <ng-container *ngIf="competition">
+    <h3 class="tui-island__title">{{ generateWorkoutStartTime(competition.startDate) }}</h3>
+    <p class="tui-island__category">Тренировка</p>
+    <mgl-map
+      [style]="'mapbox://styles/mapbox/streets-v11'"
+      [fitBounds]="bounds | async"
+      [fitBoundsOptions]="{ padding: 8, linear: true }"
+      [attributionControl]="false"
+      (mapLoad)="map = $event"
+    >
+      <mgl-geojson-source
+        id="geojson-route"
+        [data]="geoJson | async"
+      >
+      </mgl-geojson-source>
+      <mgl-layer
+        id="route"
+        type="line"
+        source="geojson-route"
+        [paint]="{
+      'line-color': '#FC6719',
+      'line-width': 2
+    }"
+      >
+      </mgl-layer>
+    </mgl-map>
+    <ul class="icon-list">
+      <li>
+      <span class="material-icons">
+        emoji_people
+      </span>
+        <span>
+        Вид спорта: {{ sportTypeMap[competition.sportType] }}
+      </span>
+      </li>
+      <li>
+      <span class="material-icons">
+        moving
+      </span>
+        <span>
+        Дистанция: {{ generateDistanceString(distance | async) }}
+      </span>
+      </li>
+      <li>
+      <span class="material-icons">
+        access_time
+      </span>
+        <span>
+        Длительность: {{ generateDurationString(competition.duration) }}
+      </span>
+      </li>
+      <li>
+      <span class="material-icons">
+        place
+      </span>
+        <span>
+        Место сбора: {{ competition.venue }}
+      </span>
+      </li>
+      <li>
+      <span class="material-icons">
+        description
+      </span>
+        <span>
+        Описание: {{ competition.description }}
+      </span>
+      </li>
+      <li>
+      <span class="material-icons">
+        group
+      </span>
+        <span>
+        Участники: {{ competition.userIds.length }}
+      </span>
+      </li>
+    </ul>
+  </ng-container>
+</tui-island>
