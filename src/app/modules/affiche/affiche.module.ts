@@ -6,6 +6,7 @@ import { AfficheContainerComponent } from './containers/affiche-container/affich
 import { EventCardModule } from '../../global/components/cdk/event-card/event-card.module'
 import { HttpClientModule } from '@angular/common/http'
 import { AfficheService } from './services/affiche.service'
+import { RouteService } from '../../global/domain/services/route/route.service'
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { AfficheService } from './services/affiche.service'
     HttpClientModule
   ],
   providers: [
-    AfficheService
+    AfficheService,
+    RouteService
   ]
 })
 export class AfficheModule {

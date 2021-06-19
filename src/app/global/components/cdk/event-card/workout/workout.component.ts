@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
 import mapboxgl from 'mapbox-gl'
-import { SportType, Workout } from '../../../../domain'
+import { MapboxRouteInfo, Route, SportType, Workout } from '../../../../domain'
 import { ISO8601 } from '../../../../models'
+import { RouteService } from '../../../../domain/services/route/route.service'
+import { map, shareReplay } from 'rxjs/operators'
+import { defer, Observable, ObservedValueOf } from 'rxjs'
 
 @Component({
   selector: 'cy-workout',
@@ -22,154 +25,21 @@ export class WorkoutComponent implements OnInit {
   @Input()
   public workout: Workout | null = null
 
-  public geoJson: any = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [
-          39.293288,
-          44.517893
-        ],
-        [
-          39.291926,
-          44.526663
-        ],
-        [
-          39.298331,
-          44.541942
-        ],
-        [
-          39.297548,
-          44.548083
-        ],
-        [
-          39.295896,
-          44.548243
-        ],
-        [
-          39.291059,
-          44.546008
-        ],
-        [
-          39.265421,
-          44.544074
-        ],
-        [
-          39.256895,
-          44.541969
-        ],
-        [
-          39.254587,
-          44.547227
-        ],
-        [
-          39.251734,
-          44.549105
-        ],
-        [
-          39.252181,
-          44.555118
-        ],
-        [
-          39.247456,
-          44.555221
-        ],
-        [
-          39.240413,
-          44.552797
-        ],
-        [
-          39.239056,
-          44.555792
-        ],
-        [
-          39.23331,
-          44.559518
-        ],
-        [
-          39.23053,
-          44.568704
-        ],
-        [
-          39.22845,
-          44.568344
-        ],
-        [
-          39.224435,
-          44.569608
-        ],
-        [
-          39.223859,
-          44.571839
-        ],
-        [
-          39.21301,
-          44.569463
-        ],
-        [
-          39.204562,
-          44.571403
-        ],
-        [
-          39.203478,
-          44.577141
-        ],
-        [
-          39.204883,
-          44.581904
-        ],
-        [
-          39.204145,
-          44.585324
-        ],
-        [
-          39.199924,
-          44.59188
-        ],
-        [
-          39.189854,
-          44.600078
-        ],
-        [
-          39.189864,
-          44.606741
-        ],
-        [
-          39.191716,
-          44.609459
-        ],
-        [
-          39.190354,
-          44.612971
-        ],
-        [
-          39.193547,
-          44.614699
-        ],
-        [
-          39.187401,
-          44.630378
-        ],
-        [
-          39.186263,
-          44.638282
-        ],
-        [
-          39.185192,
-          44.638033
-        ],
-        [
-          39.179831,
-          44.643768
-        ],
-        [
-          39.175176,
-          44.641512
-        ]
-      ]
-    }
+  // tslint:disable-next-line:no-non-null-assertion
+  public coordinates: Observable<ObservedValueOf<Observable<number[][]>>> = defer(() => this.routeService.getById(this.workout?.routeId!).pipe(
+    map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo).routes[ 0 ].geometry.coordinates),
+    shareReplay(1)
+  ))
+
+  public bounds: Observable<any> = this.coordinates.pipe(
+    map((coordinates: number[][]) => this.generateBounds(coordinates))
+  )
+
+  public geoJson: Observable<any> = this.coordinates.pipe(
+    map((coordinates: number[][]) => this.generateGeoJson(coordinates))
+  )
+
+  constructor(private routeService: RouteService) {
   }
 
   public ngOnInit(): void {
@@ -185,5 +55,16 @@ export class WorkoutComponent implements OnInit {
   public generateWorkoutStartTime(date: ISO8601): string {
     const parsedDate: Date = new Date(date)
     return new Intl.DateTimeFormat('ru-RU', { hour: 'numeric', minute: 'numeric' }).format(parsedDate)
+  }
+
+  public generateGeoJson(coordinates: number[][]): any {
+    return {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates
+      }
+    }
   }
 }

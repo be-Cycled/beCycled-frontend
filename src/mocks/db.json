@@ -19,7 +19,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-08-29T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -39,7 +39,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-08-29T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -59,7 +59,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-08-29T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -79,7 +79,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-08-29T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -99,7 +99,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-08-30T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -119,7 +119,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-09-01T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [
@@ -141,7 +141,7 @@
       "communityId": 1,
       "private": false,
       "startDate": "2021-09-10T05:15:09Z",
-      "routeId": 1,
+      "routeId": 3,
       "sportType": "BICYCLE",
       "venue": "У магазина",
       "userIds": [

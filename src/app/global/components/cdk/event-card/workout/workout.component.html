@@ -9,8 +9,8 @@
   <p class="tui-island__category">Тренировка</p>
   <mgl-map
     [style]="'mapbox://styles/mapbox/streets-v11'"
-    [fitBounds]="generateBounds(geoJson.geometry.coordinates)"
-    [fitBoundsOptions]="{ padding: 8 }"
+    [fitBounds]="bounds | async"
+    [fitBoundsOptions]="{ padding: 8, linear: true }"
     [attributionControl]="false"
     [scrollZoom]="false"
     [dragPan]="false"
@@ -18,7 +18,7 @@
   >
     <mgl-geojson-source
       id="geojson-route"
-      [data]="geoJson"
+      [data]="geoJson | async"
     >
     </mgl-geojson-source>
     <mgl-layer
