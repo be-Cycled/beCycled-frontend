@@ -35,7 +35,8 @@ import { AuthorizationService } from './services/authorization/authorization.ser
       provide: TUI_VALIDATION_ERRORS,
       useValue: {
         required: 'Поле обязательно',
-        email: 'Эл. почта введена не правильно'
+        email: 'Эл. почта введена не правильно',
+        pattern: 'Значение не соотвествует шаблону'
       }
     }
   ]

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
-import { Router } from '@angular/router'
 import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
@@ -38,8 +37,7 @@ export class HeaderComponent {
 
   constructor(private userHolderService: UserHolderService,
               @Inject(LOCAL_STORAGE)
-              private localStorage: Storage,
-              private router: Router) {
+              private localStorage: Storage) {
   }
 
   public onClickLogoutButton(): void {

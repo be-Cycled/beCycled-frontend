@@ -38,7 +38,7 @@ export class RegistrationComponent {
   public registrationForm: FormGroup = this.fb.group(
     {
       email: this.fb.control(null, [ Validators.required, Validators.email ]),
-      login: this.fb.control(null, Validators.required),
+      login: this.fb.control(null, [ Validators.required, Validators.pattern(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i) ]),
       password: this.fb.control(null, Validators.required),
       confirmPassword: this.fb.control(null, Validators.required)
     },
