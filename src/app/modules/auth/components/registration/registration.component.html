@@ -2,7 +2,7 @@
 
 <h1 class="title">Регистрация</h1>
 
-<form [formGroup]="registrationForm">
+<form [formGroup]="registrationForm" (keyup.enter)="onClickSubmitButton()">
   <p class="field">
     <tui-input formControlName="email">Эл. почта</tui-input>
     <tui-field-error formControlName="email"></tui-field-error>

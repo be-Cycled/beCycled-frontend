@@ -2,7 +2,7 @@
 
 <h1 class="title">Авторизация</h1>
 
-<form [formGroup]="loginForm">
+<form [formGroup]="loginForm" (keyup.enter)="onClickSubmitButton()">
   <p class="field">
     <tui-input formControlName="login">Логин</tui-input>
     <tui-field-error formControlName="login"></tui-field-error>

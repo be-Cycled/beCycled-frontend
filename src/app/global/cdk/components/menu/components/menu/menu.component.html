@@ -58,7 +58,7 @@
     <li class="menu-nav-list-item">
       <a
         tuiIconButton
-        *ngIf="isUserAuthorized"
+        *ngIf="isUserAuthorized | async"
         [routerLink]="profileRouterLink | async"
         appearance="icon"
         shape="rounded"
@@ -68,7 +68,7 @@
 
       <a
         tuiIconButton
-        *ngIf="!isUserAuthorized"
+        *ngIf="!(isUserAuthorized | async)"
         appearance="icon"
         shape="rounded"
         routerLink="/auth/login"

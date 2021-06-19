@@ -18,7 +18,7 @@ export class MenuComponent {
     map((userLogin: string) => `/users/${ userLogin }`)
   )
 
-  public isUserAuthorized: boolean = this.userHolderService.isUserAuthorized()
+  public isUserAuthorized: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
 
   constructor(private userHolderService: UserHolderService,
               private dialogService: TuiDialogService) {
@@ -30,5 +30,4 @@ export class MenuComponent {
       closeable: false
     }).subscribe()
   }
-
 }
