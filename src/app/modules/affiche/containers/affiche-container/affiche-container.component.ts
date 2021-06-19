@@ -138,8 +138,6 @@ export class AfficheContainerComponent implements OnInit {
         }
       })
 
-      console.log(eventsCalendar)
-
       return eventsCalendar
     })
   )
