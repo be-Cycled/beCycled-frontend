@@ -26,10 +26,21 @@ export class WorkoutComponent implements OnInit {
   public workout: Workout | null = null
 
   // tslint:disable-next-line:no-non-null-assertion
-  public coordinates: Observable<ObservedValueOf<Observable<number[][]>>> = defer(() => this.routeService.getById(this.workout?.routeId!).pipe(
-    map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo).routes[ 0 ].geometry.coordinates),
+  public route: Observable<Route> = defer(() => this.routeService.getById(this.workout?.routeId!)).pipe(
     shareReplay(1)
-  ))
+  )
+
+  public routeInfo: Observable<MapboxRouteInfo> = this.route.pipe(
+    map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo))
+  )
+
+  public distance: Observable<number> = this.routeInfo.pipe(
+    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].distance)
+  )
+
+  public coordinates: Observable<ObservedValueOf<Observable<number[][]>>> = this.routeInfo.pipe(
+    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].geometry.coordinates)
+  )
 
   public bounds: Observable<any> = this.coordinates.pipe(
     map((coordinates: number[][]) => this.generateBounds(coordinates))
@@ -66,5 +77,39 @@ export class WorkoutComponent implements OnInit {
         coordinates
       }
     }
+  }
+
+  public generateDistanceString(distance: number): string {
+    const distanceInKilometres: number = Math.ceil(distance / 1000)
+
+    return `${ distanceInKilometres } км`
+  }
+
+  /**
+   * words - массив с тремя формами, например, "час, часа, часов"
+   */
+  public buildCountString(count: number, words: string[]): string {
+    if ((count >= 5 && count <= 19) || (count % 10 >= 5 && count % 10 <= 9) || count % 10 === 0) {
+      return `${ count } ${ words[ 2 ] }`
+    }
+
+    return (count % 10 === 1) ? `${ count } ${ words[ 0 ] }` : `${ count } ${ words[ 1 ] }`
+  }
+
+  public generateDurationString(duration: number): string {
+    let hours: number = 0
+    let minutes: number = 0
+
+    if (duration < 60) {
+      return `${ duration } ${ this.buildCountString(duration, [ 'минута', 'минуты', 'минут' ]) }`
+    }
+
+    hours = Math.floor(duration / 60)
+    minutes = duration - (hours * 60)
+
+    return `${ this.buildCountString(hours, [ 'час', 'часа', 'часов' ]) }
+     ${ minutes === 0
+      ? ''
+      : this.buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
   }
 }

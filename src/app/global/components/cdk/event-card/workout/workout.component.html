@@ -46,7 +46,7 @@
         moving
       </span>
       <span>
-        Дистанция: 50 км
+        Дистанция: {{ generateDistanceString(distance | async) }}
       </span>
     </li>
     <li>
@@ -54,7 +54,7 @@
         access_time
       </span>
       <span>
-        Длительность: {{ workout.duration }}
+        Длительность: {{ generateDurationString(workout.duration) }}
       </span>
     </li>
     <li>
