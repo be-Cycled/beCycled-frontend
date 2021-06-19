@@ -7,19 +7,24 @@
 <nav class="main-navigation">
   <ul class="main-navigation-list">
     <li class="main-navigation-list-item">
-      <a tuiLink routerLink="/">Афиша</a>
+      <a
+        tuiLink
+        routerLink="/"
+        routerLinkActive="active-router-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >Афиша</a>
     </li>
     <li class="main-navigation-list-item">
-      <a tuiLink routerLink="/feed">Лента</a>
+      <a tuiLink routerLink="/feed" routerLinkActive="active-router-link">Лента</a>
     </li>
     <li class="main-navigation-list-item">
-      <a tuiLink routerLink="/communities">Сообщества</a>
+      <a tuiLink routerLink="/communities" routerLinkActive="active-router-link">Сообщества</a>
     </li>
     <li class="main-navigation-list-item">
-      <a tuiLink routerLink="/routes">Маршруты</a>
+      <a tuiLink routerLink="/routes" routerLinkActive="active-router-link">Маршруты</a>
     </li>
     <li class="main-navigation-list-item">
-      <a tuiLink routerLink="/posts">Статьи</a>
+      <a tuiLink routerLink="/posts" routerLinkActive="active-router-link">Статьи</a>
     </li>
   </ul>
 </nav>

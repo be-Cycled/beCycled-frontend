@@ -3,6 +3,12 @@
 }
 
 .logo {
-  display: block;
+  display: none;
   margin: 0 auto 60px;
+}
+
+@media (max-width: 599px) {
+  .logo {
+    display: block;
+  }
 }
