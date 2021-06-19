@@ -16,23 +16,15 @@ export class UserByTokenResolver implements Resolve<User | null> {
   }
 
   public resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<User | null> {
-    if (this.userHolderService.getUser() !== null) {
-      return of(this.userHolderService.getUser())
-    }
-
     const token: string | null = this.localStorage.getItem(takeBrowserStorageKey(BrowserStorage.accessToken))
 
     if (token === null) {
       return of(null)
     }
 
-    if (this.userHolderService.isUserAuthorized()) {
-      return this.userService.getMe(token).pipe(
-        tap((user: User) => this.userHolderService.updateUser(user)),
-        catchError(() => of(null))
-      )
-    }
-
-    return of(null)
+    return this.userService.getMe(token).pipe(
+      tap((user: User) => this.userHolderService.updateUser(user)),
+      catchError(() => of(null))
+    )
   }
 }

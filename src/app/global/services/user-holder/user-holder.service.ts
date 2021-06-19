@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 import { LOCAL_STORAGE, WINDOW } from '@ng-web-apis/common'
-import { BehaviorSubject, defer, fromEvent, Observable } from 'rxjs'
-import { filter, map, startWith } from 'rxjs/operators'
-import { User } from '../../domain'
+import { BehaviorSubject, Observable } from 'rxjs'
+import { filter, map } from 'rxjs/operators'
+import { Community, User } from '../../domain'
 import { BrowserStorage, takeBrowserStorageKey } from '../../models'
 
 @Injectable({ providedIn: 'root' })
@@ -15,11 +15,9 @@ export class UserHolderService {
     filter((user: User | null): user is User => user !== null)
   )
 
-  public isUserAuthorizedChanges: Observable<boolean> = defer(() => fromEvent<StorageEvent>(this.window, 'storage').pipe(
-    filter((event: StorageEvent) => event.key === takeBrowserStorageKey(BrowserStorage.accessToken)),
-    startWith(null),
-    map(() => this.isUserAuthorized())
-  ))
+  public isUserAuthorizedChanges: Observable<boolean> = this.user.pipe(
+    map((user: User | null) => user !== null)
+  )
 
   constructor(@Inject(LOCAL_STORAGE)
               private localStorage: Storage,
@@ -28,7 +26,7 @@ export class UserHolderService {
               private router: Router) {
   }
 
-  public updateUser(user: User): void {
+  public updateUser(user: User | null): void {
     this.user.next(user)
   }
 
@@ -37,7 +35,7 @@ export class UserHolderService {
   }
 
   public isUserAuthorized(): boolean {
-    return !!this.localStorage.getItem(takeBrowserStorageKey(BrowserStorage.accessToken))
+    return this.getUser() !== null
   }
 
   public logout(): void {
@@ -45,5 +43,13 @@ export class UserHolderService {
     this.router.navigate([ `/auth/login` ]).then(() => {
       this.user.next(null)
     })
+  }
+
+  public isUserJoinedCommunity(community: Community): boolean {
+    const user: User | null = this.getUser()
+    if (user === null) {
+      throw new Error(`User not exist`)
+    }
+    return community.userIds.includes(user.id)
   }
 }
