@@ -14,6 +14,10 @@ export class WorkoutService {
     return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/community/${ nickname }`)
   }
 
+  public getByUser(login: string): Observable<Workout[]> {
+    return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/user/${ login }`)
+  }
+
   public getWorkouts(): Observable<Workout[]> {
     return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/all`)
   }

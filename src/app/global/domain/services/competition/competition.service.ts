@@ -14,6 +14,10 @@ export class CompetitionService {
     return this.httpClient.get<Competition[]>(`${ this.config.baseApiUrl }/competitions/community/${ nickname }`)
   }
 
+  public getByUser(login: string): Observable<Competition[]> {
+    return this.httpClient.get<Competition[]>(`${ this.config.baseApiUrl }/competitions/user/${ login }`)
+  }
+
   public getCompetitions(): Observable<Competition[]> {
     return this.httpClient.get<Competition[]>(`${ this.config.baseApiUrl }/competitions/all`)
   }
