@@ -34,7 +34,8 @@
         <th class="tui-table__th">Тип сообщества</th>
       </tr>
       <tr class="tui-table__tr" *ngFor="let community of communitiesForView | async">
-        <td class="tui-table__td">
+        <td class="tui-table__td avatar-and-name">
+          <img class="avatar" [attr.src]="community.avatar" [attr.alt]="community.name">
           <a tuiLink [routerLink]="[ '/', 'communities', community.nickname ]">{{ community.name }}</a>
         </td>
         <td class="tui-table__td">{{ community.userIds.length }}</td>
