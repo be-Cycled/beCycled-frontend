@@ -85,7 +85,7 @@ export class SingleCommunityContainerComponent {
   )
 
   public someFirstUsers: Observable<User[]> = this.communityUsers.pipe(
-    map((users: User[]) => users.slice(0, 5))
+    map((users: User[]) => users.slice(0, 6))
   )
 
   public userCount: Observable<number> = this.communityUsers.pipe(
@@ -93,11 +93,11 @@ export class SingleCommunityContainerComponent {
   )
 
   public showMoreUsers: Observable<boolean> = this.userCount.pipe(
-    map((userCount: number) => userCount > 5)
+    map((userCount: number) => userCount > 6)
   )
 
   public moreUserCount: Observable<number> = this.userCount.pipe(
-    map((userCount: number) => userCount - 5)
+    map((userCount: number) => userCount - 6)
   )
 
   constructor(private activatedRoute: ActivatedRoute,
