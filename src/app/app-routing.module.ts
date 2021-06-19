@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { UserByTokenResolver } from './global/resolvers/user-by-token/user-by-token.resolver'
+
+import { UserByTokenResolver } from './global/resolvers'
 import { AfficheModule } from './modules/affiche/affiche.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CommunitiesModule } from './modules/communities/communities.module'
 import { FeedModule } from './modules/feed/feed.module'
 import { PostsModule } from './modules/posts/posts.module'
 import { ProfileModule } from './modules/profile/profile.module'
+import { RoutesModule } from './modules/routes/routes.module'
 
 const routes: Routes = [
   {
@@ -44,6 +46,10 @@ const routes: Routes = [
   {
     path: 'users',
     loadChildren: () => import('./modules/profile/profile.module').then((module: { ProfileModule: ProfileModule }) => module.ProfileModule)
+  },
+  {
+    path: 'routes',
+    loadChildren: () => import('./modules/routes/routes.module').then((module: { RoutesModule: RoutesModule }) => module.RoutesModule)
   }
 ]
 
