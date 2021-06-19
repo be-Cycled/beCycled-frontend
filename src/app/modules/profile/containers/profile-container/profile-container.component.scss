@@ -5,8 +5,10 @@
 }
 
 .avatar-container img {
-  max-width: 100px;
+  width: 234px;
+  height: 234px;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .avatar-and-name-container {
