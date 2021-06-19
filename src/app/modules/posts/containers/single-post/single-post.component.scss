@@ -1,5 +1,6 @@
 :host {
   display: block;
+  padding: 1rem 1rem calc(1rem + 72px);
 }
 
 .poster-container {
@@ -14,5 +15,6 @@
   :host {
     max-width: 570px;
     margin: 0 auto;
+    padding: 0;
   }
 }
