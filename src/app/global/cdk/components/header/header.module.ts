@@ -19,7 +19,8 @@ import { HeaderComponent } from './components/header/header.component'
     TuiAvatarModule,
     TuiDataListModule,
     TuiButtonModule,
-    TuiLinkModule
+    TuiLinkModule,
+    RouterModule
   ]
 })
 export class HeaderModule {

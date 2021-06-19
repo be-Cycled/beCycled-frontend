@@ -3,7 +3,6 @@ import { FormBuilder, FormControl } from '@angular/forms'
 import { Observable } from 'rxjs'
 import { map, pluck } from 'rxjs/operators'
 import { User } from '../../../../global/domain'
-import { DEFAULT_AVATAR } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
 
 @Component({
@@ -18,13 +17,7 @@ export class ProfileContainerComponent {
 
   public avatarUrl: Observable<string> = this.userHolderService.userChanges.pipe(
     pluck('avatar'),
-    map((avatar: string | null) => {
-      if (avatar !== null) {
-        return avatar
-      }
-
-      return DEFAULT_AVATAR
-    })
+    map((avatar: string | null) => `data:image/png;base64,${ avatar }`)
   )
 
   public fullName: Observable<string | null> = this.userHolderService.userChanges.pipe(

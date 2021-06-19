@@ -1,1 +1,151 @@
-<p>menu works!</p>
+<nav class="menu-nav">
+  <ul class="menu-nav-list">
+    <li class="menu-nav-list-item">
+      <a
+        tuiIconButton
+        appearance="icon"
+        shape="rounded"
+        routerLink="/"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [icon]="afficheIconRef"
+      ></a>
+    </li>
+
+    <li class="menu-nav-list-item">
+      <a
+        tuiIconButton
+        appearance="icon"
+        shape="rounded"
+        routerLink="/feed"
+        routerLinkActive="is-active"
+        [icon]="feedIconRef"
+      ></a>
+    </li>
+
+    <li class="menu-nav-list-item">
+      <a
+        tuiIconButton
+        appearance="icon"
+        shape="rounded"
+        routerLink="/communities"
+        routerLinkActive="is-active"
+        [icon]="communitiesIconRef"
+      ></a>
+    </li>
+
+    <li class="menu-nav-list-item">
+      <button
+        tuiIconButton
+        appearance="icon"
+        shape="rounded"
+        [icon]="otherIconRef"
+        (click)="onClickExtraButton(extraMenuRef)"
+      ></button>
+    </li>
+
+    <li class="menu-nav-list-item">
+      <a
+        tuiIconButton
+        *ngIf="isUserAuthorized"
+        [routerLink]="profileRouterLink | async"
+        appearance="icon"
+        shape="rounded"
+        routerLinkActive="is-active"
+        [icon]="authorizedIconRef"
+      ></a>
+
+      <a
+        tuiIconButton
+        *ngIf="!isUserAuthorized"
+        appearance="icon"
+        shape="rounded"
+        routerLink="/auth/login"
+        [icon]="unauthorizedIconRef"
+      ></a>
+    </li>
+  </ul>
+</nav>
+
+<ng-template #extraMenuRef="polymorpheus" polymorpheus>
+  <ul class="menu-nav-list extra-menu">
+    <li class="menu-nav-list-item">
+      <a
+        tuiIconButton
+        appearance="icon"
+        shape="rounded"
+        routerLink="/routes"
+        routerLinkActive="is-active"
+        [icon]="routesIconRef"
+      ></a>
+    </li>
+
+    <li class="menu-nav-list-item">
+      <a
+        tuiIconButton
+        appearance="icon"
+        shape="rounded"
+        routerLink="/posts"
+        routerLinkActive="is-active"
+        [icon]="postsIconRef"
+      ></a>
+    </li>
+  </ul>
+</ng-template>
+
+<ng-template #afficheIconRef>
+  <div class="icon-container">
+    <span class="material-icons">home</span>
+    <span class="icon-description">Афиша</span>
+  </div>
+</ng-template>
+
+<ng-template #feedIconRef>
+  <div class="icon-container">
+    <span class="material-icons">feed</span>
+    <span class="icon-description">Лента</span>
+  </div>
+</ng-template>
+
+<ng-template #communitiesIconRef>
+  <div class="icon-container">
+    <span class="material-icons">group</span>
+    <span class="icon-description">Сообщества</span>
+  </div>
+</ng-template>
+
+
+<ng-template #otherIconRef>
+  <div class="icon-container">
+    <span class="material-icons">dehaze</span>
+    <span class="icon-description">Экстра</span>
+  </div>
+</ng-template>
+
+<ng-template #authorizedIconRef>
+  <div class="icon-container">
+    <span class="material-icons">perm_identity</span>
+    <span class="icon-description">Профиль</span>
+  </div>
+</ng-template>
+
+<ng-template #unauthorizedIconRef>
+  <div class="icon-container">
+    <span class="material-icons">perm_identity</span>
+    <span class="icon-description">Войти</span>
+  </div>
+</ng-template>
+
+<ng-template #routesIconRef>
+  <div class="icon-container">
+    <span class="material-icons">map</span>
+    <span class="icon-description">Маршруты</span>
+  </div>
+</ng-template>
+
+<ng-template #postsIconRef>
+  <div class="icon-container">
+    <span class="material-icons">edit_note</span>
+    <span class="icon-description">Статьи</span>
+  </div>
+</ng-template>

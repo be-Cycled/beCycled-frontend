@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core'
+import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 
 import { AppRoutingModule } from './app-routing.module'
@@ -26,7 +26,8 @@ import { DomainModule } from './global/domain/domain.module'
     HeaderModule,
     MenuModule,
     TuiNotificationsModule,
-    DomainModule
+    DomainModule,
+    TuiDialogModule
   ],
   providers: [],
   bootstrap: [ AppComponent ]
