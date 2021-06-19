@@ -1,0 +1,9 @@
+<figure *ngIf="post.poster" class="poster-container">
+  <img [attr.src]="post.poster">
+</figure>
+
+<h1 class="title">{{ post.title }}</h1>
+
+<p>Создано: {{ post.createdAt | date: 'd MMMM YYYY' }}</p>
+
+<div class="content-container" [innerHTML]="post.content"></div>

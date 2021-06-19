@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.poster-container {
+  margin: 0;
+}
+
+.poster-container img {
+  max-width: 100%;
+}
+
+@media screen and (min-width: 599px) {
+  :host {
+    max-width: 570px;
+    margin: 0 auto;
+  }
+}
