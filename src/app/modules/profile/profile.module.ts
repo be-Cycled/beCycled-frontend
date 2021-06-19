@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiButtonModule, TuiFormatPhonePipeModule, TuiLinkModule } from '@taiga-ui/core'
 import { TuiFilterModule, TuiIslandModule } from '@taiga-ui/kit'
+import { EventCardModule } from '../../global/components/cdk/event-card/event-card.module'
 import { ProfileContainerComponent } from './containers/profile-container/profile-container.component'
 
 import { ProfileRoutingModule } from './profile-routing.module'
@@ -20,7 +21,8 @@ import { ProfileRoutingModule } from './profile-routing.module'
     TuiFilterModule,
     ReactiveFormsModule,
     TuiIslandModule,
-    TuiFormatPhonePipeModule
+    TuiFormatPhonePipeModule,
+    EventCardModule
   ]
 })
 export class ProfileModule { }

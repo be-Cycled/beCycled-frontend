@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { FormBuilder, FormControl } from '@angular/forms'
-import { Observable } from 'rxjs'
-import { map, pluck } from 'rxjs/operators'
-import { User } from '../../../../global/domain'
-import { UserHolderService } from '../../../../global/services'
+import { ActivatedRoute } from '@angular/router'
+import { BehaviorSubject, forkJoin, Observable } from 'rxjs'
+import { map, pluck, switchMap } from 'rxjs/operators'
+import { Community, Competition, User, Workout } from '../../../../global/domain'
+import { CommunityService } from '../../../../global/domain/services/community/community.service'
+import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
+import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
+import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 
 @Component({
   selector: 'cy-profile-container',
@@ -15,12 +19,18 @@ export class ProfileContainerComponent {
 
   public activitiesFilterControl: FormControl = this.fb.control([ 'Тренировки' ])
 
-  public avatarUrl: Observable<string> = this.userHolderService.userChanges.pipe(
-    pluck('avatar'),
-    map((avatar: string | null) => `data:image/png;base64,${ avatar }`)
+  public user: BehaviorSubject<User> = new BehaviorSubject(
+    this.activatedRoute.snapshot.data.user
   )
 
-  public fullName: Observable<string | null> = this.userHolderService.userChanges.pipe(
+  public avatarUrl: Observable<string> = this.user.pipe(
+    pluck('avatar'),
+    map((avatar: string | null) => {
+      return avatar!
+    })
+  )
+
+  public fullName: Observable<string | null> = this.user.pipe(
     map((user: User) => {
       if (user.firstName === null && user.lastName === null) {
         return null
@@ -30,24 +40,52 @@ export class ProfileContainerComponent {
     })
   )
 
-  public login: Observable<string> = this.userHolderService.userChanges.pipe(
+  public login: Observable<string> = this.user.pipe(
     pluck('login')
   )
 
-  public about: Observable<string | null> = this.userHolderService.userChanges.pipe(
+  public about: Observable<string | null> = this.user.pipe(
     pluck('about')
   )
 
-  public phone: Observable<string | null> = this.userHolderService.userChanges.pipe(
+  public phone: Observable<string | null> = this.user.pipe(
     pluck('phone')
   )
 
-  public email: Observable<string | null> = this.userHolderService.userChanges.pipe(
+  public email: Observable<string | null> = this.user.pipe(
     pluck('email')
   )
 
-  constructor(private userHolderService: UserHolderService,
-              private fb: FormBuilder) {
+  public userCommunities: Observable<Community[]> = this.user.pipe(
+    switchMap((user: User) => this.communityService.getCommunitiesByUser(user.login))
+  )
+
+  public events: Observable<SomeWrappedEvent[]> = this.user.pipe(
+    switchMap((user: User) => forkJoin([
+      this.workoutService.getByUser(user.login),
+      this.competitionService.getByUser(user.login)
+    ]).pipe(
+      map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+        const result: SomeWrappedEvent[] = []
+
+        const workoutEvents: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => ({ type: EventType.workout, value: workout }))
+        const competitionEvents: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => ({ type: EventType.competition, value: competition }))
+
+        result.push(...workoutEvents)
+        result.push(...competitionEvents)
+
+        return result.sort((a: SomeWrappedEvent, b: SomeWrappedEvent) => {
+          return new Date(a.value.createdAd).getTime() - new Date(b.value.startDate).getTime()
+        })
+      })
+    ))
+  )
+
+  constructor(private fb: FormBuilder,
+              private activatedRoute: ActivatedRoute,
+              private communityService: CommunityService,
+              private workoutService: WorkoutService,
+              private competitionService: CompetitionService) {
   }
 
 }
