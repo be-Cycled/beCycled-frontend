@@ -106,7 +106,7 @@ export class AfficheContainerComponent implements OnInit {
         }
       }
 
-      sortedEvents.slice()
+      sortedEvents = sortedEvents.slice()
         .sort((a: SomeWrappedEvent, b: SomeWrappedEvent) =>
           new Date(a.value.startDate).getTime() - new Date(b.value.startDate).getTime())
 
@@ -137,6 +137,8 @@ export class AfficheContainerComponent implements OnInit {
           }
         }
       })
+
+      console.log(eventsCalendar)
 
       return eventsCalendar
     })
