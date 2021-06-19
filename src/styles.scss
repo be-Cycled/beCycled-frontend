@@ -9,3 +9,17 @@ body {
   --icon-color: var(--tui-base-06);
   --tui-primary: #01B2CC !important;
 }
+
+.event-list {
+  display: grid;
+  grid-row-gap: 16px;
+  max-width: 320px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.event-item {
+  position: relative;
+}
