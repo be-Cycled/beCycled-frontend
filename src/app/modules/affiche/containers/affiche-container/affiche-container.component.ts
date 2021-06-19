@@ -6,6 +6,7 @@ import { map, shareReplay, startWith, tap } from 'rxjs/operators'
 import { Competition, Workout } from '../../../../global/domain'
 import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { AfficheService } from '../../services/affiche.service'
+import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 
 interface EventListByDay {
   date: ISO8601
@@ -49,7 +50,7 @@ export class AfficheContainerComponent implements OnInit {
   ) => item1.title === item2.title
 
   public events: Observable<[ Workout[], Competition[] ]> = combineLatest([
-    this.afficheService.getWorkouts(),
+    this.workoutService.getWorkouts(),
     this.afficheService.getCompetitions()
   ]).pipe(
     tap(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
@@ -141,7 +142,8 @@ export class AfficheContainerComponent implements OnInit {
     })
   )
 
-  constructor(private afficheService: AfficheService) {
+  constructor(private afficheService: AfficheService,
+              private workoutService: WorkoutService) {
   }
 
   public ngOnInit(): void {

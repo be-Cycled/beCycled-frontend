@@ -13,4 +13,8 @@ export class WorkoutService {
   public getWorkoutsByCommunity(nickname: string): Observable<Workout[]> {
     return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/community/${ nickname }`)
   }
+
+  public getWorkouts(): Observable<Workout[]> {
+    return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/all`)
+  }
 }
