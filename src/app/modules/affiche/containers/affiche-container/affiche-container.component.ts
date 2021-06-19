@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
 import { combineLatest, Observable } from 'rxjs'
 import { map, shareReplay, startWith, tap } from 'rxjs/operators'
-import { Competition, Workout } from '../../../../global/domain'
+import { Competition, SportType, Workout } from '../../../../global/domain'
 import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
@@ -15,7 +15,7 @@ interface EventListByDay {
 
 interface FilterTag {
   title: string
-  value: EventType
+  value: EventType | SportType
   count: number
 }
 
@@ -37,6 +37,26 @@ export class AfficheContainerComponent implements OnInit {
       title: 'Соревнования',
       value: EventType.competition,
       count: 0
+    },
+    {
+      title: 'Велосипед',
+      value: SportType.bicycle,
+      count: 0
+    },
+    {
+      title: 'Роликовые коньки',
+      value: SportType.rollerblade,
+      count: 0
+    },
+    {
+      title: 'Бег',
+      value: SportType.run,
+      count: 0
+    },
+    {
+      title: 'Лыжи',
+      value: SportType.ski,
+      count: 0
     }
   ]
 
@@ -55,6 +75,7 @@ export class AfficheContainerComponent implements OnInit {
   ]).pipe(
     tap(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
       const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
+      const mixedEvents: (Workout | Competition)[] = [ ...workouts, ...competitions ]
 
       return this.items = [
         {
@@ -66,6 +87,26 @@ export class AfficheContainerComponent implements OnInit {
           title: 'Соревнования',
           value: EventType.competition,
           count: competitions.filter((item: Competition) => new Date(item.startDate).getTime() >= currentTime).length
+        },
+        {
+          title: 'Велосипед',
+          value: SportType.bicycle,
+          count: mixedEvents.filter((item: Competition | Workout) => item.sportType === SportType.bicycle).length
+        },
+        {
+          title: 'Роликовые коньки',
+          value: SportType.rollerblade,
+          count: mixedEvents.filter((item: Competition | Workout) => item.sportType === SportType.rollerblade).length
+        },
+        {
+          title: 'Бег',
+          value: SportType.run,
+          count: mixedEvents.filter((item: Competition | Workout) => item.sportType === SportType.run).length
+        },
+        {
+          title: 'Лыжи',
+          value: SportType.ski,
+          count: mixedEvents.filter((item: Competition | Workout) => item.sportType === SportType.ski).length
         }
       ]
     }),
@@ -82,6 +123,10 @@ export class AfficheContainerComponent implements OnInit {
       const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
       const isWorkoutFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.workout).length !== 0
       const isCompetitionFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.competition).length !== 0
+      const isBicycleFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.bicycle).length !== 0
+      const isRollerbladeFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.rollerblade).length !== 0
+      const isRunFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.run).length !== 0
+      const isSkiFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.ski).length !== 0
 
       const wrappedWorkouts: WrappedEvent<EventType.workout, Workout>[] = workouts
         .filter((item: Workout) => new Date(item.startDate).getTime() >= currentTime)
@@ -111,6 +156,22 @@ export class AfficheContainerComponent implements OnInit {
         } else {
           sortedEvents = [ ...wrappedCompetitions ]
         }
+      }
+
+      if (!isBicycleFilterActivated) {
+        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.bicycle)
+      }
+
+      if (!isRollerbladeFilterActivated) {
+        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.rollerblade)
+      }
+
+      if (!isRunFilterActivated) {
+        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.run)
+      }
+
+      if (!isSkiFilterActivated) {
+        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.ski)
       }
 
       sortedEvents = sortedEvents.slice()

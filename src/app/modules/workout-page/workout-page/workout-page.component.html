@@ -7,7 +7,8 @@
       [fitBounds]="bounds | async"
       [fitBoundsOptions]="{ padding: 8, linear: true }"
       [attributionControl]="false"
-      (mapLoad)="map = $event"
+      [doubleClickZoom]="false"
+      (mapLoad)="changeMapLanguage($event)"
     >
       <mgl-geojson-source
         id="geojson-route"

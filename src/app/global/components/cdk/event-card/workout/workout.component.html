@@ -15,7 +15,8 @@
     [interactive]="false"
     [scrollZoom]="false"
     [dragPan]="false"
-    (mapLoad)="map = $event"
+    [doubleClickZoom]="false"
+    (mapLoad)="changeMapLanguage($event)"
   >
     <mgl-geojson-source
       id="geojson-route"

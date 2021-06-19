@@ -15,7 +15,8 @@
     [interactive]="false"
     [scrollZoom]="false"
     [dragPan]="false"
-    (mapLoad)="map = $event"
+    [doubleClickZoom]="false"
+    (mapLoad)="changeMapLanguage($event)"
   >
     <mgl-geojson-source
       id="geojson-route"
@@ -30,6 +31,7 @@
       'line-color': '#FC6719',
       'line-width': 2
     }"
+      se
     >
     </mgl-layer>
   </mgl-map>

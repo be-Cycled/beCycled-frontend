@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { MapboxRouteInfo, Route, SportType, Workout } from '../../../global/domain'
-import mapboxgl from 'mapbox-gl'
+import mapboxgl, { AnyLayer } from 'mapbox-gl'
 import { Observable, ObservedValueOf } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 import { RouteService } from '../../../global/domain/services/route/route.service'
@@ -127,4 +127,12 @@ export class WorkoutPageComponent implements OnInit {
       : this.buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
   }
 
+  public changeMapLanguage(map: mapboxgl.Map): void {
+    this.map = map
+    this.map.getStyle().layers!.forEach((layer: AnyLayer) => {
+      if (layer.id.indexOf('-label') > 0) {
+        map.setLayoutProperty(layer.id, 'text-field', [ 'get', 'name_ru' ])
+      }
+    })
+  }
 }

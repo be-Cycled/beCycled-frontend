@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
-import mapboxgl from 'mapbox-gl'
+import mapboxgl, { AnyLayer } from 'mapbox-gl'
 import { Competition, MapboxRouteInfo, Route, SportType } from '../../../../domain'
 import { ISO8601 } from '../../../../models'
 import { defer, Observable, ObservedValueOf } from 'rxjs'
@@ -111,5 +111,14 @@ export class CompetitionComponent implements OnInit {
      ${ minutes === 0
       ? ''
       : this.buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
+  }
+
+  public changeMapLanguage(map: mapboxgl.Map): void {
+    this.map = map
+    this.map.getStyle().layers!.forEach((layer: AnyLayer) => {
+      if (layer.id.indexOf('-label') > 0) {
+        map.setLayoutProperty(layer.id, 'text-field', [ 'get', 'name_ru' ])
+      }
+    })
   }
 }
