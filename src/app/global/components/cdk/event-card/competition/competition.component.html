@@ -5,12 +5,12 @@
   size="l"
   [hoverable]="true"
 >
-  <h3 class="tui-island__title">{{ generateWorkoutStartTime(competition.startDate) }}</h3>
+  <h3 class="tui-island__title">{{ generateCompetitionStartTime(competition.startDate) }}</h3>
   <p class="tui-island__category">Соревнование</p>
   <mgl-map
     [style]="'mapbox://styles/mapbox/streets-v11'"
-    [fitBounds]="generateBounds(geoJson.geometry.coordinates)"
-    [fitBoundsOptions]="{ padding: 8 }"
+    [fitBounds]="bounds | async"
+    [fitBoundsOptions]="{ padding: 8, linear: true }"
     [attributionControl]="false"
     [scrollZoom]="false"
     [dragPan]="false"
@@ -18,7 +18,7 @@
   >
     <mgl-geojson-source
       id="geojson-route"
-      [data]="geoJson"
+      [data]="geoJson | async"
     >
     </mgl-geojson-source>
     <mgl-layer
@@ -26,7 +26,7 @@
       type="line"
       source="geojson-route"
       [paint]="{
-      'line-color': '#627BC1',
+      'line-color': '#FC6719',
       'line-width': 2
     }"
     >
@@ -46,7 +46,7 @@
         moving
       </span>
       <span>
-        Дистанция: 50 км
+        Дистанция: {{ generateDistanceString(distance | async) }}
       </span>
     </li>
     <li>
@@ -54,7 +54,7 @@
         access_time
       </span>
       <span>
-        Длительность: {{ competition.duration }}
+        Длительность: {{ generateDurationString(competition.duration) }}
       </span>
     </li>
     <li>

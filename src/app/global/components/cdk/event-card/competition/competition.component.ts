@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core'
 import mapboxgl from 'mapbox-gl'
-import { Competition, SportType } from '../../../../domain'
+import { Competition, MapboxRouteInfo, Route, SportType } from '../../../../domain'
 import { ISO8601 } from '../../../../models'
+import { defer, Observable, ObservedValueOf } from 'rxjs'
+import { map, shareReplay } from 'rxjs/operators'
+import { RouteService } from '../../../../domain/services/route/route.service'
 
 @Component({
   selector: 'cy-competition',
@@ -23,154 +26,31 @@ export class CompetitionComponent implements OnInit {
   @Input()
   public competition: Competition | null = null
 
-  public geoJson: any = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [
-          39.293288,
-          44.517893
-        ],
-        [
-          39.291926,
-          44.526663
-        ],
-        [
-          39.298331,
-          44.541942
-        ],
-        [
-          39.297548,
-          44.548083
-        ],
-        [
-          39.295896,
-          44.548243
-        ],
-        [
-          39.291059,
-          44.546008
-        ],
-        [
-          39.265421,
-          44.544074
-        ],
-        [
-          39.256895,
-          44.541969
-        ],
-        [
-          39.254587,
-          44.547227
-        ],
-        [
-          39.251734,
-          44.549105
-        ],
-        [
-          39.252181,
-          44.555118
-        ],
-        [
-          39.247456,
-          44.555221
-        ],
-        [
-          39.240413,
-          44.552797
-        ],
-        [
-          39.239056,
-          44.555792
-        ],
-        [
-          39.23331,
-          44.559518
-        ],
-        [
-          39.23053,
-          44.568704
-        ],
-        [
-          39.22845,
-          44.568344
-        ],
-        [
-          39.224435,
-          44.569608
-        ],
-        [
-          39.223859,
-          44.571839
-        ],
-        [
-          39.21301,
-          44.569463
-        ],
-        [
-          39.204562,
-          44.571403
-        ],
-        [
-          39.203478,
-          44.577141
-        ],
-        [
-          39.204883,
-          44.581904
-        ],
-        [
-          39.204145,
-          44.585324
-        ],
-        [
-          39.199924,
-          44.59188
-        ],
-        [
-          39.189854,
-          44.600078
-        ],
-        [
-          39.189864,
-          44.606741
-        ],
-        [
-          39.191716,
-          44.609459
-        ],
-        [
-          39.190354,
-          44.612971
-        ],
-        [
-          39.193547,
-          44.614699
-        ],
-        [
-          39.187401,
-          44.630378
-        ],
-        [
-          39.186263,
-          44.638282
-        ],
-        [
-          39.185192,
-          44.638033
-        ],
-        [
-          39.179831,
-          44.643768
-        ],
-        [
-          39.175176,
-          44.641512
-        ]
-      ]
-    }
+  public route: Observable<Route> = defer(() => this.routeService.getById(this.competition?.routeId!)).pipe(
+    shareReplay(1)
+  )
+
+  public routeInfo: Observable<MapboxRouteInfo> = this.route.pipe(
+    map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo))
+  )
+
+  public distance: Observable<number> = this.routeInfo.pipe(
+    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].distance)
+  )
+
+  public coordinates: Observable<ObservedValueOf<Observable<number[][]>>> = this.routeInfo.pipe(
+    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].geometry.coordinates)
+  )
+
+  public bounds: Observable<any> = this.coordinates.pipe(
+    map((coordinates: number[][]) => this.generateBounds(coordinates))
+  )
+
+  public geoJson: Observable<any> = this.coordinates.pipe(
+    map((coordinates: number[][]) => this.generateGeoJson(coordinates))
+  )
+
+  constructor(private routeService: RouteService) {
   }
 
   public ngOnInit(): void {
@@ -183,8 +63,53 @@ export class CompetitionComponent implements OnInit {
       new mapboxgl.LngLatBounds(coordinates[ 0 ], coordinates[ 0 ]))
   }
 
-  public generateWorkoutStartTime(date: ISO8601): string {
+  public generateCompetitionStartTime(date: ISO8601): string {
     const parsedDate: Date = new Date(date)
     return new Intl.DateTimeFormat('ru-RU', { hour: 'numeric', minute: 'numeric' }).format(parsedDate)
+  }
+
+  public generateGeoJson(coordinates: number[][]): any {
+    return {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'LineString',
+        coordinates
+      }
+    }
+  }
+
+  public generateDistanceString(distance: number): string {
+    const distanceInKilometres: number = Math.ceil(distance / 1000)
+
+    return `${ distanceInKilometres } км`
+  }
+
+  /**
+   * words - массив с тремя формами, например, "час, часа, часов"
+   */
+  public buildCountString(count: number, words: string[]): string {
+    if ((count >= 5 && count <= 19) || (count % 10 >= 5 && count % 10 <= 9) || count % 10 === 0) {
+      return `${ count } ${ words[ 2 ] }`
+    }
+
+    return (count % 10 === 1) ? `${ count } ${ words[ 0 ] }` : `${ count } ${ words[ 1 ] }`
+  }
+
+  public generateDurationString(duration: number): string {
+    let hours: number = 0
+    let minutes: number = 0
+
+    if (duration < 60) {
+      return `${ duration } ${ this.buildCountString(duration, [ 'минута', 'минуты', 'минут' ]) }`
+    }
+
+    hours = Math.floor(duration / 60)
+    minutes = duration - (hours * 60)
+
+    return `${ this.buildCountString(hours, [ 'час', 'часа', 'часов' ]) }
+     ${ minutes === 0
+      ? ''
+      : this.buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
   }
 }

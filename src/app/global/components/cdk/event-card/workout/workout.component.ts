@@ -25,7 +25,6 @@ export class WorkoutComponent implements OnInit {
   @Input()
   public workout: Workout | null = null
 
-  // tslint:disable-next-line:no-non-null-assertion
   public route: Observable<Route> = defer(() => this.routeService.getById(this.workout?.routeId!)).pipe(
     shareReplay(1)
   )
