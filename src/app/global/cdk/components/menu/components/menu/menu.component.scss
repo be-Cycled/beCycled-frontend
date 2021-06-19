@@ -1,17 +1,21 @@
 :host {
   position: fixed;
   bottom: 0;
+  z-index: 9999;
 
   display: block;
   width: calc(100% - 1rem);
   padding: 0.5rem;
 
   background-color: #ffffff;
+
+  box-shadow: 0 4px 24px rgb(0 0 0 / 12%);
 }
 
 .menu-nav-list {
   display: flex;
   width: 100%;
+  height: 56px;
   justify-content: space-between;
 }
 
@@ -25,4 +29,11 @@
 
 .icon-description {
   font-size: 13px;
+}
+
+.is-active {
+  .material-icons,
+  .icon-description {
+    color: #FC6719;
+  }
 }
