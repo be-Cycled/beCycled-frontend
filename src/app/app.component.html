@@ -1,6 +1,7 @@
 <tui-root>
-  <!-- content of your app -->
+  <cy-header *ngIf="isDesktop | async"></cy-header>
   <router-outlet></router-outlet>
+  <cy-menu *ngIf="isMobile | async"></cy-menu>
   <!--
    If you need, you can add something between Taiga portal layers:
   -->

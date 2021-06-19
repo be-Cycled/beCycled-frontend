@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-import { TuiButtonModule } from '@taiga-ui/core'
+import { ReactiveFormsModule } from '@angular/forms'
+import { TuiButtonModule, TuiFormatPhonePipeModule, TuiLinkModule } from '@taiga-ui/core'
+import { TuiFilterModule, TuiIslandModule } from '@taiga-ui/kit'
 import { ProfileContainerComponent } from './containers/profile-container/profile-container.component'
 
 import { ProfileRoutingModule } from './profile-routing.module'
@@ -13,7 +15,12 @@ import { ProfileRoutingModule } from './profile-routing.module'
   imports: [
     CommonModule,
     ProfileRoutingModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiLinkModule,
+    TuiFilterModule,
+    ReactiveFormsModule,
+    TuiIslandModule,
+    TuiFormatPhonePipeModule
   ]
 })
 export class ProfileModule { }

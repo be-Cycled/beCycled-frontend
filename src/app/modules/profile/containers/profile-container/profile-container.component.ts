@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { FormBuilder, FormControl } from '@angular/forms'
 import { Observable } from 'rxjs'
 import { map, pluck } from 'rxjs/operators'
 import { User } from '../../../../global/domain'
-import { DEFAULT_AVATAR } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
 
 @Component({
@@ -12,15 +12,12 @@ import { UserHolderService } from '../../../../global/services'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileContainerComponent {
+
+  public activitiesFilterControl: FormControl = this.fb.control([ 'Тренировки' ])
+
   public avatarUrl: Observable<string> = this.userHolderService.userChanges.pipe(
     pluck('avatar'),
-    map((avatar: string | null) => {
-      if (avatar !== null) {
-        return avatar
-      }
-
-      return DEFAULT_AVATAR
-    })
+    map((avatar: string | null) => `data:image/png;base64,${ avatar }`)
   )
 
   public fullName: Observable<string | null> = this.userHolderService.userChanges.pipe(
@@ -45,7 +42,12 @@ export class ProfileContainerComponent {
     pluck('phone')
   )
 
-  constructor(private userHolderService: UserHolderService) {
+  public email: Observable<string | null> = this.userHolderService.userChanges.pipe(
+    pluck('email')
+  )
+
+  constructor(private userHolderService: UserHolderService,
+              private fb: FormBuilder) {
   }
 
 }

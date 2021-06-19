@@ -18,11 +18,19 @@
     <ul class="tui-list">
       <li class="tui-list__item">
         <span>Телефон: </span>
-        <span>{{ phone | async }}</span>
+        <span>
+          <a tuiLink [attr.href]="'tel:' + (phone | async)">{{ phone | async | tuiFormatPhone }}</a>
+        </span>
+      </li>
+      <li class="tui-list__item">
+        <span>Эл. Почта: </span>
+        <span>
+          <a tuiLink [attr.href]="'mailto:' + (email | async)">{{ email | async }}</a>
+        </span>
       </li>
     </ul>
   </div>
-  <div class="info-section user-communities-container">
+  <div class="info-section user-communities-section">
     <h3 class="user-communities-title">Сообщества</h3>
     <ul class="community-list">
       <li class="community-list-item">
@@ -35,5 +43,25 @@
 </section>
 
 <section class="user-activities-section">
-
+  <div class="activities-filter-container">
+    <tui-filter
+      [formControl]="activitiesFilterControl"
+      size="s"
+      [items]="[ 'Тренировки', 'Соревнования' ]"
+    ></tui-filter>
+  </div>
+  <div class="activities-container">
+    <tui-island>
+      <p class="tui-island__category">category</p>
+      <h3 class="tui-island__title">Some heading</h3>
+      <p class="tui-island__paragraph">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+        do eiusmod tempor incididunt ut labore et dolore magna
+        aliqua.
+      </p>
+      <p class="tui-island__paragraph tui-island__paragraph_link">
+        <a href="/" tuiLink>Link</a>
+      </p>
+    </tui-island>
+  </div>
 </section>
