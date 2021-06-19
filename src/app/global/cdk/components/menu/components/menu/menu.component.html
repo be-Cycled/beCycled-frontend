@@ -35,14 +35,25 @@
     </li>
 
     <li class="menu-nav-list-item">
-      <button
+      <a
         tuiIconButton
         appearance="icon"
         shape="rounded"
-        [icon]="otherIconRef"
-        (click)="onClickExtraButton(extraMenuRef)"
-      ></button>
+        routerLink="/posts"
+        routerLinkActive="is-active"
+        [icon]="postsIconRef"
+      ></a>
     </li>
+
+    <!--    <li class="menu-nav-list-item">-->
+    <!--      <button-->
+    <!--        tuiIconButton-->
+    <!--        appearance="icon"-->
+    <!--        shape="rounded"-->
+    <!--        [icon]="otherIconRef"-->
+    <!--        (click)="onClickExtraButton(extraMenuRef)"-->
+    <!--      ></button>-->
+    <!--    </li>-->
 
     <li class="menu-nav-list-item">
       <a
