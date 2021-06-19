@@ -71,6 +71,11 @@ export class CommunitiesContainerComponent {
 
   public communitiesForView: Observable<Community[]> = this.communityService.getAll().pipe(
     shareReplay(1),
+    map((communities: Community[]) => communities.slice().sort((a: Community, b: Community) => {
+      if (a.name < b.name) { return -1 }
+      if (a.name > b.name) { return 1 }
+      return 0
+    })),
     switchMap((communities: Community[]) => this.filtrationForm.valueChanges.pipe(
       startWith(this.filtrationForm.value),
       map((formValue: CommunityFiltration) => {

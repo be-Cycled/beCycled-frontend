@@ -1,1 +1,56 @@
-<p>single-community-container works!</p>
+<section class="header" *tuiLet="communityHolder | async as community">
+  <div class="avatar">
+    <img [attr.src]="community.avatar" [attr.alt]="community.name">
+  </div>
+  <div class="community-info">
+    <span class="community-type tui-island__category">{{ communityTypesMap[ community.communityType ] }}</span>
+    <h1 class="community-name">{{ community.name }}</h1>
+    <p class="community-description">{{ community.description }}</p>
+    <ul class="community-additional">
+      <li>
+        <span class="material-icons">link</span>
+        <a [attr.href]="community.url">{{ community.url }}</a>
+      </li>
+    </ul>
+    <p class="join-button-container">
+      <button
+        *ngIf="isAuthorizedUser | async"
+        tuiButton
+        size="s"
+        (click)="onClickJoinButton()"
+        class="join-button"
+        [class.is-user-joined]="isUserJoined | async"
+        [iconRight]="iconRightIcon | async"
+        [showLoader]="showJoinButtonLoader | async"
+      >{{ joinButtonLabel | async }}</button>
+    </p>
+  </div>
+</section>
+
+<section class="body">
+  <div class="main-thread">
+    <ul class="event-list">
+      <li class="event-list-item" *ngFor="let event of events | async">
+        <ng-container [ngSwitch]="event.type">
+          <ng-template [ngSwitchCase]="'WORKOUT'">
+            <cy-workout [workout]="event.value"></cy-workout>
+          </ng-template>
+
+          <ng-template [ngSwitchCase]="'COMPETITION'">
+            <cy-competition [competition]="event.value"></cy-competition>
+          </ng-template>
+        </ng-container>
+      </li>
+    </ul>
+  </div>
+  <aside class="sidebar">
+    <tui-island class="sidebar-section sport-types">
+      <h3 class="tui-island__title">Вид спорта</h3>
+      <ul class="sport-types-list">
+        <li class="sport-type-item" *ngFor="let sportType of sportTypes | async">
+          {{ sportTypesMap[ sportType ] }}
+        </li>
+      </ul>
+    </tui-island>
+  </aside>
+</section>

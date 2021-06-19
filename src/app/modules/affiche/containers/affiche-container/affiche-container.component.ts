@@ -1,21 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
-import { ISO8601 } from '../../../../global/models'
-import { Competition, Workout } from '../../../../global/domain'
-import { combineLatest, Observable } from 'rxjs'
-import { map, shareReplay, startWith, tap } from 'rxjs/operators'
-import { AfficheService } from '../../services/affiche.service'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
-
-enum EventType {
-  workout = 'WORKOUT',
-  competition = 'COMPETITION'
-}
-
-interface WrappedEvent<T, U> {
-  type: T,
-  value: U
-}
+import { combineLatest, Observable } from 'rxjs'
+import { map, shareReplay, startWith, tap } from 'rxjs/operators'
+import { Competition, Workout } from '../../../../global/domain'
+import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
+import { AfficheService } from '../../services/affiche.service'
 
 interface EventListByDay {
   date: ISO8601
@@ -27,8 +17,6 @@ interface FilterTag {
   value: EventType
   count: number
 }
-
-type SomeWrappedEvent = WrappedEvent<EventType.workout, Workout> | WrappedEvent<EventType.competition, Competition>
 
 @Component({
   selector: 'cy-affiche-container',
