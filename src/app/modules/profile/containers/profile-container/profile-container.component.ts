@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, ParamMap } from '@angular/router'
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable } from 'rxjs'
-import { catchError, finalize, map, pluck, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
+import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
 import { Community, Competition, User, UserService, Workout } from '../../../../global/domain'
+import { Telemetry } from '../../../../global/domain/models/telemetry'
+import { Tracker } from '../../../../global/domain/models/tracker'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
+import { TelemetryService } from '../../../../global/domain/services/telemetry/telemetry.service'
+import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
@@ -85,14 +89,15 @@ export class ProfileContainerComponent {
     ))
   )
 
-  public isCanEdit: Observable<boolean> = combineLatest([
+  public isActiveProfileYours: Observable<boolean> = combineLatest([
     this.activatedRoute.paramMap.pipe(
       startWith((this.activatedRoute.snapshot.paramMap)),
       map((paramMap: ParamMap) => paramMap.get('login'))
     ),
     this.userHolderService.userChanges.pipe()
   ]).pipe(
-    map(([ userLogin, user ]: [ string | null, User ]) => userLogin === user.login)
+    map(([ userLogin, user ]: [ string | null, User ]) => userLogin === user.login),
+    shareReplay(1)
   )
 
   public isEditMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
@@ -138,13 +143,52 @@ export class ProfileContainerComponent {
     })
   )
 
+  public userTracker: Observable<Tracker | null> = this.userHolderService.userChanges.pipe(
+    switchMap((user: User) => {
+      return this.trackerService.getByUser(user.login).pipe(
+        catchError(() => of(null))
+      )
+    }),
+    shareReplay(1)
+  )
+
+  public trackerLastTelemetry: Observable<Telemetry | null> = this.userTracker.pipe(
+    switchMap((tracker: Tracker | null) => {
+      if (tracker === null) {
+        return of(null)
+      }
+
+      return this.telemetryService.getLast(tracker.id)
+    }),
+    shareReplay(1)
+  )
+
+  public trackerLastPosition: Observable<[ number, number ]> = this.trackerLastTelemetry.pipe(
+    filter((telemetry: Telemetry | null): telemetry is Telemetry => telemetry !== null),
+    map((telemetry: Telemetry) => [ telemetry.longitude, telemetry.latitude ] as [ number, number ])
+  )
+
+  public isTrackerDoesNotExist: Observable<boolean> = this.userTracker.pipe(
+    map((tracker: Tracker | null) => tracker === null)
+  )
+
+  public showMap: Observable<boolean> = combineLatest([
+    this.userTracker,
+    this.trackerLastTelemetry
+  ]).pipe(
+    map(([ tracker, lastTelemetry ]: [ Tracker | null, Telemetry | null ]) => tracker !== null && lastTelemetry !== null),
+    shareReplay(1)
+  )
+
   constructor(private fb: FormBuilder,
               private activatedRoute: ActivatedRoute,
               private communityService: CommunityService,
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
               private userHolderService: UserHolderService,
-              private userService: UserService) {
+              private userService: UserService,
+              private trackerService: TrackerService,
+              private telemetryService: TelemetryService) {
     this.previewAvatarCalc.subscribe()
   }
 

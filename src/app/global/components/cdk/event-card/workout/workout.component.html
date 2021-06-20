@@ -1,22 +1,21 @@
 <a
   *ngIf="workout"
-  href="workouts/{{ workout.id }}"
+  [routerLink]="[ '/', 'workouts', workout.id ]"
   tuiIsland
   size="l"
   [hoverable]="true"
 >
-  <h3 class="tui-island__title">{{ generateWorkoutStartTime(workout.startDate) }}</h3>
+  <h3 class="tui-island__title">{{ generateStartTime(workout.startDate) }}</h3>
   <p class="tui-island__category">Тренировка</p>
   <mgl-map
     [style]="'mapbox://styles/mapbox/streets-v11'"
     [fitBounds]="bounds | async"
-    [fitBoundsOptions]="{ padding: 8, linear: true }"
+    [fitBoundsOptions]="{ padding: 20, linear: true }"
     [attributionControl]="false"
     [interactive]="false"
-    [scrollZoom]="false"
-    [dragPan]="false"
-    [doubleClickZoom]="false"
-    (mapLoad)="changeMapLanguage($event)"
+    [zoom]="15"
+    [center]="[ 39.949127487394094,43.414052415946685 ]"
+    (mapLoad)="onMapboxLoad($event)"
   >
     <mgl-geojson-source
       id="geojson-route"

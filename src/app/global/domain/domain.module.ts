@@ -7,6 +7,8 @@ import { CommunityService } from './services/community/community.service'
 import { CompetitionService } from './services/competition/competition.service'
 import { PostService } from './services/post/post.service'
 import { RouteService } from './services/route/route.service'
+import { TelemetryService } from './services/telemetry/telemetry.service'
+import { TrackerService } from './services/tracker/tracker.service'
 import { WorkoutService } from './services/workout/workout.service'
 
 @NgModule({
@@ -22,6 +24,8 @@ import { WorkoutService } from './services/workout/workout.service'
     WorkoutService,
     CompetitionService,
     PostService,
+    TrackerService,
+    TelemetryService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

@@ -9,6 +9,8 @@ import { AppComponent } from './app.component'
 import { HeaderModule } from './global/cdk/components/header/header.module'
 import { MenuModule } from './global/cdk/components/menu/menu.module'
 import { DomainModule } from './global/domain/domain.module'
+import { ServiceWorkerModule } from '@angular/service-worker'
+import { environment } from '../environments/environment'
 
 @NgModule({
   declarations: [
@@ -27,7 +29,13 @@ import { DomainModule } from './global/domain/domain.module'
     MenuModule,
     TuiNotificationsModule,
     DomainModule,
-    TuiDialogModule
+    TuiDialogModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [],
   bootstrap: [ AppComponent ]

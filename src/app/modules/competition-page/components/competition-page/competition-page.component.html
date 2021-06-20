@@ -1,6 +1,6 @@
 <tui-island *tuiLet="competition$ | async as competition">
   <ng-container *ngIf="competition">
-    <h3 class="tui-island__title">{{ generateWorkoutStartTime(competition.startDate) }}</h3>
+    <h3 class="tui-island__title">{{ generateStartTime(competition.startDate) }}</h3>
     <p class="tui-island__category">Тренировка</p>
     <mgl-map
       [style]="'mapbox://styles/mapbox/streets-v11'"
@@ -8,7 +8,9 @@
       [fitBoundsOptions]="{ padding: 8, linear: true }"
       [attributionControl]="false"
       [doubleClickZoom]="false"
-      (mapLoad)="changeMapLanguage($event)"
+      [zoom]="15"
+      [center]="[ 39.949127487394094,43.414052415946685 ]"
+      (mapLoad)="onMapboxLoad($event)"
     >
       <mgl-geojson-source
         id="geojson-route"
