@@ -5,19 +5,17 @@
   size="l"
   [hoverable]="true"
 >
-  <h3 class="tui-island__title">{{ generateCompetitionStartTime(competition.startDate) }}</h3>
+  <h3 class="tui-island__title">{{ generateStartTime(competition.startDate) }}</h3>
   <p class="tui-island__category">Соревнование</p>
   <mgl-map
     [style]="'mapbox://styles/mapbox/streets-v11'"
     [fitBounds]="bounds | async"
-    [fitBoundsOptions]="{ padding: 8, linear: true }"
+    [fitBoundsOptions]="{ padding: 20, linear: true }"
     [attributionControl]="false"
     [interactive]="false"
-    [scrollZoom]="false"
-    [dragPan]="false"
-    [doubleClickZoom]="false"
+    [zoom]="15"
     [center]="[ 39.949127487394094,43.414052415946685 ]"
-    (mapLoad)="changeMapLanguage($event)"
+    (mapLoad)="onMapboxLoad($event)"
   >
     <mgl-geojson-source
       id="geojson-route"
@@ -32,7 +30,6 @@
       'line-color': '#FC6719',
       'line-width': 2
     }"
-      se
     >
     </mgl-layer>
   </mgl-map>
