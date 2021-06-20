@@ -3,7 +3,7 @@ import { Competition, MapboxRouteInfo, Route, SportType, Workout } from '../../.
 import mapboxgl, { AnyLayer } from 'mapbox-gl'
 import { Observable, ObservedValueOf } from 'rxjs'
 import { ActivatedRoute, ParamMap } from '@angular/router'
-import { map, shareReplay, switchMap } from 'rxjs/operators'
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { ISO8601 } from '../../../../global/models'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
@@ -15,6 +15,7 @@ import { CompetitionService } from '../../../../global/domain/services/competiti
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompetitionPageComponent implements OnInit {
+  private currentCoords: number[][] | null = null
 
   public sportTypeMap: any = {
     [ SportType.bicycle ]: 'Велосипед',
@@ -45,7 +46,10 @@ export class CompetitionPageComponent implements OnInit {
   )
 
   public coordinates: Observable<ObservedValueOf<Observable<number[][]>>> = this.routeInfo.pipe(
-    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].geometry.coordinates)
+    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].geometry.coordinates),
+    tap((coordinates: number[][]) => {
+      this.currentCoords = coordinates
+    })
   )
 
   public bounds: Observable<any> = this.coordinates.pipe(
@@ -127,12 +131,22 @@ export class CompetitionPageComponent implements OnInit {
       : this.buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
   }
 
-  public changeMapLanguage(map: mapboxgl.Map): void {
+  public onMapboxLoad(map: mapboxgl.Map): void {
     this.map = map
     this.map.getStyle().layers!.forEach((layer: AnyLayer) => {
       if (layer.id.indexOf('-label') > 0) {
         map.setLayoutProperty(layer.id, 'text-field', [ 'get', 'name_ru' ])
       }
     })
+
+    this.map.addControl(new mapboxgl.NavigationControl())
+
+    const marker1: mapboxgl.Marker = new mapboxgl.Marker({ color: 'green' })
+      .setLngLat(this.currentCoords![ 0 ] as any)
+      .addTo(this.map)
+
+    const marker2: mapboxgl.Marker = new mapboxgl.Marker({ color: 'red' })
+      .setLngLat(this.currentCoords![ this.currentCoords!.length - 1 ] as any)
+      .addTo(this.map)
   }
 }
