@@ -3,7 +3,7 @@ import mapboxgl, { AnyLayer } from 'mapbox-gl'
 import { MapboxRouteInfo, Route, SportType, Workout } from '../../../../domain'
 import { ISO8601 } from '../../../../models'
 import { RouteService } from '../../../../domain/services/route/route.service'
-import { map, shareReplay } from 'rxjs/operators'
+import { map, shareReplay, tap } from 'rxjs/operators'
 import { defer, Observable, ObservedValueOf } from 'rxjs'
 
 @Component({
@@ -13,6 +13,8 @@ import { defer, Observable, ObservedValueOf } from 'rxjs'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkoutComponent implements OnInit {
+  private currentCoords: number[][] | null = null
+
   public sportTypeMap: any = {
     [ SportType.bicycle ]: 'Велосипед',
     [ SportType.rollerblade ]: 'Роликовые коньки',
@@ -38,7 +40,10 @@ export class WorkoutComponent implements OnInit {
   )
 
   public coordinates: Observable<ObservedValueOf<Observable<number[][]>>> = this.routeInfo.pipe(
-    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].geometry.coordinates)
+    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].geometry.coordinates),
+    tap((coordinates: number[][]) => {
+      this.currentCoords = coordinates
+    })
   )
 
   public bounds: Observable<any> = this.coordinates.pipe(
@@ -113,12 +118,20 @@ export class WorkoutComponent implements OnInit {
       : this.buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
   }
 
-  public changeMapLanguage(map: mapboxgl.Map): void {
+  public onMapboxLoad(map: mapboxgl.Map): void {
     this.map = map
     this.map.getStyle().layers!.forEach((layer: AnyLayer) => {
       if (layer.id.indexOf('-label') > 0) {
         map.setLayoutProperty(layer.id, 'text-field', [ 'get', 'name_ru' ])
       }
     })
+
+    const marker1: mapboxgl.Marker = new mapboxgl.Marker({ color: 'green' })
+      .setLngLat(this.currentCoords![ 0 ] as any)
+      .addTo(this.map)
+
+    const marker2: mapboxgl.Marker = new mapboxgl.Marker({ color: 'red' })
+      .setLngLat(this.currentCoords![ this.currentCoords!.length - 1 ] as any)
+      .addTo(this.map)
   }
 }
