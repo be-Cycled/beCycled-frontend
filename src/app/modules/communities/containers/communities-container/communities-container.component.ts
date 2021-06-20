@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
-import { CommunityType, SportType } from '../../../../global/domain'
+import { combineLatest, Observable } from 'rxjs'
+import { map, shareReplay, startWith } from 'rxjs/operators'
+import { Community, CommunityType, SportType } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 
 interface CommunityFiltration {
   search: string
-  sportTypes: (SportType | 'ALL')[]
+  sportTypes: SportType[]
   communityType: CommunityType | 'ALL'
 }
 
@@ -19,7 +21,7 @@ export class CommunitiesContainerComponent {
 
   public filtrationForm: FormGroup = this.fb.group({
     search: this.fb.control(''),
-    sportTypes: this.fb.control([ SportType.bicycle, SportType.rollerblade, SportType.ski, SportType.run ]),
+    sportTypes: this.fb.control(Object.values(SportType)),
     communityType: this.fb.control('ALL')
   })
 
@@ -29,102 +31,50 @@ export class CommunitiesContainerComponent {
     [ CommunityType.club ]: `Клуб`
   }
 
-  public sportTypesMap: Record<SportType | 'ALL', string> = {
-    ALL: `Все`,
+  public communityTypeKeys: (CommunityType | 'ALL')[] = Object.keys(this.communityTypesMap) as (CommunityType | 'ALL')[]
+
+  public sportTypesMap: Record<SportType, string> = {
     [ SportType.bicycle ]: `Велосипед`,
     [ SportType.rollerblade ]: `Ролики`,
     [ SportType.run ]: `Бег`,
     [ SportType.ski ]: `Лыжи`
   }
 
-/*
-  public filtrationForm: FormGroup = this.fb.group({
-    search: this.fb.control(''),
-    sportTypes: this.fb.control([ 'ALL' ]),
-    communityType: this.fb.control('ALL')
-  })
+  public sportTypeKeys: SportType[] = Object.keys(this.sportTypesMap) as SportType[]
 
-  public sportTypesMap: Record<SportType | 'ALL', string> = {
-    ALL: `Все`,
-    [ SportType.bicycle ]: `Велосипед`,
-    [ SportType.rollerblade ]: `Ролики`,
-    [ SportType.run ]: `Бег`,
-    [ SportType.ski ]: `Лыжи`
-  }
-
-  public sportTypes: readonly (SportType | 'ALL')[] = Object.keys(this.sportTypesMap) as readonly (SportType | 'ALL')[]
-
-  public communityTypes: readonly ViewValue<CommunityType | 'ALL'>[] = [
-    { value: 'ALL', viewValue: 'Все' },
-    { value: CommunityType.club, viewValue: 'Клуб' },
-    { value: CommunityType.organization, viewValue: 'Организация' }
-  ]
-
-  public communityTypesMap: Record<CommunityType | 'ALL', string> = {
-    ALL: `Все`,
-    [ CommunityType.organization ]: `Организация`,
-    [ CommunityType.club ]: `Клуб`
-  }
-
-  public communityTypeViewValue: Observable<string> = defer(() => {
-    const control: AbstractControl | null = this.filtrationForm.get(`communityType`)
-
-    if (control === null) {
-      throw new Error(`Community type control does not exist`)
-    }
-
-    return control.valueChanges.pipe(
-      startWith(control.value),
-      map((communityType: CommunityType | 'ALL') => {
-        const viewValue: ViewValue<any> | undefined = this.communityTypes.find(({ value }: ViewValue<CommunityType | 'ALL'>) => communityType === value)
-
-        if (typeof viewValue === 'undefined') {
-          throw new Error(`Community view value does not exist`)
-        }
-
-        return viewValue.viewValue
-      })
-    )
-  })
-
-  public communitiesForView: Observable<Community[]> = this.communityService.getAll().pipe(
-    shareReplay(1),
-    map((communities: Community[]) => communities.slice().sort((a: Community, b: Community) => {
-      if (a.name < b.name) { return -1 }
-      if (a.name > b.name) { return 1 }
-      return 0
-    })),
-    switchMap((communities: Community[]) => this.filtrationForm.valueChanges.pipe(
-      startWith(this.filtrationForm.value),
-      map((formValue: CommunityFiltration) => {
-        return communities.filter((community: Community) => {
-          return community.name.includes(formValue.search)
-            && community.sportTypes.every((sportType: SportType) => {
-              if (formValue.sportTypes.includes('ALL')) {
-                return true
-              }
-
-              return formValue.sportTypes.includes(sportType)
-            })
-            && formValue.communityType === 'ALL'
-              ? true
-              : community.communityType === formValue.communityType
-        })
-      })
-    ))
+  public communities: Observable<Community[]> = this.communityService.getAll().pipe(
+    shareReplay(1)
   )
 
-  public sportTypeTranslate(sportTypes: SportType[], sportTypesMap: Record<SportType | 'ALL', string>): string {
-    return sportTypes
-      .map((sportType: SportType) => sportTypesMap[ sportType ])
-      .join(', ')
-  }*/
+  public communitiesWithFiltration: Observable<Community[]> = combineLatest([
+    this.filtrationForm.valueChanges.pipe(
+      startWith(this.filtrationForm.value)
+    ),
+    this.communities
+  ]).pipe(
+    map(([ formValue, communities ]: [ CommunityFiltration, Community[] ]) => {
+      return communities.filter((community: Community) => {
+        return community.name.includes(formValue.search)
+        && community.sportTypes.every((sportType: SportType) => formValue.sportTypes.includes(sportType))
+        && formValue.communityType === 'ALL'
+          ? true
+          : community.communityType === formValue.communityType
+      })
+    }),
+    map((communities: Community[]) => communities.slice().sort((a: Community, b: Community) => {
+      if (a.name < b.name) { return 1 }
+      if (a.name > b.name) { return -1 }
+      return 0
+    }))
+  )
 
   constructor(private fb: FormBuilder,
               private communityService: CommunityService) {
   }
 
-/*  public onClickCreateButton(): void {
-
-  }*/
+  public sportTypeTranslate(sportTypes: SportType[], sportTypesMap: Record<SportType | 'ALL', string>): string {
+    return sportTypes
+      .map((sportType: SportType) => sportTypesMap[ sportType ])
+      .join(', ')
+  }
 }
