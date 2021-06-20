@@ -168,13 +168,16 @@ export class ProfileContainerComponent {
     map((telemetry: Telemetry) => [ telemetry.longitude, telemetry.latitude ] as [ number, number ])
   )
 
+  public isTrackerDoesNotExist: Observable<boolean> = this.userTracker.pipe(
+    map((tracker: Tracker | null) => tracker === null)
+  )
+
   public showMap: Observable<boolean> = combineLatest([
     this.userTracker,
     this.trackerLastTelemetry
   ]).pipe(
-    map(([ tracker, lastTelemetry ]: [ Tracker | null, Telemetry | null ]) => {
-      return tracker !== null && lastTelemetry !== null
-    })
+    map(([ tracker, lastTelemetry ]: [ Tracker | null, Telemetry | null ]) => tracker !== null && lastTelemetry !== null),
+    shareReplay(1)
   )
 
   constructor(private fb: FormBuilder,

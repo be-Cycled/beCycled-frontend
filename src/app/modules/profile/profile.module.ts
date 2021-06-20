@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiLetModule } from '@taiga-ui/cdk'
-import { TuiButtonModule, TuiFormatPhonePipeModule, TuiGroupModule, TuiLinkModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
+import { TuiButtonModule, TuiFormatPhonePipeModule, TuiGroupModule, TuiLinkModule, TuiNotificationModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
 import {
   TuiFieldErrorModule,
   TuiFilterModule,
@@ -43,7 +43,8 @@ import { ProfileRoutingModule } from './profile-routing.module'
     TuiTextAreaModule,
     TuiInputPhoneModule,
     TuiFieldErrorModule,
-    NgxMapboxGLModule
+    NgxMapboxGLModule,
+    TuiNotificationModule
   ]
 })
 export class ProfileModule { }
