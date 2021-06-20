@@ -90,6 +90,21 @@
   margin-left: 0;
 }
 
+.tracker-info-container {
+  height: 300px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapbox-map {
+  flex-grow: 1;
+}
+
+.mapbox-map ::ng-deep .mapboxgl-map {
+  border-radius: var(--tui-radius-l);
+}
+
 @media screen and (min-width: 599px) {
   :host {
     flex-direction: row;
