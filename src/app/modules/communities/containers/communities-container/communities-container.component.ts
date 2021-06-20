@@ -1,10 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms'
-import { defer, Observable } from 'rxjs'
-import { map, shareReplay, startWith, switchMap } from 'rxjs/operators'
-import { Community, CommunityType, SportType } from '../../../../global/domain'
+import { FormBuilder, FormGroup } from '@angular/forms'
+import { CommunityType, SportType } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
-import { ViewValue } from '../../../../global/models'
 
 interface CommunityFiltration {
   search: string
@@ -20,6 +17,27 @@ interface CommunityFiltration {
 })
 export class CommunitiesContainerComponent {
 
+  public filtrationForm: FormGroup = this.fb.group({
+    search: this.fb.control(''),
+    sportTypes: this.fb.control([ SportType.bicycle, SportType.rollerblade, SportType.ski, SportType.run ]),
+    communityType: this.fb.control('ALL')
+  })
+
+  public communityTypesMap: Record<CommunityType | 'ALL', string> = {
+    ALL: `Все`,
+    [ CommunityType.organization ]: `Организация`,
+    [ CommunityType.club ]: `Клуб`
+  }
+
+  public sportTypesMap: Record<SportType | 'ALL', string> = {
+    ALL: `Все`,
+    [ SportType.bicycle ]: `Велосипед`,
+    [ SportType.rollerblade ]: `Ролики`,
+    [ SportType.run ]: `Бег`,
+    [ SportType.ski ]: `Лыжи`
+  }
+
+/*
   public filtrationForm: FormGroup = this.fb.group({
     search: this.fb.control(''),
     sportTypes: this.fb.control([ 'ALL' ]),
@@ -100,13 +118,13 @@ export class CommunitiesContainerComponent {
     return sportTypes
       .map((sportType: SportType) => sportTypesMap[ sportType ])
       .join(', ')
-  }
+  }*/
 
   constructor(private fb: FormBuilder,
               private communityService: CommunityService) {
   }
 
-  public onClickCreateButton(): void {
+/*  public onClickCreateButton(): void {
 
-  }
+  }*/
 }

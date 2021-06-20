@@ -1,7 +1,28 @@
 <div class="module-header">
   <h1>Сообщества</h1>
-  <a tuiButton routerLink="/communities/create" size="m" (click)="onClickCreateButton()">Создать</a>
+  <a tuiButton [disabled]="true" routerLink="/communities/create" size="m">Создать</a>
 </div>
+
+<div class="communities-container" [formGroup]="filtrationForm">
+  <div class="filter">
+    <tui-input
+      formControlName="search"
+      class="search-input"
+      tuiTextfieldSize="m">Поиск</tui-input>
+    <tui-filter
+      formControlName="sportTypes"
+      size="s"
+    ></tui-filter>
+    <tui-select
+      formControlName="communityType"
+      tuiTextfieldSize="m"
+    >
+      Тип сообщества
+    </tui-select>
+  </div>
+</div>
+
+<!--
 
 <div class="communities-container">
   <div class="filter" [formGroup]="filtrationForm">
@@ -49,3 +70,4 @@
 <ng-template #communityTypeValueRef>{{ communityTypeViewValue | async }}</ng-template>
 
 <ng-template #sportTypeViewRef let-option>{{ sportTypesMap[ option ] }}</ng-template>
+-->
