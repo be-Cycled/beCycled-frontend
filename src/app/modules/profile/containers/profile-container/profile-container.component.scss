@@ -5,7 +5,9 @@
 }
 
 .avatar-container img {
-  max-width: 100px;
+  width: 134px;
+  height: 134px;
+  object-fit: cover;
   border-radius: 50%;
 }
 
@@ -90,6 +92,24 @@
   margin-left: 0;
 }
 
+.tracker-info-container {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  &.is-show-map {
+    height: 300px;
+  }
+}
+
+.mapbox-map {
+  flex-grow: 1;
+}
+
+.mapbox-map ::ng-deep .mapboxgl-map {
+  border-radius: var(--tui-radius-l);
+}
+
 @media screen and (min-width: 599px) {
   :host {
     flex-direction: row;
@@ -112,7 +132,8 @@
   }
 
   .avatar-container img {
-    max-width: 100%;
+    width: 234px;
+    height: 234px;
   }
 }
 

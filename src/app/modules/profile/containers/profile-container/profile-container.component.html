@@ -38,7 +38,7 @@
     <p *ngIf="!isEdit">{{ about | async }}</p>
   </div>
   <ng-container *ngIf="!isEdit">
-    <div *ngIf="isCanEdit | async" class="info-section edit-button-container">
+    <div *ngIf="isActiveProfileYours | async" class="info-section edit-button-container">
       <button (click)="onClickEditButton()" class="edit-button" tuiButton size="s" type="button" iconRight="tuiIconEdit">Редактировать</button>
     </div>
   </ng-container>
@@ -81,28 +81,46 @@
 </section>
 
 <section class="user-activities-section">
-  <div class="activities-filter-container">
-    <tui-filter
-      [formControl]="activitiesFilterControl"
-      size="s"
-      [items]="[ 'Тренировки', 'Соревнования' ]"
-    ></tui-filter>
-
-    <button tuiButton type="button" size="m">Добавить</button>
+  <div *ngIf="isActiveProfileYours | async" [class.is-show-map]="showMap | async" class="tracker-info-container">
+    <h2 class="section-title">Информация о трекере</h2>
+    <mgl-map
+      *ngIf="showMap | async"
+      class="mapbox-map"
+      [style]="'mapbox://styles/mapbox/streets-v11'"
+      [attributionControl]="false"
+      [center]="trackerLastPosition | async"
+      [zoom]="14"
+    >
+      <mgl-marker [lngLat]="trackerLastPosition | async" [anchor]="'center'"></mgl-marker>
+      <mgl-control mglNavigation></mgl-control>
+    </mgl-map>
+    <tui-notification *ngIf="isTrackerDoesNotExist | async">У вас нет привязанных трекеров</tui-notification>
   </div>
-  <div class="activities-container">
-    <ul class="event-list">
-      <li class="event-item" *ngFor="let event of events | async">
-        <ng-container [ngSwitch]="event.type">
-          <ng-template [ngSwitchCase]="'WORKOUT'">
-            <cy-workout [workout]="event.value"></cy-workout>
-          </ng-template>
+  <div class="activities-section">
+    <h2 class="section-title">Активность</h2>
+    <div class="activities-filter-container">
+      <tui-filter
+        [formControl]="activitiesFilterControl"
+        size="s"
+        [items]="[ 'Тренировки', 'Соревнования' ]"
+      ></tui-filter>
 
-          <ng-template [ngSwitchCase]="'COMPETITION'">
-            <cy-competition [competition]="event.value"></cy-competition>
-          </ng-template>
-        </ng-container>
-      </li>
-    </ul>
+      <button [disabled]="true" tuiButton type="button" size="m">Добавить</button>
+    </div>
+    <div class="activities-container">
+      <ul class="event-list">
+        <li class="event-item" *ngFor="let event of events | async">
+          <ng-container [ngSwitch]="event.type">
+            <ng-template [ngSwitchCase]="'WORKOUT'">
+              <cy-workout [workout]="event.value"></cy-workout>
+            </ng-template>
+
+            <ng-template [ngSwitchCase]="'COMPETITION'">
+              <cy-competition [competition]="event.value"></cy-competition>
+            </ng-template>
+          </ng-container>
+        </li>
+      </ul>
+    </div>
   </div>
 </section>
