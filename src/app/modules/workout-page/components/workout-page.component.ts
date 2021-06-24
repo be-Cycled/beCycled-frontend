@@ -5,7 +5,7 @@ import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { RouteService } from '../../../global/domain/services/route/route.service'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { WorkoutService } from '../../../global/domain/services/workout/workout.service'
-import { AbstractEventPage } from '../../../global/components/cdk/AbstractEventPage'
+import { AbstractEventPage } from '../../../global/cdk/components/abstract-event-page'
 
 @Component({
   selector: 'cy-workout-page',

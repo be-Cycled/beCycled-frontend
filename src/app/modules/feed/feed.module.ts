@@ -4,9 +4,8 @@ import { FeedContainerComponent } from './containers/feed-container/feed-contain
 
 import { FeedRoutingModule } from './feed-routing.module'
 import { TuiFilterModule } from '@taiga-ui/kit'
-import { EventCardModule } from '../../global/components/cdk/event-card/event-card.module'
 import { ReactiveFormsModule } from '@angular/forms'
-
+import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 
 @NgModule({
   declarations: [
