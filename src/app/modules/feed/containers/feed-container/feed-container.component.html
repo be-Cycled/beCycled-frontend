@@ -1,14 +1,5 @@
-<form [formGroup]="form">
-  <tui-filter
-    class="filter"
-    formControlName="filters"
-    size="s"
-    [identityMatcher]="identityMatcher"
-    [content]="content"
-    [badgeHandler]="badgeHandler"
-    [items]="items"
-  ></tui-filter>
-</form>
+<cy-event-filter class="filter" [formControl]="filters" [events]="events | async"></cy-event-filter>
+
 <section class="events-wrapper" *ngFor="let day of calendar | async">
   <h2 class="date">
     {{ getWorkoutListDate(day.date) }}
@@ -29,6 +20,4 @@
     </li>
   </ul>
 </section>
-
-<ng-template #content let-item> {{item.title}} </ng-template>
 

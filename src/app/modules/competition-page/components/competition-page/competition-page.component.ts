@@ -5,7 +5,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
-import { AbstractEventPage } from '../../../../global/components/cdk/AbstractEventPage'
+import { AbstractEventPage } from '../../../../global/cdk/components/abstract-event-page'
 
 @Component({
   selector: 'cy-competition-page',

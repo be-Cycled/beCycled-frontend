@@ -1,0 +1,14 @@
+<form [formGroup]="form">
+  <tui-filter
+    class="filter"
+    formControlName="filters"
+    size="s"
+    [identityMatcher]="identityMatcher"
+    [content]="content"
+    [badgeHandler]="badgeHandler"
+    [items]="items"
+    (ngModelChange)="onChanges($event)"
+  ></tui-filter>
+</form>
+
+<ng-template #content let-item> {{item.title}} </ng-template>

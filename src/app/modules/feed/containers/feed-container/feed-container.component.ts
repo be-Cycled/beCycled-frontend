@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { FormControl, FormGroup } from '@angular/forms'
-import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
+import { FormControl } from '@angular/forms'
+import { TuiHandler } from '@taiga-ui/cdk'
 import { combineLatest, Observable } from 'rxjs'
 import { Competition, SportType, Workout } from '../../../../global/domain'
-import { map, shareReplay, startWith, tap } from 'rxjs/operators'
+import { map, shareReplay, startWith } from 'rxjs/operators'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 
@@ -26,110 +26,45 @@ interface FilterTag {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedContainerComponent implements OnInit {
-
-  public items: FilterTag[] = [
-    {
-      title: 'Тренировки',
-      value: EventType.workout,
-      count: 0
-    },
-    {
-      title: 'Соревнования',
-      value: EventType.competition,
-      count: 0
-    },
-    {
-      title: 'Велосипед',
-      value: SportType.bicycle,
-      count: 0
-    },
-    {
-      title: 'Роликовые коньки',
-      value: SportType.rollerblade,
-      count: 0
-    },
-    {
-      title: 'Бег',
-      value: SportType.run,
-      count: 0
-    },
-    {
-      title: 'Лыжи',
-      value: SportType.ski,
-      count: 0
-    }
-  ]
-
-  public form: FormGroup = new FormGroup({
-    filters: new FormControl(this.items)
-  })
-
-  public identityMatcher: TuiIdentityMatcher<FilterTag> = (
-    item1: FilterTag,
-    item2: FilterTag
-  ) => item1.title === item2.title
+  public filters: FormControl = new FormControl()
 
   public events: Observable<[ Workout[], Competition[] ]> = combineLatest([
-    this.workoutService.getWorkouts(),
-    this.competitionService.getCompetitions()
-  ]).pipe(
-    tap(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
-      const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
-      const mixedEvents: (Workout | Competition)[] = [ ...workouts, ...competitions ]
+    this.workoutService.getWorkouts().pipe(
+      map((workouts: Workout[]) => {
+        const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
 
-      return this.items = [
-        {
-          title: 'Тренировки',
-          value: EventType.workout,
-          count: workouts.filter((item: Workout) => new Date(item.startDate).getTime() >= currentTime).length
-        },
-        {
-          title: 'Соревнования',
-          value: EventType.competition,
-          count: competitions.filter((item: Competition) => new Date(item.startDate).getTime() >= currentTime).length
-        },
-        {
-          title: 'Велосипед',
-          value: SportType.bicycle,
-          count: mixedEvents.filter((item: Competition | Workout) => item.sportType === SportType.bicycle).length
-        },
-        {
-          title: 'Роликовые коньки',
-          value: SportType.rollerblade,
-          count: mixedEvents.filter((item: Competition | Workout) => item.sportType === SportType.rollerblade).length
-        },
-        {
-          title: 'Бег',
-          value: SportType.run,
-          count: mixedEvents.filter((item: Competition | Workout) => item.sportType === SportType.run).length
-        },
-        {
-          title: 'Лыжи',
-          value: SportType.ski,
-          count: mixedEvents.filter((item: Competition | Workout) => item.sportType === SportType.ski).length
-        }
-      ]
-    }),
+        return workouts.filter((item: Workout) => new Date(item.startDate).getTime() < currentTime)
+      })
+    ),
+    this.competitionService.getCompetitions().pipe(
+      map((competitions: Competition[]) => {
+        const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
+
+        return competitions.filter((item: Workout) => new Date(item.startDate).getTime() < currentTime)
+      })
+    )
+  ]).pipe(
     shareReplay(1)
   )
 
   public calendar: Observable<EventListByDay[]> = combineLatest([
     this.events,
-    this.form.valueChanges.pipe(
-      startWith({ filters: this.items })
+    this.filters.valueChanges.pipe(
+      startWith([])
     )
   ]).pipe(
-    map(([ [ workouts, competitions ], { filters } ]: [ [ Workout[], Competition[] ], { filters: FilterTag[] } ]) => {
-      const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
+    map(([ [ workouts, competitions ], filters ]: [ [ Workout[], Competition[] ], FilterTag[] ]) => {
+      let activatedSportTypeFilters: string[] = []
+
       const isWorkoutFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.workout).length !== 0
       const isCompetitionFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.competition).length !== 0
-      const isBicycleFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.bicycle).length !== 0
-      const isRollerbladeFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.rollerblade).length !== 0
-      const isRunFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.run).length !== 0
-      const isSkiFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.ski).length !== 0
+
+      if (filters.length > 0) {
+        activatedSportTypeFilters = filters.filter((item: any) =>
+          Object.values(SportType).includes(item.value)).map((item: any) => item.value)
+      }
 
       const wrappedWorkouts: WrappedEvent<EventType.workout, Workout>[] = workouts
-        .filter((item: Workout) => new Date(item.startDate).getTime() < currentTime)
         .map((workout: Workout) => {
           return {
             type: EventType.workout,
@@ -138,7 +73,6 @@ export class FeedContainerComponent implements OnInit {
         })
 
       const wrappedCompetitions: WrappedEvent<EventType.competition, Competition>[] = competitions
-        .filter((item: Competition) => new Date(item.startDate).getTime() < currentTime)
         .map((competition: Competition) => {
           return {
             type: EventType.competition,
@@ -146,32 +80,18 @@ export class FeedContainerComponent implements OnInit {
           }
         })
 
-      let sortedEvents: SomeWrappedEvent[]
+      let sortedEvents: SomeWrappedEvent[] = [ ...wrappedWorkouts, ...wrappedCompetitions ]
 
-      if (isWorkoutFilterActivated && isCompetitionFilterActivated || !isWorkoutFilterActivated && !isCompetitionFilterActivated) {
-        sortedEvents = [ ...wrappedWorkouts, ...wrappedCompetitions ]
-      } else {
-        if (isWorkoutFilterActivated) {
-          sortedEvents = [ ...wrappedWorkouts ]
-        } else {
-          sortedEvents = [ ...wrappedCompetitions ]
-        }
+      if (isWorkoutFilterActivated && !isCompetitionFilterActivated) {
+        sortedEvents = [ ...wrappedWorkouts ]
       }
 
-      if (!isBicycleFilterActivated) {
-        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.bicycle)
+      if (isCompetitionFilterActivated && !isWorkoutFilterActivated) {
+        sortedEvents = [ ...wrappedCompetitions ]
       }
 
-      if (!isRollerbladeFilterActivated) {
-        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.rollerblade)
-      }
-
-      if (!isRunFilterActivated) {
-        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.run)
-      }
-
-      if (!isSkiFilterActivated) {
-        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.ski)
+      if (activatedSportTypeFilters.length !== 0) {
+        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => activatedSportTypeFilters.includes(item.value.sportType))
       }
 
       sortedEvents = sortedEvents.slice()
