@@ -136,9 +136,14 @@
 
 <ng-template #authorizedIconRef>
   <div class="icon-container">
-    <span class="material-icons">perm_identity</span>
+    <tui-avatar
+      size="xs"
+      [avatarUrl]="userAvatar | async"
+      [rounded]="true"
+    ></tui-avatar>
     <span class="icon-description">Профиль</span>
   </div>
+
 </ng-template>
 
 <ng-template #unauthorizedIconRef>

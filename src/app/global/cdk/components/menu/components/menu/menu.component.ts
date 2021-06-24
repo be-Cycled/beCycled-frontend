@@ -4,6 +4,7 @@ import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { User } from '../../../../../domain'
 import { UserHolderService } from '../../../../../services'
+import { DEFAULT_AVATAR } from '../../../../../models'
 
 @Component({
   selector: 'cy-menu',
@@ -19,6 +20,16 @@ export class MenuComponent {
   )
 
   public isUserAuthorized: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+
+  public userAvatar: Observable<string> = this.userHolderService.userChanges.pipe(
+    map((user: User) => {
+      if (user.avatar !== null) {
+        return `${ user.avatar }`
+      }
+
+      return DEFAULT_AVATAR
+    })
+  )
 
   constructor(private userHolderService: UserHolderService,
               private dialogService: TuiDialogService) {
