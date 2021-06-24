@@ -4,7 +4,7 @@
   z-index: 9999;
 
   display: block;
-  width: calc(100% - 1rem);
+  width: 100%;
   padding: 0.5rem;
 
   background-color: #ffffff;
@@ -28,7 +28,7 @@
 }
 
 .icon-description {
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .is-active {

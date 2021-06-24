@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-color: #F0F2F3;
 
@@ -26,4 +30,10 @@ body {
 
 .event-item {
   position: relative;
+}
+
+@media (max-width: 599px) {
+  tui-root {
+    padding-bottom: 70px;
+  }
 }

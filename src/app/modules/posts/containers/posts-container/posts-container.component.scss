@@ -1,7 +1,7 @@
 :host {
   display: grid;
   gap: 1rem;
-  padding: 1rem 1rem calc(1rem + 72px);
+  padding: 1rem 1rem calc(1rem);
 }
 
 figure.poster {
@@ -14,7 +14,7 @@ figure.poster img {
   border-radius: var(--tui-radius-l) var(--tui-radius-l) 0 0;
 }
 
-@media screen and (min-width: 599px) {
+@media (min-width: 600px) {
   :host {
     max-width: 900px;
     margin: 0 auto;
