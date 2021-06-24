@@ -24,7 +24,6 @@ export class UserHolderService {
               @Inject(WINDOW)
               private window: Window,
               private router: Router) {
-    console.log(this)
   }
 
   public updateUser(user: User | null): void {
