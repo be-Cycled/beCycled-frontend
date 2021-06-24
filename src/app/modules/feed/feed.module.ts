@@ -6,6 +6,7 @@ import { FeedRoutingModule } from './feed-routing.module'
 import { TuiFilterModule } from '@taiga-ui/kit'
 import { ReactiveFormsModule } from '@angular/forms'
 import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
+import { EventFilterModule } from '../../global/cdk/components/event-filter/event-filter.module'
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { EventCardModule } from '../../global/cdk/components/event-card/event-ca
     FeedRoutingModule,
     TuiFilterModule,
     EventCardModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    EventFilterModule
   ]
 })
 export class FeedModule { }

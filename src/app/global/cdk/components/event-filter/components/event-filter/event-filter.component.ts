@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  forwardRef,
+  Input,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core'
 import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
 import { EventType } from '../../../../../models'
 import { Competition, SportType, Workout } from '../../../../../domain'
@@ -23,8 +31,7 @@ interface FilterTag {
     }
   ]
 })
-export class EventFilterComponent implements ControlValueAccessor {
-
+export class EventFilterComponent implements ControlValueAccessor, OnChanges {
   public items: FilterTag[] = [
     {
       title: 'Тренировки',
@@ -62,6 +69,12 @@ export class EventFilterComponent implements ControlValueAccessor {
     filters: new FormControl()
   })
 
+  @Input()
+  public events: [ Workout[], Competition[] ] = [ [], [] ]
+
+  constructor(private cd: ChangeDetectorRef) {
+  }
+
   public identityMatcher: TuiIdentityMatcher<FilterTag> = (
     item1: FilterTag,
     item2: FilterTag
@@ -82,26 +95,24 @@ export class EventFilterComponent implements ControlValueAccessor {
     })
   }
 
-  public setValue(value: FilterTag[] | null): void {
-    console.log(value)
+  public onChanges(value: any): void {
   }
 
-  public markAsTouched(): void {
-    console.log('markAsTouched')
+  public registerOnChange(fn: any): void {
+    this.onChanges = fn
   }
 
-  public registerOnChange(fn: (value: FilterTag[]) => void): void {
-    this.setValue = fn
-    console.log('registerOnChange')
-  }
-
-  public registerOnTouched(fn: () => void): void {
-    this.markAsTouched = fn
-    console.log('registerOnTouched')
+  public registerOnTouched(fn: any): void {
   }
 
   public writeValue(obj: any): void {
-    console.log('writeValue')
   }
 
+  public ngOnChanges({ events }: SimpleChanges): void {
+    if (events.currentValue !== null) {
+      this.setBadgesCount(events.currentValue)
+
+      this.form.get('filters')?.reset([])
+    }
+  }
 }
