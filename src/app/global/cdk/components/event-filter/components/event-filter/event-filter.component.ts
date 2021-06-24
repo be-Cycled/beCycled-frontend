@@ -37,6 +37,9 @@ interface FilterTag {
 export class EventFilterComponent implements ControlValueAccessor, OnChanges, OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject()
 
+  /**
+   * TODO: Рассмотреть возможность разделения на две разных группы фильтров
+   */
   public items: FilterTag[] = [
     {
       title: 'Тренировки',

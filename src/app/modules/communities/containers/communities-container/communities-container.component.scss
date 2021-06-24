@@ -16,6 +16,7 @@
 .filter {
   display: grid;
   gap: 0.7rem;
+  margin-bottom: 1rem;
 }
 
 .search-input,
@@ -23,16 +24,21 @@
   order: -1;
 }
 
-td.avatar-and-name {
+.avatar-and-name {
   display: flex;
   align-items: center;
+
+  & .avatar {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 0.6rem;
+  }
 }
 
-td.avatar-and-name img.avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 0.6rem;
+.count {
+  white-space: nowrap;
 }
 
 @media screen and (min-width: 599px) {
@@ -42,6 +48,6 @@ td.avatar-and-name img.avatar {
   }
 
   .filter {
-    grid-template-columns: 1fr 220px;
+    grid-template-columns: 1fr 160px;
   }
 }

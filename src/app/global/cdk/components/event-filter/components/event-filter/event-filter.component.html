@@ -4,11 +4,11 @@
     formControlName="filters"
     size="s"
     [identityMatcher]="identityMatcher"
-    [content]="content"
+    [content]="contentRef"
     [badgeHandler]="badgeHandler"
     [items]="items"
     (ngModelChange)="onChanges($event)"
   ></tui-filter>
 </form>
 
-<ng-template #content let-item> {{item.title}} </ng-template>
+<ng-template #contentRef let-item> {{item.title}} </ng-template>

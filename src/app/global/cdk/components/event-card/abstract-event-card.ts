@@ -2,6 +2,7 @@ import { Directive } from '@angular/core'
 import { SportType } from '../../../domain'
 import mapboxgl, { AnyLayer } from 'mapbox-gl'
 import { ISO8601 } from '../../../models'
+import { buildCountString } from '../../../utils/utils'
 
 @Directive()
 export abstract class AbstractEventCard {
@@ -45,32 +46,21 @@ export abstract class AbstractEventCard {
     return `${ distanceInKilometres } км`
   }
 
-  /**
-   * words - массив с тремя формами, например, "час, часа, часов"
-   */
-  public buildCountString(count: number, words: string[]): string {
-    if ((count >= 5 && count <= 19) || (count % 10 >= 5 && count % 10 <= 9) || count % 10 === 0) {
-      return `${ count } ${ words[ 2 ] }`
-    }
-
-    return (count % 10 === 1) ? `${ count } ${ words[ 0 ] }` : `${ count } ${ words[ 1 ] }`
-  }
-
   public generateDurationString(duration: number): string {
     let hours: number = 0
     let minutes: number = 0
 
     if (duration < 60) {
-      return `${ duration } ${ this.buildCountString(duration, [ 'минута', 'минуты', 'минут' ]) }`
+      return `${ duration } ${ buildCountString(duration, [ 'минута', 'минуты', 'минут' ]) }`
     }
 
     hours = Math.floor(duration / 60)
     minutes = duration - (hours * 60)
 
-    return `${ this.buildCountString(hours, [ 'час', 'часа', 'часов' ]) }
+    return `${ buildCountString(hours, [ 'час', 'часа', 'часов' ]) }
      ${ minutes === 0
       ? ''
-      : this.buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
+      : buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
   }
 
   public onMapboxLoad(map: mapboxgl.Map): void {

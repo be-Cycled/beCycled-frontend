@@ -9,12 +9,6 @@
       formControlName="search"
       class="search-input"
       tuiTextfieldSize="m">Поиск</tui-input>
-    <tui-filter
-      formControlName="sportTypes"
-      size="s"
-      [items]="sportTypeKeys"
-      [content]="sportTypeViewRef"
-    ></tui-filter>
     <tui-select
       formControlName="communityType"
       tuiTextfieldSize="m"
@@ -22,27 +16,29 @@
     >
       Тип сообщества
       <tui-data-list *tuiDataList>
-        <button tuiOption *ngFor="let type of communityTypeKeys" [value]="type">{{ communityTypesMap[ type ] }}</button>
+        <button tuiOption *ngFor="let type of communityTypeKeys" [value]="type">{{ communityTypesMap[type] }}</button>
       </tui-data-list>
     </tui-select>
+    <tui-filter
+      formControlName="sportTypes"
+      size="s"
+      [items]="sportTypeKeys"
+      [content]="sportTypeViewRef"
+    ></tui-filter>
   </div>
 
   <div class="result">
     <table class="tui-table">
-      <tr class="tui-table__tr">
-        <th class="tui-table__th">Название</th>
-        <th class="tui-table__th">Кол-во участников</th>
-        <th class="tui-table__th">Типы спорта</th>
-        <th class="tui-table__th">Тип сообщества</th>
-      </tr>
-      <tr class="tui-table__tr" *ngFor="let community of communitiesWithFiltration | async">
-        <td class="tui-table__td avatar-and-name">
-          <img class="avatar" [attr.src]="community.avatar" [attr.alt]="community.name">
-          <a tuiLink [routerLink]="[ '/', 'communities', community.nickname ]">{{ community.name }}</a>
+      <tr class="tui-table__tr" *ngFor="let community of communitiesWithFiltration$ | async">
+        <td class="tui-table__td">
+          <div class="avatar-and-name">
+            <img class="avatar" [attr.src]="community.avatar" [attr.alt]="community.name">
+            <a tuiLink [routerLink]="[ '/', 'communities', community.nickname ]">{{ community.name }}</a>
+          </div>
         </td>
-        <td class="tui-table__td">{{ community.userIds.length }}</td>
+        <td class="tui-table__td count">{{ buildMemberCountString(community.userIds.length) }}</td>
         <td class="tui-table__td">{{ community.sportTypes | tuiMapper: sportTypeTranslate: sportTypesMap }}</td>
-        <td class="tui-table__td">{{ communityTypesMap[ community.communityType ] }}</td>
+        <td class="tui-table__td">{{ communityTypesMap[community.communityType] }}</td>
       </tr>
     </table>
   </div>
