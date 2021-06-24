@@ -61,7 +61,7 @@ export class AfficheContainerComponent implements OnInit {
   ]
 
   public form: FormGroup = new FormGroup({
-    filters: new FormControl(this.items)
+    filters: new FormControl()
   })
 
   public identityMatcher: TuiIdentityMatcher<FilterTag> = (
@@ -116,17 +116,20 @@ export class AfficheContainerComponent implements OnInit {
   public calendar: Observable<EventListByDay[]> = combineLatest([
     this.events,
     this.form.valueChanges.pipe(
-      startWith({ filters: this.items })
+      startWith({ filters: [] })
     )
   ]).pipe(
     map(([ [ workouts, competitions ], { filters } ]: [ [ Workout[], Competition[] ], { filters: FilterTag[] } ]) => {
       const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
+      let activatedSportTypeFilters: string[] = []
+
       const isWorkoutFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.workout).length !== 0
       const isCompetitionFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.competition).length !== 0
-      const isBicycleFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.bicycle).length !== 0
-      const isRollerbladeFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.rollerblade).length !== 0
-      const isRunFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.run).length !== 0
-      const isSkiFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === SportType.ski).length !== 0
+
+      if (filters.length > 0) {
+        activatedSportTypeFilters = filters.filter((item: any) =>
+          Object.values(SportType).includes(item.value)).map((item: any) => item.value)
+      }
 
       const wrappedWorkouts: WrappedEvent<EventType.workout, Workout>[] = workouts
         .filter((item: Workout) => new Date(item.startDate).getTime() >= currentTime)
@@ -146,32 +149,18 @@ export class AfficheContainerComponent implements OnInit {
           }
         })
 
-      let sortedEvents: SomeWrappedEvent[]
+      let sortedEvents: SomeWrappedEvent[] = [ ...wrappedWorkouts, ...wrappedCompetitions ]
 
-      if (isWorkoutFilterActivated && isCompetitionFilterActivated || !isWorkoutFilterActivated && !isCompetitionFilterActivated) {
-        sortedEvents = [ ...wrappedWorkouts, ...wrappedCompetitions ]
-      } else {
-        if (isWorkoutFilterActivated) {
-          sortedEvents = [ ...wrappedWorkouts ]
-        } else {
-          sortedEvents = [ ...wrappedCompetitions ]
-        }
+      if (isWorkoutFilterActivated && !isCompetitionFilterActivated) {
+        sortedEvents = [ ...wrappedWorkouts ]
       }
 
-      if (!isBicycleFilterActivated) {
-        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.bicycle)
+      if (isCompetitionFilterActivated && !isWorkoutFilterActivated) {
+        sortedEvents = [ ...wrappedCompetitions ]
       }
 
-      if (!isRollerbladeFilterActivated) {
-        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.rollerblade)
-      }
-
-      if (!isRunFilterActivated) {
-        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.run)
-      }
-
-      if (!isSkiFilterActivated) {
-        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => item.value.sportType !== SportType.ski)
+      if (activatedSportTypeFilters.length !== 0) {
+        sortedEvents = sortedEvents.filter((item: SomeWrappedEvent) => activatedSportTypeFilters.includes(item.value.sportType))
       }
 
       sortedEvents = sortedEvents.slice()
