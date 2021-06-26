@@ -14,6 +14,22 @@
   [zoom]="15"
   [center]="[ 39.949127487394094,43.414052415946685 ]"
   (mapLoad)="onMapboxLoad($event)"
+  (mapClick)="onMapClick($event)"
 >
+  <mgl-geojson-source
+    id="geojson-route"
+    [data]="geoJson"
+  >
+  </mgl-geojson-source>
+  <mgl-layer
+    id="route"
+    type="line"
+    source="geojson-route"
+    [paint]="{
+      'line-color': '#FC6719',
+      'line-width': 2
+    }"
+  >
+  </mgl-layer>
   <mgl-control mglNavigation></mgl-control>
 </mgl-map>

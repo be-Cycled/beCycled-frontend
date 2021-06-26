@@ -13,6 +13,7 @@ import { DomainModule } from './global/domain/domain.module'
 import { ServiceWorkerModule } from '@angular/service-worker'
 import { environment } from '../environments/environment'
 import { of } from 'rxjs'
+import { MAPBOX_TOKEN } from './global/models'
 
 @NgModule({
   declarations: [
@@ -24,8 +25,8 @@ import { of } from 'rxjs'
     BrowserAnimationsModule,
     TuiRootModule,
     NgxMapboxGLModule.withConfig({
-      accessToken: 'pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g',
-      geocoderAccessToken: 'pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g'
+      accessToken: MAPBOX_TOKEN,
+      geocoderAccessToken: MAPBOX_TOKEN
     }),
     HeaderModule,
     MenuModule,

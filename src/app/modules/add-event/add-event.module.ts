@@ -7,6 +7,7 @@ import { TuiCalendarModule } from '@taiga-ui/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiInputDateTimeModule } from '@taiga-ui/kit'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
+import { MapboxNetworkService } from '../../global/services/mapbox-network/mapbox-network.service'
 
 
 @NgModule({
@@ -20,6 +21,9 @@ import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
     ReactiveFormsModule,
     TuiInputDateTimeModule,
     NgxMapboxGLModule
+  ],
+  providers: [
+    MapboxNetworkService
   ]
 })
 export class AddEventModule {
