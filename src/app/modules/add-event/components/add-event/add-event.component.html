@@ -6,3 +6,14 @@
     Выберите дату и время
   </tui-input-date-time>
 </form>
+
+<mgl-map
+  [style]="'mapbox://styles/mapbox/streets-v11'"
+  [attributionControl]="false"
+  [doubleClickZoom]="false"
+  [zoom]="15"
+  [center]="[ 39.949127487394094,43.414052415946685 ]"
+  (mapLoad)="onMapboxLoad($event)"
+>
+  <mgl-control mglNavigation></mgl-control>
+</mgl-map>

@@ -12,8 +12,6 @@ export abstract class AbstractEventPage extends AbstractEventCard {
       }
     })
 
-    this.map.addControl(new mapboxgl.NavigationControl())
-
     const marker1: mapboxgl.Marker = new mapboxgl.Marker({ color: 'green' })
       .setLngLat(this.currentCoords![ 0 ] as any)
       .addTo(this.map)

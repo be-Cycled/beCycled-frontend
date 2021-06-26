@@ -6,6 +6,7 @@ import { AddEventComponent } from './components/add-event/add-event.component'
 import { TuiCalendarModule } from '@taiga-ui/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiInputDateTimeModule } from '@taiga-ui/kit'
+import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { TuiInputDateTimeModule } from '@taiga-ui/kit'
     AddEventRoutingModule,
     TuiCalendarModule,
     ReactiveFormsModule,
-    TuiInputDateTimeModule
+    TuiInputDateTimeModule,
+    NgxMapboxGLModule
   ]
 })
 export class AddEventModule {
