@@ -112,11 +112,11 @@ export class AddEventComponent implements OnInit {
           this.coordinates.pop()
           this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
           this.resetDirection()
+          this.startPoint?.remove()
         } else if (this.coordinates.length === 1) {
 
           this.coordinates.pop()
           this.resetDirection()
-          this.startPoint?.remove()
           this.endPoint?.remove()
         }
       } else {
