@@ -12,11 +12,11 @@ export abstract class AbstractEventPage extends AbstractEventCard {
       }
     })
 
-    const marker1: mapboxgl.Marker = new mapboxgl.Marker({ color: 'green' })
+    new mapboxgl.Marker({ color: 'green' })
       .setLngLat(this.currentCoords![ 0 ] as any)
       .addTo(this.map)
 
-    const marker2: mapboxgl.Marker = new mapboxgl.Marker({ color: 'red' })
+    new mapboxgl.Marker({ color: 'red' })
       .setLngLat(this.currentCoords![ this.currentCoords!.length - 1 ] as any)
       .addTo(this.map)
   }
