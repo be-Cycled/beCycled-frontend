@@ -49,7 +49,7 @@ export class AddEventComponent implements OnInit {
       }
     })
 
-    this.marker = new mapboxgl.Marker()
+    this.marker = new mapboxgl.Marker({ color: 'red' })
   }
 
   public generateGeoJson(coordinates: number[][]): any {
@@ -68,18 +68,22 @@ export class AddEventComponent implements OnInit {
 
     if (this.marker !== null && this.map !== null) {
       this.marker.setLngLat(coordinates).addTo(this.map)
-    }
 
-    this.coordinates.push(point.lngLat)
+      this.coordinates.push(point.lngLat)
 
-    if (this.coordinates.length > 1) {
-      this.mapboxNetworkService.buildDirection(this.coordinates, DirectionType.cycling).subscribe((response: MapboxRouteInfo) => {
-        this.geoJson = this.generateGeoJson(response.routes[ 0 ].geometry.coordinates)
+      if (this.coordinates.length > 1) {
+        new mapboxgl.Marker({ color: 'green' })
+          .setLngLat(this.coordinates[ 0 ] as any)
+          .addTo(this.map)
 
-        if (this.map !== null) {
-          (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
-        }
-      })
+        this.mapboxNetworkService.buildDirection(this.coordinates, DirectionType.cycling).subscribe((response: MapboxRouteInfo) => {
+          this.geoJson = this.generateGeoJson(response.routes[ 0 ].geometry.coordinates)
+
+          if (this.map !== null) {
+            (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
+          }
+        })
+      }
     }
   }
 }
