@@ -5,6 +5,15 @@ import mapboxgl, { AnyLayer, LngLat } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteInfo } from '../../../../global/domain'
 
+const blankGeoJson: any = {
+  type: 'Feature',
+  properties: {},
+  geometry: {
+    type: 'LineString',
+    coordinates: []
+  }
+}
+
 @Component({
   selector: 'cy-add-event',
   templateUrl: './add-event.component.html',
@@ -14,15 +23,9 @@ import { DirectionType, MapboxRouteInfo } from '../../../../global/domain'
 export class AddEventComponent implements OnInit {
   public coordinates: LngLat[] = []
   public map: mapboxgl.Map | null = null
-  public marker: mapboxgl.Marker | null = null
-  public geoJson: any = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'LineString',
-      coordinates: []
-    }
-  }
+  public startPoint: mapboxgl.Marker | null = null
+  public endPoint: mapboxgl.Marker | null = null
+  public geoJson: any = blankGeoJson
 
   public form: FormGroup = new FormGroup({
     date: new FormControl()
@@ -49,7 +52,14 @@ export class AddEventComponent implements OnInit {
       }
     })
 
-    this.marker = new mapboxgl.Marker({ color: 'red' })
+    const startPoint: HTMLElement = document.createElement('div')
+    startPoint.className = 'start-point'
+
+    const endPoint: HTMLElement = document.createElement('div')
+    endPoint.className = 'end-point'
+
+    this.startPoint = new mapboxgl.Marker(startPoint)
+    this.endPoint = new mapboxgl.Marker(endPoint)
   }
 
   public generateGeoJson(coordinates: number[][]): any {
@@ -63,26 +73,64 @@ export class AddEventComponent implements OnInit {
     }
   }
 
+  private updateDirection(): void {
+    if (this.map !== null) {
+      this.startPoint?.setLngLat(this.coordinates[ 0 ]).addTo(this.map)
+      this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
+
+      this.mapboxNetworkService.buildDirection(this.coordinates, DirectionType.cycling).subscribe((response: MapboxRouteInfo) => {
+        this.geoJson = this.generateGeoJson(response.routes[ 0 ].geometry.coordinates)
+
+        if (this.map !== null) {
+          (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
+        }
+      })
+    }
+  }
+
+  private resetDirection(): void {
+    if (this.map !== null) {
+      this.geoJson = blankGeoJson;
+      (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
+    }
+  }
+
   public onMapClick(point: mapboxgl.MapMouseEvent & mapboxgl.EventData): void {
     const coordinates: mapboxgl.LngLat = point.lngLat
+    if (this.map !== null) {
+      /**
+       * Удаление точек маршрута по клику
+       */
+      if ((point.originalEvent.target as HTMLElement).className.includes('end-point')) {
 
-    if (this.marker !== null && this.map !== null) {
-      this.marker.setLngLat(coordinates).addTo(this.map)
+        if (this.coordinates.length > 2) {
+          this.coordinates.pop()
+          this.updateDirection()
 
-      this.coordinates.push(point.lngLat)
+        } else if (this.coordinates.length === 2) {
 
-      if (this.coordinates.length > 1) {
-        new mapboxgl.Marker({ color: 'green' })
-          .setLngLat(this.coordinates[ 0 ] as any)
-          .addTo(this.map)
+          this.coordinates.pop()
+          this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
+          this.resetDirection()
+        } else if (this.coordinates.length === 1) {
 
-        this.mapboxNetworkService.buildDirection(this.coordinates, DirectionType.cycling).subscribe((response: MapboxRouteInfo) => {
-          this.geoJson = this.generateGeoJson(response.routes[ 0 ].geometry.coordinates)
+          this.coordinates.pop()
+          this.resetDirection()
+          this.startPoint?.remove()
+          this.endPoint?.remove()
+        }
+      } else {
 
-          if (this.map !== null) {
-            (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
-          }
-        })
+        /**
+         * Логика добавления точек маршрута
+         */
+        this.coordinates.push(point.lngLat)
+
+        if (this.coordinates.length > 1 && this.startPoint !== null) {
+          this.updateDirection()
+        } else {
+          this.endPoint?.setLngLat(coordinates).addTo(this.map)
+        }
       }
     }
   }

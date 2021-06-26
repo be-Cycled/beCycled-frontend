@@ -11,3 +11,23 @@ mgl-map {
 
   overflow: hidden;
 }
+
+::ng-deep {
+  .start-point,
+  .end-point {
+    width: 24px;
+    height: 24px;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+  }
+
+  .start-point {
+    background-color: var(--cy-success);
+  }
+
+  .end-point {
+    background-color: tomato;
+  }
+}
