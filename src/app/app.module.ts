@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
+import { TUI_LANGUAGE, TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -11,6 +12,7 @@ import { MenuModule } from './global/cdk/components/menu/menu.module'
 import { DomainModule } from './global/domain/domain.module'
 import { ServiceWorkerModule } from '@angular/service-worker'
 import { environment } from '../environments/environment'
+import { of } from 'rxjs'
 
 @NgModule({
   declarations: [
@@ -37,7 +39,12 @@ import { environment } from '../environments/environment'
       registrationStrategy: 'registerWhenStable:30000'
     })
   ],
-  providers: [],
+  providers: [
+    {
+      provide: TUI_LANGUAGE,
+      useValue: of(TUI_RUSSIAN_LANGUAGE)
+    }
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {

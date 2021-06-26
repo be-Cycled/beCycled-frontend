@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common'
 
 import { AddEventRoutingModule } from './add-event-routing.module'
 import { AddEventComponent } from './components/add-event/add-event.component'
+import { TuiCalendarModule } from '@taiga-ui/core'
+import { ReactiveFormsModule } from '@angular/forms'
+import { TuiInputDateTimeModule } from '@taiga-ui/kit'
 
 
 @NgModule({
@@ -11,7 +14,10 @@ import { AddEventComponent } from './components/add-event/add-event.component'
   ],
   imports: [
     CommonModule,
-    AddEventRoutingModule
+    AddEventRoutingModule,
+    TuiCalendarModule,
+    ReactiveFormsModule,
+    TuiInputDateTimeModule
   ]
 })
 export class AddEventModule {

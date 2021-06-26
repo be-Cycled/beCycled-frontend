@@ -1,1 +1,8 @@
-
+<form class="b-form" [formGroup]="form">
+  <tui-input-date-time
+    formControlName="date"
+    [min]="buildCurrentDate()"
+  >
+    Выберите дату и время
+  </tui-input-date-time>
+</form>
