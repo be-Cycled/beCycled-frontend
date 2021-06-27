@@ -1,0 +1,36 @@
+name: ⚠ Отчет об ошибке
+description: Опишите отчет об ошибке
+title: ""
+labels: [ bug ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Спасибо что нашли время для описания ошибки!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Что случилось?
+      description: Более подробно опишите ошибку!
+      value: "Случилось что-то не предвиденное..."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Воспроизведение
+      description: Пожалуйста оставьте подробные инструкции как воспроизвести ошибку
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Версия приложения
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Логи ошибки
+      description: Пожалуйста приложите логи об ошибке (логи AngularCLI, стектрейсы и так далее). Все отформатируется в блок кода, так что обратные кавычки не нужны
+      render: text

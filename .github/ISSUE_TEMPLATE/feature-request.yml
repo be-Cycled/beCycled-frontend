@@ -1,0 +1,22 @@
+name: ⭐️ Новая функциональность
+description: Предложите идею для проекта
+title: ""
+labels: [ enhancement ]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Описание
+      description: Расскажите в чем заключается ваша идея.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Решение
+      description: Если у вас есть решение этой задачи, опишите его
+  - type: textarea
+    id: description
+    attributes:
+      label: Решение
+      description: Если у вас есть решение этой задачи, опишите его
