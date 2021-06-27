@@ -1,5 +1,5 @@
 name: ⭐️ Новая функциональность
-description: Предложите идею для проекта
+description: Предложить идею для проекта
 title: ""
 labels: [ enhancement ]
 body:
@@ -14,9 +14,4 @@ body:
     id: solution
     attributes:
       label: Решение
-      description: Если у вас есть решение этой задачи, опишите его
-  - type: textarea
-    id: description
-    attributes:
-      label: Решение
-      description: Если у вас есть решение этой задачи, опишите его
+      description: Если у вас есть решение этой задачи, опишите его.

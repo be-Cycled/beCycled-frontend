@@ -1,25 +1,24 @@
 name: ⚠ Отчет об ошибке
-description: Опишите отчет об ошибке
+description: Отправить отчет об ошибке
 title: ""
 labels: [ bug ]
 body:
   - type: markdown
     attributes:
-      value: |
-        Спасибо что нашли время для описания ошибки!
+      value: Спасибо, что нашли время для описания ошибки!
   - type: textarea
     id: what-happened
     attributes:
       label: Что случилось?
       description: Более подробно опишите ошибку!
-      value: Случилось что-то не предвиденное...
+      value: Случилось что-то непредвиденное...
     validations:
       required: true
   - type: textarea
     id: reproduction
     attributes:
       label: Воспроизведение
-      description: Пожалуйста оставьте подробные инструкции как воспроизвести ошибку
+      description: Пожалуйста, оставьте подробную инструкцию, как воспроизвести ошибку.
     validations:
       required: true
   - type: input
@@ -32,11 +31,11 @@ body:
     id: logs
     attributes:
       label: Логи ошибки
-      description: Пожалуйста приложите логи об ошибке (логи AngularCLI, стектрейсы и так далее). Все отформатируется в блок кода, так что обратные кавычки не нужны
+      description: Пожалуйста, приложите логи ошибки (логи AngularCLI, стектрейсы и так далее). Все отформатируется в блок кода, так что бектики (\`) не нужны.
       render: text
   - type: textarea
     id: system-info
     attributes:
       label: Информация о системе
-      description: "Пожалуйста укажите данные об окружении: название и версия системы, так же браузера и прочее. Предпочтительно получить вывод утилиты [`envinfo`](https://github.com/tabrindle/envinfo)"
+      description: "Пожалуйста, укажите данные об окружении: название и версия системы, а так же браузера. Предпочтительно получить вывод утилиты [`envinfo`](https://github.com/tabrindle/envinfo)."
       render: shell
