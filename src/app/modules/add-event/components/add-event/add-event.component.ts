@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteInfo } from '../../../../global/domain'
+import { take } from 'rxjs/operators'
 
 const blankGeoJson: any = {
   type: 'Feature',
@@ -25,7 +26,10 @@ export class AddEventComponent implements OnInit {
   public map: mapboxgl.Map | null = null
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
+  public routeInfo: MapboxRouteInfo | null = null
   public geoJson: any = blankGeoJson
+  public preview: string = ''
+  private firstClick: boolean = true
 
   public form: FormGroup = new FormGroup({
     date: new FormControl()
@@ -78,13 +82,17 @@ export class AddEventComponent implements OnInit {
       this.startPoint?.setLngLat(this.coordinates[ 0 ]).addTo(this.map)
       this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
 
-      this.mapboxNetworkService.buildDirection(this.coordinates, DirectionType.cycling).subscribe((response: MapboxRouteInfo) => {
-        this.geoJson = this.generateGeoJson(response.routes[ 0 ].geometry.coordinates)
+      this.mapboxNetworkService
+        .buildDirection(this.coordinates, DirectionType.cycling)
+        .pipe(take(1))
+        .subscribe((response: MapboxRouteInfo) => {
+          this.routeInfo = response
+          this.geoJson = this.generateGeoJson(response.routes[ 0 ].geometry.coordinates)
 
-        if (this.map !== null) {
-          (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
-        }
-      })
+          if (this.map !== null) {
+            (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
+          }
+        })
     }
   }
 
@@ -131,6 +139,85 @@ export class AddEventComponent implements OnInit {
         } else {
           this.endPoint?.setLngLat(coordinates).addTo(this.map)
         }
+      }
+    }
+  }
+
+  /**
+   * TODO: Стандартизировать маркеры. Обдумать вариант рисовать стартовый маркер на canvas, а не через DOM.
+   */
+  public onDblMapClick(): void {
+    if (this.firstClick) {
+      this.map?.loadImage(
+        'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+        (error: Error | undefined, image: any) => {
+          if (error) {
+            throw error
+          }
+
+          this.map?.addImage('custom-marker', image)
+
+          const startPoint: number[] = [
+            this.coordinates[ 0 ].lng,
+            this.coordinates[ 0 ].lat
+          ]
+
+          const endPoint: number[] = [
+            this.coordinates[ this.coordinates.length - 1 ].lng,
+            this.coordinates[ this.coordinates.length - 1 ].lat
+          ]
+
+          this.map?.addSource('points', {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: startPoint
+                  },
+                  properties: {
+                    title: 'Старт'
+                  }
+                },
+                {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'Point',
+                    coordinates: endPoint
+                  },
+                  properties: {
+                    title: 'Финиш'
+                  }
+                }
+              ]
+            }
+          })
+
+          this.map?.addLayer({
+            id: 'points',
+            type: 'symbol',
+            source: 'points',
+            layout: {
+              'icon-image': 'custom-marker',
+              'text-field': [ 'get', 'title' ],
+              'text-font': [
+                'Open Sans Semibold',
+                'Arial Unicode MS Bold'
+              ],
+              'text-offset': [ 0, 1.25 ],
+              'text-anchor': 'top'
+            }
+          })
+        }
+      )
+
+      this.firstClick = false
+    } else {
+      if (this.map !== null) {
+        this.preview = this.map.getCanvas().toDataURL()
       }
     }
   }

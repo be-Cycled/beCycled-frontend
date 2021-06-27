@@ -12,9 +12,11 @@
   [attributionControl]="false"
   [doubleClickZoom]="false"
   [zoom]="15"
+  [preserveDrawingBuffer]="true"
   [center]="[ 39.949127487394094,43.414052415946685 ]"
   (mapLoad)="onMapboxLoad($event)"
   (mapClick)="onMapClick($event)"
+  (mapDblClick)="onDblMapClick()"
 >
   <mgl-geojson-source
     id="geojson-route"
@@ -33,3 +35,5 @@
   </mgl-layer>
   <mgl-control mglNavigation></mgl-control>
 </mgl-map>
+
+<img width="600" [attr.src]="preview">
