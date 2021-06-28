@@ -1,44 +1,47 @@
+<img align="right" src="src/assets/logo.svg" alt="beCycled logo" width="100">
+
 # 🏂🏼 beCycled 📱
+
+[![Waliot](https://raw.githubusercontent.com/waliot/waliot/main/assets/waliot-tech-badge.svg)](https://github.com/waliot)
 
 PWA-приложение для работы с сервисом.
 
-## Локальная сборка и запуск
+## Установка
 
 ```bash
-$ npm install
-$ npm run start
+npm install
 ```
 
-## Сборка Docker образа
+## Запуск
+
+```bash
+npm run start
+```
+
+Приложение запустится по пути http://localhost:5000
+
+## Сборка
+
+```bash
+npm run build:prod
+```
+
+### Сборка Docker образа
 
 ```bash
 $ docker build -t becycled-frontend .
 ```
 
----
+## Тестирование
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.13.
+```bash
+npm run test
+```
 
-## Development server
+<p align="center">
+  <a href="https://github.com/waliot"><img align="center" src="https://raw.githubusercontent.com/waliot/waliot/main/assets/waliot-support-ru.svg" alt="beCycled logo" width="150"></a>
+</p>
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Лицензия
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+[MIT](LICENSE)
