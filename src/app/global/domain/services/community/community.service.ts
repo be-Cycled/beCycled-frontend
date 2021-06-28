@@ -30,21 +30,12 @@ export class CommunityService {
     return this.httpClient.put<Community>(`${ this.config.baseApiUrl }/communities/${ id }`, community)
   }
 
-  public join(userId: number, community: Community): Observable<Community> {
-    return this.update(community.id, {
-      ...community,
-      userIds: [
-        ...community.userIds,
-        userId
-      ]
-    })
+  public join(community: Community): Observable<Community> {
+    return this.httpClient.get<Community>(`${ this.config.baseApiUrl }/communities/join/${ community.id }`)
   }
 
-  public unjoin(userId: number, community: Community): Observable<Community> {
-    return this.update(community.id, {
-      ...community,
-      userIds: community.userIds.filter((id: number) => id !== userId)
-    })
+  public leave(community: Community): Observable<Community> {
+    return this.httpClient.get<Community>(`${ this.config.baseApiUrl }/communities/leave/${ community.id }`)
   }
 
   public getUsersByCommunity(nickname: string): Observable<User[]> {
