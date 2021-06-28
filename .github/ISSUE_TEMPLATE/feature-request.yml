@@ -1,6 +1,6 @@
 name: ⭐️ Новая функциональность
 description: Предложить идею для проекта
-title: ""
+title: "Идея заключается в том ..."
 labels: [ enhancement ]
 body:
   - type: textarea
