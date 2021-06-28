@@ -119,7 +119,7 @@ export class SingleCommunityContainerComponent {
     const community: Community = this.communityHolder.value
 
     if (!this.userHolderService.isUserJoinedCommunity(community)) {
-      this.communityService.join(user.id, community).pipe(
+      this.communityService.join(community).pipe(
         take(1),
         tap((community: Community) => {
           this.showJoinButtonLoader.next(false)
@@ -128,7 +128,7 @@ export class SingleCommunityContainerComponent {
         catchError(() => of(null))
       ).subscribe()
     } else {
-      this.communityService.unjoin(user.id, community).pipe(
+      this.communityService.leave(community).pipe(
         take(1),
         tap((community: Community) => {
           this.showJoinButtonLoader.next(false)
