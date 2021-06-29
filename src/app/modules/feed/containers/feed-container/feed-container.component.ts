@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
-import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { FormControl } from '@angular/forms'
+import { Title } from '@angular/platform-browser'
 import { TuiHandler } from '@taiga-ui/cdk'
 import { combineLatest, Observable } from 'rxjs'
-import { Competition, SportType, Workout } from '../../../../global/domain'
 import { map, shareReplay, startWith } from 'rxjs/operators'
-import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
+import { Competition, SportType, Workout } from '../../../../global/domain'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
+import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
+import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 
 interface EventListByDay {
   date: ISO8601
@@ -131,7 +132,9 @@ export class FeedContainerComponent implements OnInit {
   )
 
   constructor(private workoutService: WorkoutService,
-              private competitionService: CompetitionService) {
+              private competitionService: CompetitionService,
+              private title: Title) {
+    this.title.setTitle('Лента')
   }
 
   public ngOnInit(): void {

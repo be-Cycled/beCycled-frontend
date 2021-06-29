@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { Competition, MapboxRouteInfo, Route, Workout } from '../../../../global/domain'
-import { Observable, ObservedValueOf } from 'rxjs'
+import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
+import { Observable, ObservedValueOf } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
-import { RouteService } from '../../../../global/domain/services/route/route.service'
-import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { AbstractEventPage } from '../../../../global/cdk/components/abstract-event-page'
+import { Competition, MapboxRouteInfo, Route, Workout } from '../../../../global/domain'
+import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
+import { RouteService } from '../../../../global/domain/services/route/route.service'
+import { generateStartTime, getWorkoutListDate } from '../../../../global/utils'
 
 @Component({
   selector: 'cy-competition-page',
@@ -17,7 +19,10 @@ export class CompetitionPageComponent extends AbstractEventPage {
   public competition$: Observable<Competition> = this.activatedRoute.paramMap.pipe(
     map((paramMap: ParamMap) => paramMap.get('id')),
     switchMap((id: string | null) => this.competitionService.getById(Number.parseInt(id!, 10))),
-    shareReplay(1)
+    shareReplay(1),
+    tap((competition: Competition) => {
+      this.title.setTitle(`Соревнование ${ getWorkoutListDate(competition.startDate) } ${ generateStartTime(competition.startDate) }`)
+    })
   )
 
   public route: Observable<Route> = this.competition$.pipe(
@@ -50,7 +55,8 @@ export class CompetitionPageComponent extends AbstractEventPage {
 
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
-              private competitionService: CompetitionService) {
+              private competitionService: CompetitionService,
+              private title: Title) {
     super()
   }
 }

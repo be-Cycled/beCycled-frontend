@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { Title } from '@angular/platform-browser'
 import { ActivatedRoute } from '@angular/router'
-import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs'
-import { catchError, map, shareReplay, switchMap, take, tap } from 'rxjs/operators'
+import { TuiDestroyService } from '@taiga-ui/cdk'
+import { BehaviorSubject, defer, forkJoin, Observable, of } from 'rxjs'
+import { catchError, map, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import { Community, CommunityType, Competition, SportType, User, Workout } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
@@ -13,7 +15,10 @@ import { UserHolderService } from '../../../../global/services'
   selector: 'cy-single-community-container',
   templateUrl: './single-community-container.component.html',
   styleUrls: [ './single-community-container.component.scss' ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    TuiDestroyService
+  ]
 })
 export class SingleCommunityContainerComponent {
 
@@ -100,11 +105,19 @@ export class SingleCommunityContainerComponent {
     map((userCount: number) => userCount - 6)
   )
 
+  private titleSetter: Observable<Community> = defer(() => this.communityHolder.pipe(
+    takeUntil(this.destroyService),
+    tap((community: Community) => this.title.setTitle(community.name))
+  ))
+
   constructor(private activatedRoute: ActivatedRoute,
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
               private userHolderService: UserHolderService,
-              private communityService: CommunityService) {
+              private communityService: CommunityService,
+              private title: Title,
+              private destroyService: TuiDestroyService) {
+    this.titleSetter.subscribe()
   }
 
   public onClickJoinButton(): void {

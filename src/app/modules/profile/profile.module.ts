@@ -2,29 +2,13 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiLetModule } from '@taiga-ui/cdk'
-import {
-  TuiButtonModule,
-  TuiFormatPhonePipeModule,
-  TuiGroupModule,
-  TuiLinkModule,
-  TuiNotificationModule,
-  TuiTextfieldControllerModule
-} from '@taiga-ui/core'
-import {
-  TuiFieldErrorModule,
-  TuiFilterModule,
-  TuiInputFileModule,
-  TuiInputInlineModule,
-  TuiInputModule,
-  TuiInputPhoneModule,
-  TuiIslandModule,
-  TuiTextAreaModule
-} from '@taiga-ui/kit'
+import { TuiButtonModule, TuiFormatPhonePipeModule, TuiGroupModule, TuiHintModule, TuiLinkModule, TuiNotificationModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
+import { TuiFieldErrorModule, TuiFilterModule, TuiInputFileModule, TuiInputInlineModule, TuiInputModule, TuiInputPhoneModule, TuiIslandModule, TuiTextAreaModule } from '@taiga-ui/kit'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
+import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 import { ProfileContainerComponent } from './containers/profile-container/profile-container.component'
 
 import { ProfileRoutingModule } from './profile-routing.module'
-import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 
 @NgModule({
   declarations: [
@@ -50,7 +34,8 @@ import { EventCardModule } from '../../global/cdk/components/event-card/event-ca
     TuiInputPhoneModule,
     TuiFieldErrorModule,
     NgxMapboxGLModule,
-    TuiNotificationModule
+    TuiNotificationModule,
+    TuiHintModule
   ]
 })
 export class ProfileModule { }
