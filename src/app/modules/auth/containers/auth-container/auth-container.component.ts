@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
+import { APP_VERSION } from '../../../../global/tokens'
 
 @Component({
   selector: 'cy-auth-container',
@@ -10,5 +11,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
   }
 })
 export class AuthContainerComponent {
-
+  constructor(@Inject(APP_VERSION)
+              public readonly appVersion: string) {
+  }
 }

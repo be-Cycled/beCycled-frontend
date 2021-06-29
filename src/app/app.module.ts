@@ -5,13 +5,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ServiceWorkerModule } from '@angular/service-worker'
 import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
-import { environment } from '../environments/environment'
+import { version } from '../../package.json'
 
+import { environment } from '../environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { HeaderModule } from './global/cdk/components/header/header.module'
 import { MenuModule } from './global/cdk/components/menu/menu.module'
 import { DomainModule } from './global/domain/domain.module'
+import { APP_VERSION } from './global/tokens'
 import { titleBuilder } from './global/utils'
 
 @Injectable()
@@ -57,9 +59,18 @@ class BeCycledTitle {
     {
       provide: Title,
       useClass: BeCycledTitle
+    },
+    {
+      provide: APP_VERSION,
+      useValue: version
     }
   ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {
+  constructor(@Inject(APP_VERSION)
+              private appVersion: string) {
+    // tslint:disable-next-line:no-console
+    console.debug(`App version: ${ appVersion }`)
+  }
 }
