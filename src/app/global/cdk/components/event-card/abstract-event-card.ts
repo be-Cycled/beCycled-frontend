@@ -1,6 +1,6 @@
 import { Directive } from '@angular/core'
-import { SportType } from '../../../domain'
 import mapboxgl, { AnyLayer } from 'mapbox-gl'
+import { SportType } from '../../../domain'
 import { ISO8601 } from '../../../models'
 import { buildCountString } from '../../../utils/utils'
 
@@ -18,10 +18,12 @@ export abstract class AbstractEventCard {
   public map: mapboxgl.Map | null = null
 
   public generateBounds(coordinates: any): any {
-    return coordinates.reduce((bounds: mapboxgl.LngLatBounds, coord: any) => {
+    return coordinates.reduce(
+      (bounds: mapboxgl.LngLatBounds, coord: any) => {
         return bounds.extend(coord)
       },
-      new mapboxgl.LngLatBounds(coordinates[ 0 ], coordinates[ 0 ]))
+      new mapboxgl.LngLatBounds(coordinates[ 0 ], coordinates[ 0 ])
+    )
   }
 
   public generateStartTime(date: ISO8601): string {

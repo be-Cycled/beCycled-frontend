@@ -8,7 +8,6 @@ import { SinglePostComponent } from './containers/single-post/single-post.compon
 import { PostsRoutingModule } from './posts-routing.module'
 import { SinglePostResolver } from './resolvers/single-post/single-post.resolver'
 
-
 @NgModule({
   declarations: [
     PostsContainerComponent,
