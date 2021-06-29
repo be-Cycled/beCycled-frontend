@@ -71,7 +71,11 @@
   <div class="info-section user-communities-section">
     <h3 class="user-communities-title">Сообщества</h3>
     <ul class="community-list">
-      <li class="community-list-item" *ngFor="let community of userCommunities | async">
+      <li
+        class="community-list-item"
+        *ngFor="let community of userCommunities | async"
+        [tuiHint]="community.name"
+      >
         <a [routerLink]="[ '/', 'communities', community.nickname ]">
           <img class="community-avatar" [attr.src]="community.avatar" [attr.alt]="community.name">
         </a>

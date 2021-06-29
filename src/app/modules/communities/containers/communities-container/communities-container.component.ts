@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { FormBuilder, FormGroup } from '@angular/forms'
+import { Title } from '@angular/platform-browser'
 import { combineLatest, Observable } from 'rxjs'
 import { map, shareReplay, startWith } from 'rxjs/operators'
 import { Community, CommunityType, SportType } from '../../../../global/domain'
@@ -72,7 +73,9 @@ export class CommunitiesContainerComponent {
   )
 
   constructor(private fb: FormBuilder,
-              private communityService: CommunityService) {
+              private communityService: CommunityService,
+              private title: Title) {
+    this.title.setTitle(`Сообщества`)
   }
 
   public sportTypeTranslate(sportTypes: SportType[], sportTypesMap: Record<SportType | 'ALL', string>): string {

@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
+import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
+import { TuiDestroyService } from '@taiga-ui/cdk'
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
-import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import { Community, Competition, User, UserService, Workout } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
@@ -18,7 +20,8 @@ import { UserHolderService } from '../../../../global/services'
   selector: 'cy-profile-container',
   templateUrl: './profile-container.component.html',
   styleUrls: [ './profile-container.component.scss' ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ TuiDestroyService ]
 })
 export class ProfileContainerComponent {
 
@@ -180,6 +183,23 @@ export class ProfileContainerComponent {
     shareReplay(1)
   )
 
+  private titleSetter: Observable<User> = this.user.pipe(
+    takeUntil(this.destroyService),
+    tap((user: User) => {
+      if (user.firstName !== null && user.firstName !== '' && user.lastName !== null && user.lastName !== '') {
+        this.title.setTitle(`${ user.login } (${ user.firstName } ${ user.lastName })`)
+        return
+      }
+
+      if (user.firstName !== null && user.firstName !== '') {
+        this.title.setTitle(`${ user.login } (${ user.firstName })`)
+        return
+      }
+
+      this.title.setTitle(user.login)
+    })
+  )
+
   constructor(private fb: FormBuilder,
               private activatedRoute: ActivatedRoute,
               private communityService: CommunityService,
@@ -188,8 +208,11 @@ export class ProfileContainerComponent {
               private userHolderService: UserHolderService,
               private userService: UserService,
               private trackerService: TrackerService,
-              private telemetryService: TelemetryService) {
+              private telemetryService: TelemetryService,
+              private title: Title,
+              private destroyService: TuiDestroyService) {
     this.previewAvatarCalc.subscribe()
+    this.titleSetter.subscribe()
   }
 
   public onClickEditButton(): void {

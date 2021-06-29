@@ -58,7 +58,11 @@
       </div>
       <h3 class="tui-island__title">Участники</h3>
       <ul class="user-list">
-        <li class="user-list-item" *ngFor="let user of someFirstUsers | async">
+        <li
+          class="user-list-item"
+          *ngFor="let user of someFirstUsers | async"
+          [tuiHint]="user.login"
+        >
           <a [routerLink]="[ '/', 'users', user.login ]">
             <tui-avatar size="m" [avatarUrl]="user.avatar"></tui-avatar>
           </a>
