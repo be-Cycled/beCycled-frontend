@@ -1,16 +1,35 @@
-import { NgModule } from '@angular/core'
-import { BrowserModule } from '@angular/platform-browser'
+import { DOCUMENT } from '@angular/common'
+import { Inject, Injectable, NgModule } from '@angular/core'
+import { BrowserModule, Title } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { ServiceWorkerModule } from '@angular/service-worker'
 import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
+import { version } from '../../package.json'
 
+import { environment } from '../environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { HeaderModule } from './global/cdk/components/header/header.module'
 import { MenuModule } from './global/cdk/components/menu/menu.module'
 import { DomainModule } from './global/domain/domain.module'
-import { ServiceWorkerModule } from '@angular/service-worker'
-import { environment } from '../environments/environment'
+import { APP_VERSION } from './global/tokens'
+import { titleBuilder } from './global/utils'
+import { MAPBOX_TOKEN } from './global/models'
+
+@Injectable()
+class BeCycledTitle {
+  constructor(@Inject(DOCUMENT) private document: Document) {
+  }
+
+  public getTitle(): string {
+    return this.document.title
+  }
+
+  public setTitle(newTitle: string): void {
+    this.document.title = titleBuilder(newTitle)
+  }
+}
 
 @NgModule({
   declarations: [
@@ -22,8 +41,8 @@ import { environment } from '../environments/environment'
     BrowserAnimationsModule,
     TuiRootModule,
     NgxMapboxGLModule.withConfig({
-      accessToken: 'pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g',
-      geocoderAccessToken: 'pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g'
+      accessToken: MAPBOX_TOKEN,
+      geocoderAccessToken: MAPBOX_TOKEN
     }),
     HeaderModule,
     MenuModule,
@@ -37,8 +56,22 @@ import { environment } from '../environments/environment'
       registrationStrategy: 'registerWhenStable:30000'
     })
   ],
-  providers: [],
+  providers: [
+    {
+      provide: Title,
+      useClass: BeCycledTitle
+    },
+    {
+      provide: APP_VERSION,
+      useValue: version
+    }
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {
+  constructor(@Inject(APP_VERSION)
+              private appVersion: string) {
+    // tslint:disable-next-line:no-console
+    console.debug(`App version: ${ appVersion }`)
+  }
 }
