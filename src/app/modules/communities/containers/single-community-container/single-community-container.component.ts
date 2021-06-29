@@ -110,7 +110,9 @@ export class SingleCommunityContainerComponent {
     tap((community: Community) => this.title.setTitle(community.name))
   ))
 
-  constructor(private activatedRoute: ActivatedRoute,
+  public activeItemIndex: number = 0
+
+  constructor(public readonly activatedRoute: ActivatedRoute,
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
               private userHolderService: UserHolderService,

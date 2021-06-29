@@ -27,8 +27,17 @@
   </div>
 </section>
 
+<section class="tabs-container">
+  <tui-tabs [(activeItemIndex)]="activeItemIndex">
+    <a tuiTab routerLink="." [routerLinkActiveOptions]="{ exact: true }" [relativeTo]="activatedRoute" routerLinkActive>Обзор</a>
+    <a tuiTab routerLink="users" [relativeTo]="activatedRoute" routerLinkActive>Участники</a>
+    <a tuiTab routerLink="settings" [relativeTo]="activatedRoute" routerLinkActive>Настройки</a>
+  </tui-tabs>
+</section>
+
 <section class="body">
-  <div class="main-thread">
+  <router-outlet></router-outlet>
+  <!--<div class="main-thread">
     <ul class="event-list">
       <li class="event-list-item" *ngFor="let event of events | async">
         <ng-container [ngSwitch]="event.type">
@@ -69,5 +78,5 @@
         </li>
       </ul>
     </tui-island>
-  </aside>
+  </aside>-->
 </section>

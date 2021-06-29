@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiLetModule, TuiMapperPipeModule } from '@taiga-ui/cdk'
 import { TuiButtonModule, TuiDataListModule, TuiHintModule, TuiLinkModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
-import { TuiAvatarModule, TuiDataListWrapperModule, TuiFilterModule, TuiInputModule, TuiIslandModule, TuiSelectModule } from '@taiga-ui/kit'
+import { TuiAvatarModule, TuiDataListWrapperModule, TuiFilterModule, TuiInputModule, TuiIslandModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit'
 import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 
 import { CommunitiesRoutingModule } from './communities-routing.module'
-import { CommunityCreationComponent } from './components/community-creation/community-creation.component'
+import { CommunityReviewComponent } from './components/community-review/community-review.component'
+import { CommunitySettingsComponent } from './components/community-settings/community-settings.component'
+import { CommunityUsersComponent } from './components/community-users/community-users.component'
 import { CommunitiesContainerComponent } from './containers/communities-container/communities-container.component'
 import { SingleCommunityContainerComponent } from './containers/single-community-container/single-community-container.component'
 import { SingleCommunityResolver } from './resolvers/single-community/single-community.resolver'
@@ -16,7 +18,9 @@ import { SingleCommunityResolver } from './resolvers/single-community/single-com
   declarations: [
     CommunitiesContainerComponent,
     SingleCommunityContainerComponent,
-    CommunityCreationComponent
+    CommunityReviewComponent,
+    CommunitySettingsComponent,
+    CommunityUsersComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +39,8 @@ import { SingleCommunityResolver } from './resolvers/single-community/single-com
     EventCardModule,
     TuiLetModule,
     TuiAvatarModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiTabsModule
   ],
   providers: [
     SingleCommunityResolver
