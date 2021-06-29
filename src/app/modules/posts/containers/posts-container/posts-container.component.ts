@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { Title } from '@angular/platform-browser'
 import { Observable } from 'rxjs'
 import { Post } from '../../../../global/domain/models/post'
 import { PostService } from '../../../../global/domain/services/post/post.service'
@@ -13,6 +14,8 @@ export class PostsContainerComponent {
 
   public posts: Observable<Post[]> = this.postService.getAll()
 
-  constructor(private postService: PostService) {
+  constructor(private postService: PostService,
+              private title: Title) {
+    this.title.setTitle(`Статьи`)
   }
 }

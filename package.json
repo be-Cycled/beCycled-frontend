@@ -1,6 +1,18 @@
 {
   "name": "be-cycled",
-  "version": "0.5.0",
+  "version": "0.6.0",
+  "maintainers": [
+    {
+      "name": "Alexandr Koltovich",
+      "email": "avkoltovich@gmail.com",
+      "url": "t.me/alex_from_waliot"
+    },
+    {
+      "name": "Sam Bulatov",
+      "email": "mephistorine@gmail.com",
+      "url": "t.me/mephistorine"
+    }
+  ],
   "scripts": {
     "start": "ng serve --port 5000",
     "start:fake-backend": "json-server --watch ./src/mocks/db.json --port 5100",
@@ -46,6 +58,7 @@
     "@types/mapbox-gl": "^2.3.0",
     "@types/mapbox__mapbox-gl-geocoder": "^4.7.0",
     "@types/node": "^12.11.1",
+    "@waliot-oss/tslint-config": "^1.0.0",
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",

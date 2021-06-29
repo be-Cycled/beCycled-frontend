@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
-import { TUI_LANGUAGE, TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -12,8 +11,6 @@ import { MenuModule } from './global/cdk/components/menu/menu.module'
 import { DomainModule } from './global/domain/domain.module'
 import { ServiceWorkerModule } from '@angular/service-worker'
 import { environment } from '../environments/environment'
-import { of } from 'rxjs'
-import { MAPBOX_TOKEN } from './global/models'
 
 @NgModule({
   declarations: [
@@ -25,8 +22,8 @@ import { MAPBOX_TOKEN } from './global/models'
     BrowserAnimationsModule,
     TuiRootModule,
     NgxMapboxGLModule.withConfig({
-      accessToken: MAPBOX_TOKEN,
-      geocoderAccessToken: MAPBOX_TOKEN
+      accessToken: 'pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g',
+      geocoderAccessToken: 'pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g'
     }),
     HeaderModule,
     MenuModule,
@@ -40,12 +37,7 @@ import { MAPBOX_TOKEN } from './global/models'
       registrationStrategy: 'registerWhenStable:30000'
     })
   ],
-  providers: [
-    {
-      provide: TUI_LANGUAGE,
-      useValue: of(TUI_RUSSIAN_LANGUAGE)
-    }
-  ],
+  providers: [],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {

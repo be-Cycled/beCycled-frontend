@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http'
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Title } from '@angular/platform-browser'
 import { Router } from '@angular/router'
 import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { TuiValidationError } from '@taiga-ui/cdk'
@@ -59,7 +60,9 @@ export class RegistrationComponent {
               private authorizationService: AuthorizationService,
               @Inject(LOCAL_STORAGE)
               private localStorage: Storage,
-              private router: Router) {
+              private router: Router,
+              private title: Title) {
+    this.title.setTitle(`Регистрация`)
   }
 
   public onClickSubmitButton(): void {

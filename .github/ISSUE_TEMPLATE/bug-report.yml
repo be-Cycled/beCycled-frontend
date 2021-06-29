@@ -1,0 +1,41 @@
+name: ⚠️ Отчет об ошибке
+description: Отправить отчет об ошибке
+title: "Не правильно работает ..."
+labels: [ bug ]
+body:
+  - type: markdown
+    attributes:
+      value: Спасибо, что нашли время для описания ошибки!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Что случилось?
+      description: Более подробно опишите ошибку!
+      value: Случилось что-то непредвиденное...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Воспроизведение
+      description: Пожалуйста, оставьте подробную инструкцию, как воспроизвести ошибку.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Версия приложения
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Логи ошибки
+      description: Пожалуйста, приложите логи ошибки (логи AngularCLI, стектрейсы и так далее). Все отформатируется в блок кода, так что бектики (\`) не нужны.
+      render: text
+  - type: textarea
+    id: system-info
+    attributes:
+      label: Информация о системе
+      description: "Пожалуйста, укажите данные об окружении: название и версия системы, а так же браузера. Предпочтительно получить вывод утилиты [`envinfo`](https://github.com/tabrindle/envinfo)."
+      render: shell

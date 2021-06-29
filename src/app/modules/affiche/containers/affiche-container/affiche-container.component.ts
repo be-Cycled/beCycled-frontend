@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { FormControl } from '@angular/forms'
+import { Title } from '@angular/platform-browser'
 import { TuiHandler } from '@taiga-ui/cdk'
 import { combineLatest, Observable } from 'rxjs'
 import { map, shareReplay, startWith } from 'rxjs/operators'
 import { Competition, SportType, Workout } from '../../../../global/domain'
-import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
+import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
+import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 
 interface EventListByDay {
   date: ISO8601
@@ -134,7 +135,9 @@ export class AfficheContainerComponent implements OnInit {
   )
 
   constructor(private workoutService: WorkoutService,
-              private competitionService: CompetitionService) {
+              private competitionService: CompetitionService,
+              private title: Title) {
+    this.title.setTitle(`Афиша`)
   }
 
   public ngOnInit(): void {

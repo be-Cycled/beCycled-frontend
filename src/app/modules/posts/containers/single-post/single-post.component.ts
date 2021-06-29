@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { Title } from '@angular/platform-browser'
 import { ActivatedRoute } from '@angular/router'
 import { Post } from '../../../../global/domain/models/post'
 
@@ -12,7 +13,9 @@ export class SinglePostComponent {
 
   public post: Post = this.activatedRoute.snapshot.data.post
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute,
+              private title: Title) {
+    this.title.setTitle(this.post.title)
   }
 
 }
