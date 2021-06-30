@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiLetModule, TuiMapperPipeModule } from '@taiga-ui/cdk'
-import { TuiButtonModule, TuiDataListModule, TuiHintModule, TuiLinkModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
+import { TuiButtonModule, TuiDataListModule, TuiHintModule, TuiLinkModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
 import { TuiAvatarModule, TuiDataListWrapperModule, TuiFilterModule, TuiInputModule, TuiIslandModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit'
 import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 
@@ -22,26 +22,27 @@ import { SingleCommunityResolver } from './resolvers/single-community/single-com
     CommunitySettingsComponent,
     CommunityUsersComponent
   ],
-  imports: [
-    CommonModule,
-    CommunitiesRoutingModule,
-    TuiButtonModule,
-    TuiInputModule,
-    TuiFilterModule,
-    TuiSelectModule,
-    TuiDataListWrapperModule,
-    TuiTextfieldControllerModule,
-    ReactiveFormsModule,
-    TuiDataListModule,
-    TuiMapperPipeModule,
-    TuiLinkModule,
-    TuiIslandModule,
-    EventCardModule,
-    TuiLetModule,
-    TuiAvatarModule,
-    TuiHintModule,
-    TuiTabsModule
-  ],
+            imports: [
+              CommonModule,
+              CommunitiesRoutingModule,
+              TuiButtonModule,
+              TuiInputModule,
+              TuiFilterModule,
+              TuiSelectModule,
+              TuiDataListWrapperModule,
+              TuiTextfieldControllerModule,
+              ReactiveFormsModule,
+              TuiDataListModule,
+              TuiMapperPipeModule,
+              TuiLinkModule,
+              TuiIslandModule,
+              EventCardModule,
+              TuiLetModule,
+              TuiAvatarModule,
+              TuiHintModule,
+              TuiTabsModule,
+              TuiSvgModule
+            ],
   providers: [
     SingleCommunityResolver
   ]

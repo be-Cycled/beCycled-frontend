@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
-import { BehaviorSubject, defer, forkJoin, Observable, of } from 'rxjs'
+import { BehaviorSubject, combineLatest, defer, forkJoin, Observable, of } from 'rxjs'
 import { catchError, map, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import { Community, CommunityType, Competition, SportType, User, Workout } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
@@ -23,18 +23,6 @@ import { UserHolderService } from '../../../../global/services'
 export class SingleCommunityContainerComponent {
 
   public communityHolder: BehaviorSubject<Community> = new BehaviorSubject<Community>(this.activatedRoute.snapshot.data.community)
-
-  public sportTypesMap: Record<SportType, string> = {
-    [ SportType.bicycle ]: `Велосипед`,
-    [ SportType.rollerblade ]: `Ролики`,
-    [ SportType.run ]: `Бег`,
-    [ SportType.ski ]: `Лыжи`
-  }
-
-  public communityTypesMap: Record<CommunityType, string> = {
-    [ CommunityType.organization ]: `Организация`,
-    [ CommunityType.club ]: `Клуб`
-  }
 
   public events: Observable<SomeWrappedEvent[]> = forkJoin([
     this.workoutService.getWorkoutsByCommunity(this.communityHolder.value.nickname),
@@ -89,10 +77,6 @@ export class SingleCommunityContainerComponent {
     shareReplay(1)
   )
 
-  public someFirstUsers: Observable<User[]> = this.communityUsers.pipe(
-    map((users: User[]) => users.slice(0, 6))
-  )
-
   public userCount: Observable<number> = this.communityUsers.pipe(
     map((users: User[]) => users.length)
   )
@@ -101,16 +85,34 @@ export class SingleCommunityContainerComponent {
     map((userCount: number) => userCount > 6)
   )
 
-  public moreUserCount: Observable<number> = this.userCount.pipe(
-    map((userCount: number) => userCount - 6)
-  )
-
   private titleSetter: Observable<Community> = defer(() => this.communityHolder.pipe(
     takeUntil(this.destroyService),
     tap((community: Community) => this.title.setTitle(community.name))
   ))
 
-  public activeItemIndex: number = 0
+  public communityTypesMap: Record<CommunityType, string> = {
+    [ CommunityType.organization ]: `Организация`,
+    [ CommunityType.club ]: `Клуб`
+  }
+
+  public isUserCanEditCommunity: Observable<boolean> = combineLatest([
+    this.isAuthorizedUser,
+    this.communityHolder
+  ]).pipe(
+    map(([ isUserAuthorized, community ]: [ boolean, Community ]) => {
+      if (!isUserAuthorized) {
+        return false
+      }
+
+      const user: User | null = this.userHolderService.getUser()
+
+      if (user === null) {
+        return false
+      }
+
+      return user.id === community.ownerUserId
+    })
+  )
 
   constructor(public readonly activatedRoute: ActivatedRoute,
               private workoutService: WorkoutService,
