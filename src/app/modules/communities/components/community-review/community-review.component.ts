@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { Title } from '@angular/platform-browser'
 import { ActivatedRoute } from '@angular/router'
-import { TuiDestroyService } from '@taiga-ui/cdk'
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs'
 import { map, shareReplay, switchMap } from 'rxjs/operators'
 import { Community, Competition, SportType, User, Workout } from '../../../../global/domain'
@@ -91,9 +89,7 @@ export class CommunityReviewComponent {
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
               private userHolderService: UserHolderService,
-              private communityService: CommunityService,
-              private title: Title,
-              private destroyService: TuiDestroyService) {
+              private communityService: CommunityService) {
 
   }
 

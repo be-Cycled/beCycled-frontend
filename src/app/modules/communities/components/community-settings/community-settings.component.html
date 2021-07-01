@@ -1,1 +1,52 @@
-<p>community-settings works!</p>
+<div class="main-tread" [formGroup]="form">
+  <div class="field">
+    <tui-input formControlName="name" tuiTextfieldSize="m">Название</tui-input>
+  </div>
+
+  <div class="field">
+    <tui-input formControlName="nickname" tuiTextfieldSize="m">Никнейм</tui-input>
+  </div>
+
+  <div class="field">
+    <tui-select
+      formControlName="communityType"
+      tuiTextfieldSize="m"
+      [valueContent]="communityTypeValueRef"
+    >
+      Тип сообщества
+      <tui-data-list *tuiDataList>
+        <button tuiOption *ngFor="let type of communityTypeKeys" [value]="type">{{ communityTypesMap[type] }}</button>
+      </tui-data-list>
+    </tui-select>
+  </div>
+
+  <div class="field">
+    <tui-multi-select
+      formControlName="sportTypes"
+      tuiTextfieldSize="m"
+      [stringify]="sportTypeStringify"
+      [editable]="false"
+      [tuiTextfieldLabelOutside]="true"
+    >
+      Типы спорта
+      <tui-data-list *tuiDataList tuiMultiSelectGroup>
+        <button tuiOption *ngFor="let sportType of sportTypeKeys" [value]="sportType">{{ sportTypesMap[ sportType ] }}</button>
+      </tui-data-list>
+    </tui-multi-select>
+  </div>
+
+  <div class="field">
+    <tui-text-area formControlName="description" tuiTextfieldSize="m">Описание</tui-text-area>
+  </div>
+
+  <div class="field">
+    <tui-input formControlName="url" tuiTextfieldSize="m">Ссылка на веб-сайт</tui-input>
+  </div>
+</div>
+
+<aside class="sidebar">
+  <p>Аватар</p>
+  <img [attr.src]="form.value.avatar" [attr.alt]="form.value.name">
+</aside>
+
+<ng-template #communityTypeValueRef let-option>{{ communityTypesMap[ option ] }}</ng-template>
