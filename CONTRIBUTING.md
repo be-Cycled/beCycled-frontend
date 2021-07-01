@@ -124,3 +124,4 @@ PR Closes #125
   ```bash
   git push && git push --tags 
   ```
+4. Слейте ветку `main` в `release`

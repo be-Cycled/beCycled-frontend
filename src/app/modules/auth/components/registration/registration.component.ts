@@ -34,7 +34,7 @@ function checkPasswordEquality(formGroup: FormGroup): { isPassEquals: false } | 
 })
 export class RegistrationComponent {
 
-  public errorMessage: TuiValidationError = new TuiValidationError(`Пароли не совпадают`)
+  public errorMessage: TuiValidationError<object> = new TuiValidationError<object>(`Пароли не совпадают`)
 
   public registrationForm: FormGroup = this.fb.group(
     {

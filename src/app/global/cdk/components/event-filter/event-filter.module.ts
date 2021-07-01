@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { EventFilterComponent } from './components/event-filter/event-filter.component'
+import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiFilterModule } from '@taiga-ui/kit'
-
+import { EventFilterComponent } from './components/event-filter/event-filter.component'
 
 @NgModule({
   declarations: [

@@ -1,12 +1,11 @@
-import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-
-import { WorkoutPageRoutingModule } from './workout-page-routing.module'
-import { WorkoutPageComponent } from './components/workout-page.component'
+import { NgModule } from '@angular/core'
+import { TuiLetModule } from '@taiga-ui/cdk'
 import { TuiIslandModule } from '@taiga-ui/kit'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
-import { TuiLetModule } from '@taiga-ui/cdk'
+import { WorkoutPageComponent } from './components/workout-page.component'
 
+import { WorkoutPageRoutingModule } from './workout-page-routing.module'
 
 @NgModule({
   declarations: [
