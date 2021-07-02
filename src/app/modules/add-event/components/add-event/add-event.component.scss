@@ -13,6 +13,15 @@ mgl-map {
 }
 
 ::ng-deep {
+  .none {
+    display: none;
+  }
+
+  .mapboxgl-map.resized {
+    width: 200px;
+    height: 200px;
+  }
+
   .start-point,
   .end-point {
     width: 24px;

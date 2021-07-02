@@ -16,7 +16,6 @@
   [center]="[ 39.949127487394094,43.414052415946685 ]"
   (mapLoad)="onMapboxLoad($event)"
   (mapClick)="onMapClick($event)"
-  (mapDblClick)="onDblMapClick()"
 >
   <mgl-geojson-source
     id="geojson-route"
@@ -35,5 +34,8 @@
   </mgl-layer>
   <mgl-control mglNavigation></mgl-control>
 </mgl-map>
-
+<button (click)="generatePreview()">Preview</button>
+<button (click)="generateTrack()">Track</button>
+<button (click)="hideMap()">Hide</button>
+<button (click)="onResize()">Resize</button>
 <img [attr.src]="preview">

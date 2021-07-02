@@ -29,7 +29,6 @@ export class AddEventComponent implements OnInit {
   public routeInfo: MapboxRouteInfo | null = null
   public geoJson: any = blankGeoJson
   public preview: string = ''
-  private firstClick: boolean = true
 
   public form: FormGroup = new FormGroup({
     date: new FormControl()
@@ -75,6 +74,15 @@ export class AddEventComponent implements OnInit {
         coordinates
       }
     }
+  }
+
+  public generateBounds(coordinates: any): any {
+    return coordinates.reduce(
+      (bounds: mapboxgl.LngLatBounds, coord: any) => {
+        return bounds.extend(coord)
+      },
+      new mapboxgl.LngLatBounds(coordinates[ 0 ], coordinates[ 0 ])
+    )
   }
 
   private updateDirection(): void {
@@ -146,103 +154,83 @@ export class AddEventComponent implements OnInit {
     }
   }
 
-  /**
-   * TODO: Стандартизировать маркеры. Обдумать вариант рисовать стартовый маркер на canvas, а не через DOM.
-   */
-  public onDblMapClick(): void {
-    if (this.firstClick) {
-      this.map?.loadImage(
-        '/assets/icons/icon-72.png',
-        (error: Error | undefined, image: any) => {
-          if (error) {
-            throw error
+  public generatePreview(): void {
+    this.preview = this.map!.getCanvas().toDataURL()
+  }
+
+  public hideMap(): void {
+    this.map!.getContainer().classList.add('none')
+  }
+
+  public generateTrack(): void {
+    const startPoint: number[] = [
+      this.coordinates[ 0 ].lng,
+      this.coordinates[ 0 ].lat
+    ]
+
+    const endPoint: number[] = [
+      this.coordinates[ this.coordinates.length - 1 ].lng,
+      this.coordinates[ this.coordinates.length - 1 ].lat
+    ]
+
+    this.map?.addSource('points', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: startPoint
+            },
+            properties: {
+              pointType: 'Start'
+            }
+          },
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: endPoint
+            },
+            properties: {
+              pointType: 'End'
+            }
           }
-
-          this.map?.addImage('custom-marker', image)
-
-          const startPoint: number[] = [
-            this.coordinates[ 0 ].lng,
-            this.coordinates[ 0 ].lat
-          ]
-
-          const endPoint: number[] = [
-            this.coordinates[ this.coordinates.length - 1 ].lng,
-            this.coordinates[ this.coordinates.length - 1 ].lat
-          ]
-
-          this.map?.addSource('points', {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: [
-                {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: startPoint
-                  },
-                  properties: {
-                    pointType: 'Start'
-                  }
-                },
-                {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: endPoint
-                  },
-                  properties: {
-                    pointType: 'End'
-                  }
-                }
-              ]
-            }
-          })
-
-          this.map?.addLayer({
-            id: 'points',
-            type: 'circle',
-            source: 'points',
-            paint: {
-              'circle-radius': {
-                base: 1.75,
-                stops: [
-                  [ 12, 8 ],
-                  [ 22, 180 ]
-                ]
-              },
-              'circle-color': [
-                'match',
-                [ 'get', 'pointType' ],
-                'Start',
-                '#fbb03b',
-                'End',
-                '#223b53',
-                '#cccccc'
-              ]
-            }
-          })
-        }
-      )
-
-      this.firstClick = false
-    } else {
-      if (this.map !== null) {
-        /**
-         * Попытка изменения размера изображения. Этот пример показывает, что рендерить канвас не обязательно.
-         * А можно всего лишь создать этот элемент и взять из него данные для картинки.
-         */
-        const resizedCanvas: HTMLCanvasElement = document.createElement('canvas')
-        const resizedContext: CanvasRenderingContext2D | null = resizedCanvas.getContext('2d')
-
-        resizedCanvas.width = 200
-        resizedCanvas.height = 150
-
-        const canvas: HTMLCanvasElement = this.map.getCanvas()
-
-        resizedContext!.drawImage(canvas, 0, 0, 200, 150)
-        this.preview = resizedCanvas.toDataURL()
+        ]
       }
-    }
+    })
+
+    this.map?.addLayer({
+      id: 'points',
+      type: 'circle',
+      source: 'points',
+      paint: {
+        'circle-radius': {
+          base: 1.75,
+          stops: [
+            [ 12, 8 ],
+            [ 22, 180 ]
+          ]
+        },
+        'circle-color': [
+          'match',
+          [ 'get', 'pointType' ],
+          'Start',
+          '#fbb03b',
+          'End',
+          '#223b53',
+          '#cccccc'
+        ]
+      }
+    })
+  }
+
+  public onResize(): void {
+    const bounds: any = this.generateBounds(this.routeInfo!.routes[ 0 ].geometry.coordinates)
+
+    this.map!.getContainer().classList.add('resized')
+    this.map!.resize().fitBounds(bounds, { padding: 20, linear: true })
   }
 }
