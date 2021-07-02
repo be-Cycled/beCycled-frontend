@@ -32,6 +32,10 @@ section.header {
   --tui-primary: var(--cy-success);
 }
 
+.tabs-container {
+  margin-bottom: 1rem;
+}
+
 @media screen and (min-width: 599px) {
   :host {
     max-width: 900px;

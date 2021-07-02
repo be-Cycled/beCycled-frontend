@@ -7,6 +7,10 @@ import { Community, User } from '../../domain'
 import { BrowserStorage, takeBrowserStorageKey } from '../../models'
 
 @Injectable({ providedIn: 'root' })
+/**
+ * @deprecated
+ * @todo Переписать на {@link ComponentStore}
+ */
 export class UserHolderService {
 
   private user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null)

@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs'
-import { map, shareReplay, switchMap } from 'rxjs/operators'
+import { filter, map, pluck, shareReplay, switchMap } from 'rxjs/operators'
 import { Community, Competition, SportType, User, Workout } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
+import { CommunityStore } from '../../services/community-store/community-store.service'
 
 @Component({
   selector: 'cy-community-review',
@@ -24,28 +25,33 @@ export class CommunityReviewComponent {
     [ SportType.ski ]: `Лыжи`
   }
 
-  public communityHolder: BehaviorSubject<Community> = new BehaviorSubject<Community>(this.activatedRoute.snapshot.data.community)
-
-  public events: Observable<SomeWrappedEvent[]> = forkJoin([
-    this.workoutService.getWorkoutsByCommunity(this.communityHolder.value.nickname),
-    this.competitionService.getCompetitionsByCommunity(this.communityHolder.value.nickname)
-  ]).pipe(
-    map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
-      const result: SomeWrappedEvent[] = []
-
-      const workoutEvents: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => ({ type: EventType.workout, value: workout }))
-      const competitionEvents: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => ({ type: EventType.competition, value: competition }))
-
-      result.push(...workoutEvents)
-      result.push(...competitionEvents)
-
-      return result.sort((a: SomeWrappedEvent, b: SomeWrappedEvent) => {
-        return new Date(a.value.createdAd).getTime() - new Date(b.value.startDate).getTime()
-      })
-    })
+  public communityChanges: Observable<Community> = this.communityStore.select().pipe(
+    pluck('community'),
+    filter((community: Community | null): community is Community => community !== null)
   )
 
-  public isUserJoined: Observable<boolean> = this.communityHolder.pipe(
+  public events: Observable<SomeWrappedEvent[]> = this.communityChanges.pipe(
+    switchMap((community: Community) => forkJoin([
+      this.workoutService.getWorkoutsByCommunity(community.nickname),
+      this.competitionService.getCompetitionsByCommunity(community.nickname)
+    ]).pipe(
+      map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+        const result: SomeWrappedEvent[] = []
+
+        const workoutEvents: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => ({ type: EventType.workout, value: workout }))
+        const competitionEvents: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => ({ type: EventType.competition, value: competition }))
+
+        result.push(...workoutEvents)
+        result.push(...competitionEvents)
+
+        return result.sort((a: SomeWrappedEvent, b: SomeWrappedEvent) => {
+          return new Date(a.value.createdAd).getTime() - new Date(b.value.startDate).getTime()
+        })
+      })
+    ))
+  )
+
+  public isUserJoined: Observable<boolean> = this.communityChanges.pipe(
     map((community: Community) => {
       const user: User | null = this.userHolderService.getUser()
 
@@ -67,11 +73,11 @@ export class CommunityReviewComponent {
 
   public showJoinButtonLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
-  public sportTypes: Observable<SportType[]> = this.communityHolder.pipe(
+  public sportTypes: Observable<SportType[]> = this.communityChanges.pipe(
     map((community: Community) => community.sportTypes)
   )
 
-  public communityUsers: Observable<User[]> = this.communityHolder.pipe(
+  public communityUsers: Observable<User[]> = this.communityChanges.pipe(
     // distinctUntilChanged((a: Community, b: Community) => a.userIds.every((value: number) => b.userIds.includes(value)))
     switchMap(({ nickname }: Community) => this.communityService.getUsersByCommunity(nickname)),
     shareReplay(1)
@@ -89,7 +95,8 @@ export class CommunityReviewComponent {
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
               private userHolderService: UserHolderService,
-              private communityService: CommunityService) {
+              private communityService: CommunityService,
+              private communityStore: CommunityStore) {
 
   }
 

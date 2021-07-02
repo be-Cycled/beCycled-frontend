@@ -5,6 +5,12 @@ import { INITIAL_STATE_TOKEN } from './initial-state-token'
 
 export type StateDispatcher<T> = (observableOrValue: T | Observable<T>) => Subscription
 
+/**
+ * Хранитель данных
+ *
+ * Класс предназначений для хранения данных.
+ */
+
 @Injectable()
 export class ComponentStore<T> implements OnDestroy {
 
@@ -47,6 +53,19 @@ export class ComponentStore<T> implements OnDestroy {
   public initState(defaultState: T): void {
     this.state.next(defaultState)
     this.isInitialized = true
+  }
+
+  /**
+   * Устанавливает состояние
+   *
+   * @param stateOrUpdater Значение или функция возвращающаяя значение
+   */
+  public setState(stateOrUpdater: T | ((state: T) => T)): void {
+    if (typeof stateOrUpdater !== 'function') {
+      this.initState(stateOrUpdater)
+    } else {
+      this.createUpdater(stateOrUpdater as (state: T) => T)()
+    }
   }
 
   /**

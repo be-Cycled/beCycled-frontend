@@ -1,26 +1,130 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
-import { Title } from '@angular/platform-browser'
 import { ActivatedRoute } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
-import { BehaviorSubject, combineLatest, defer, forkJoin, Observable, of } from 'rxjs'
-import { catchError, map, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators'
-import { Community, CommunityType, Competition, SportType, User, Workout } from '../../../../global/domain'
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
+import { catchError, filter, map, pluck, take, tap } from 'rxjs/operators'
+import { Community, CommunityType, User } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
-import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
-import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
+import { CommunityStore } from '../../services/community-store/community-store.service'
 
 @Component({
   selector: 'cy-single-community-container',
   templateUrl: './single-community-container.component.html',
   styleUrls: [ './single-community-container.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    TuiDestroyService
-  ]
+  providers: [ TuiDestroyService ]
 })
 export class SingleCommunityContainerComponent {
+
+  public communityChanges: Observable<Community> = this.communityStore.select().pipe(
+    pluck('community'),
+    filter((community: Community | null): community is Community => community !== null)
+  )
+
+  public communityShowLoader: Observable<boolean> = this.communityStore.select().pipe(
+    pluck('communityShowLoader')
+  )
+
+  public isAuthorizedUser: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges.pipe()
+
+  public communityTypesMap: Record<CommunityType, string> = {
+    [ CommunityType.organization ]: `Организация`,
+    [ CommunityType.club ]: `Клуб`
+  }
+
+  public isUserJoined: Observable<boolean> = this.communityChanges.pipe(
+    map((community: Community) => {
+      const user: User | null = this.userHolderService.getUser()
+
+      if (user === null) {
+        throw new Error(`User does not exist`)
+      }
+
+      return community.userIds.includes(user.id)
+    })
+  )
+
+  public iconRightIcon: Observable<'tuiIconCheck' | 'tuiIconPlus'> = this.isUserJoined.pipe(
+    map((isUserJoined: boolean) => isUserJoined ? 'tuiIconCheck' : 'tuiIconPlus')
+  )
+
+  public joinButtonLabel: Observable<string> = this.isUserJoined.pipe(
+    map((isUserJoined: boolean) => isUserJoined ? 'Уже участник' : 'Присоединиться')
+  )
+
+  public showJoinButtonLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
+  public isUserCanEditCommunity: Observable<boolean> = combineLatest([
+    this.isAuthorizedUser,
+    this.communityChanges
+  ]).pipe(
+    map(([ isUserAuthorized, community ]: [ boolean, Community ]) => {
+      if (!isUserAuthorized) {
+        return false
+      }
+
+      const user: User | null = this.userHolderService.getUser()
+
+      if (user === null) {
+        return false
+      }
+
+      return user.id === community.ownerUserId
+    })
+  )
+
+  constructor(public readonly activatedRoute: ActivatedRoute,
+              private communityStore: CommunityStore,
+              private userHolderService: UserHolderService,
+              private communityService: CommunityService) {
+    const nickname: string | null = this.activatedRoute.snapshot.paramMap.get('nickname')
+
+    if (nickname === null) {
+      throw new Error(`${ this.constructor.name } has been open without "nickname" parameter`)
+    }
+
+    this.communityStore.getCommunity(nickname)
+  }
+
+  public onClickJoinButton(): void {
+    const user: User | null = this.userHolderService.getUser()
+
+    if (user === null) {
+      throw new Error(`User does not exist`)
+    }
+
+    this.showJoinButtonLoader.next(true)
+
+    const community: Community | null = this.communityStore.takeState().community
+
+    if (community === null) {
+      throw new Error(`Community does not exist`)
+    }
+
+    if (!this.userHolderService.isUserJoinedCommunity(community)) {
+      this.communityService.join(community).pipe(
+        take(1),
+        tap((community: Community) => {
+          this.showJoinButtonLoader.next(false)
+          this.communityStore.patchState({ community })
+        }),
+        catchError(() => of(null))
+      ).subscribe()
+    } else {
+      this.communityService.leave(community).pipe(
+        take(1),
+        tap((community: Community) => {
+          this.showJoinButtonLoader.next(false)
+          this.communityStore.patchState({ community })
+        }),
+        catchError(() => of(null))
+      ).subscribe()
+    }
+  }
+}
+
+/*export class SingleCommunityContainerComponent {
 
   public communityHolder: BehaviorSubject<Community> = new BehaviorSubject<Community>(this.activatedRoute.snapshot.data.community)
 
@@ -120,8 +224,19 @@ export class SingleCommunityContainerComponent {
               private userHolderService: UserHolderService,
               private communityService: CommunityService,
               private title: Title,
-              private destroyService: TuiDestroyService) {
+              private destroyService: TuiDestroyService,
+              private communityStore: CommunityStoreService) {
     this.titleSetter.subscribe()
+
+    this.communityStore.select().subscribe(console.log)
+
+    const nickname: string | null = this.activatedRoute.snapshot.paramMap.get('nickname')
+
+    if (nickname === null) {
+      throw new Error(`${ this.constructor.name } has been open without "nickname" parameter`)
+    }
+
+    this.communityStore.getCommunity(nickname)
   }
 
   public onClickJoinButton(): void {
@@ -156,4 +271,4 @@ export class SingleCommunityContainerComponent {
     }
   }
 
-}
+}*/

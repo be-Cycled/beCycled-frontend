@@ -1,31 +1,34 @@
-<section class="header" *tuiLet="communityHolder | async as community">
-  <div class="avatar">
-    <img [attr.src]="community.avatar" [attr.alt]="community.name">
-  </div>
-  <div class="community-info">
-    <span class="community-type tui-island__category">{{ communityTypesMap[ community.communityType ] }}</span>
-    <h1 class="community-name">{{ community.name }}</h1>
-    <p class="community-description">{{ community.description }}</p>
-    <ul class="community-additional">
-      <li>
-        <span class="material-icons">link</span>
-        <a [attr.href]="community.url">{{ community.url }}</a>
-      </li>
-    </ul>
-    <p class="join-button-container">
-      <button
-        *ngIf="isAuthorizedUser | async"
-        tuiButton
-        size="s"
-        (click)="onClickJoinButton()"
-        class="join-button"
-        [class.is-user-joined]="isUserJoined | async"
-        [iconRight]="iconRightIcon | async"
-        [showLoader]="showJoinButtonLoader | async"
-      >{{ joinButtonLabel | async }}</button>
-    </p>
-  </div>
-</section>
+<tui-loader class="header-loader" [showLoader]="communityShowLoader | async"></tui-loader>
+<ng-container *ngIf="!(communityShowLoader | async)">
+  <section class="header" *ngIf="communityChanges | async as community">
+    <div class="avatar">
+      <img [attr.src]="community.avatar | safe: 'url'" [attr.alt]="community.name">
+    </div>
+    <div class="community-info">
+      <span class="community-type tui-island__category">{{ communityTypesMap[ community.communityType ] }}</span>
+      <h1 class="community-name">{{ community.name }}</h1>
+      <p class="community-description" [innerHTML]="community.description | safe"></p>
+      <ul class="community-additional">
+        <li>
+          <span class="material-icons">link</span>
+          <a [attr.href]="community.url | safe: 'url'">{{ community.url }}</a>
+        </li>
+      </ul>
+      <p class="join-button-container">
+        <button
+          *ngIf="isAuthorizedUser | async"
+          tuiButton
+          size="s"
+          (click)="onClickJoinButton()"
+          class="join-button"
+          [class.is-user-joined]="isUserJoined | async"
+          [iconRight]="iconRightIcon | async"
+          [showLoader]="showJoinButtonLoader | async"
+        >{{ joinButtonLabel | async }}</button>
+      </p>
+    </div>
+  </section>
+</ng-container>
 
 <section class="tabs-container">
   <tui-tabs>

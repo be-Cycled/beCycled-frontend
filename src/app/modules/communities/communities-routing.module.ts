@@ -5,7 +5,6 @@ import { CommunitySettingsComponent } from './components/community-settings/comm
 import { CommunityUsersComponent } from './components/community-users/community-users.component'
 import { CommunitiesContainerComponent } from './containers/communities-container/communities-container.component'
 import { SingleCommunityContainerComponent } from './containers/single-community-container/single-community-container.component'
-import { SingleCommunityResolver } from './resolvers/single-community/single-community.resolver'
 
 const routes: Routes = [
   {
@@ -15,9 +14,6 @@ const routes: Routes = [
   {
     path: ':nickname',
     component: SingleCommunityContainerComponent,
-    resolve: {
-      community: SingleCommunityResolver
-    },
     children: [
       {
         path: '',
