@@ -228,9 +228,24 @@ export class AddEventComponent implements OnInit {
   }
 
   public onResize(): void {
+    /**
+     * Готовим точки для фитинга карты
+     */
     const bounds: any = this.generateBounds(this.routeInfo!.routes[ 0 ].geometry.coordinates)
 
+    /**
+     * Вешает хэндлер.
+     * Но нужно понимать, что этот хэндлер не гарантирует, что канвас закончил рендеринг.
+     */
+    this.map!.on('moveend', (evt: mapboxgl.MapboxEvent<any> & mapboxgl.EventData) => {
+      if (evt.fitBoundsEnd) {
+        setTimeout(() => {
+          this.preview = this.map!.getCanvas().toDataURL()
+        }, 0)
+      }
+    })
+
     this.map!.getContainer().classList.add('resized')
-    this.map!.resize().fitBounds(bounds, { padding: 20, linear: true })
+    this.map!.resize().fitBounds(bounds, { padding: 20, linear: true, animate: false }, { fitBoundsEnd: true })
   }
 }
