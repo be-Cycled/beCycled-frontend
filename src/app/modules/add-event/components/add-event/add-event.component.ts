@@ -103,6 +103,9 @@ export class AddEventComponent implements OnInit {
     }
   }
 
+  /**
+   * TODO: Реализовать градиентный переход трека от зеленой точки к красной.
+   */
   public onMapClick(point: mapboxgl.MapMouseEvent & mapboxgl.EventData): void {
     const coordinates: mapboxgl.LngLat = point.lngLat
     if (this.map !== null) {
@@ -149,7 +152,7 @@ export class AddEventComponent implements OnInit {
   public onDblMapClick(): void {
     if (this.firstClick) {
       this.map?.loadImage(
-        'https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png',
+        '/assets/icons/icon-72.png',
         (error: Error | undefined, image: any) => {
           if (error) {
             throw error
@@ -179,7 +182,7 @@ export class AddEventComponent implements OnInit {
                     coordinates: startPoint
                   },
                   properties: {
-                    title: 'Старт'
+                    pointType: 'Start'
                   }
                 },
                 {
@@ -189,7 +192,7 @@ export class AddEventComponent implements OnInit {
                     coordinates: endPoint
                   },
                   properties: {
-                    title: 'Финиш'
+                    pointType: 'End'
                   }
                 }
               ]
@@ -198,17 +201,25 @@ export class AddEventComponent implements OnInit {
 
           this.map?.addLayer({
             id: 'points',
-            type: 'symbol',
+            type: 'circle',
             source: 'points',
-            layout: {
-              'icon-image': 'custom-marker',
-              'text-field': [ 'get', 'title' ],
-              'text-font': [
-                'Open Sans Semibold',
-                'Arial Unicode MS Bold'
-              ],
-              'text-offset': [ 0, 1.25 ],
-              'text-anchor': 'top'
+            paint: {
+              'circle-radius': {
+                base: 1.75,
+                stops: [
+                  [ 12, 8 ],
+                  [ 22, 180 ]
+                ]
+              },
+              'circle-color': [
+                'match',
+                [ 'get', 'pointType' ],
+                'Start',
+                '#fbb03b',
+                'End',
+                '#223b53',
+                '#cccccc'
+              ]
             }
           })
         }
@@ -217,7 +228,20 @@ export class AddEventComponent implements OnInit {
       this.firstClick = false
     } else {
       if (this.map !== null) {
-        this.preview = this.map.getCanvas().toDataURL()
+        /**
+         * Попытка изменения размера изображения. Этот пример показывает, что рендерить канвас не обязательно.
+         * А можно всего лишь создать этот элемент и взять из него данные для картинки.
+         */
+        const resizedCanvas: HTMLCanvasElement = document.createElement('canvas')
+        const resizedContext: CanvasRenderingContext2D | null = resizedCanvas.getContext('2d')
+
+        resizedCanvas.width = 200
+        resizedCanvas.height = 150
+
+        const canvas: HTMLCanvasElement = this.map.getCanvas()
+
+        resizedContext!.drawImage(canvas, 0, 0, 200, 150)
+        this.preview = resizedCanvas.toDataURL()
       }
     }
   }
