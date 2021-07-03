@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TuiDestroyService, TuiStringHandler } from '@taiga-ui/cdk'
 import { fromEvent, Observable } from 'rxjs'
-import { filter, map, pluck, take, takeUntil, tap } from 'rxjs/operators'
+import { filter, map, pluck, startWith, take, takeUntil, tap } from 'rxjs/operators'
 import { Community, CommunityType, SportType } from '../../../../global/domain'
+import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens/max-avatar-size'
 import { CommunityState, CommunityStore } from '../../services/community-store/community-store.service'
 
 @Component({
@@ -12,7 +13,7 @@ import { CommunityState, CommunityStore } from '../../services/community-store/c
   templateUrl: './community-setting-container.component.html',
   styleUrls: [ './community-setting-container.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [  TuiDestroyService]
+  providers: [ TuiDestroyService ]
 })
 export class CommunitySettingContainerComponent {
 
@@ -43,7 +44,8 @@ export class CommunitySettingContainerComponent {
   })
 
   public avatarChanges: Observable<string> = this.form.valueChanges.pipe(
-    pluck('avatar')
+    pluck('avatar'),
+    startWith(this.form.value.avatar)
   )
 
   public avatarInputFileControl: FormControl = new FormControl()
@@ -80,7 +82,9 @@ export class CommunitySettingContainerComponent {
   constructor(private activatedRoute: ActivatedRoute,
               private communityStore: CommunityStore,
               private destroyService: TuiDestroyService,
-              private router: Router) {
+              private router: Router,
+              @Inject(MAX_AVATAR_FILE_SIZE)
+              public readonly maxAvatarFileSize: number) {
     const nickname: string | null = this.activatedRoute.snapshot.paramMap.get('nickname')
 
     if (nickname === null) {
@@ -105,6 +109,6 @@ export class CommunitySettingContainerComponent {
       ...formValue
     })
 
-    this.router.navigate([ '/', 'communities', origin.community?.nickname ])
+    this.router.navigate([ '/', 'communities', origin.community!.nickname ])
   }
 }

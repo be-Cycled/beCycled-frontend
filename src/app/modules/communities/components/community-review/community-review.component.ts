@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs'
-import { filter, map, pluck, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, pluck, shareReplay, switchMap } from 'rxjs/operators'
 import { Community, Competition, SportType, User, Workout } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
@@ -13,7 +13,7 @@ import { CommunityStore } from '../../services/community-store/community-store.s
 @Component({
   selector: 'cy-community-review',
   templateUrl: './community-review.component.html',
-  styleUrls: ['./community-review.component.scss'],
+  styleUrls: [ './community-review.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CommunityReviewComponent {
@@ -27,6 +27,7 @@ export class CommunityReviewComponent {
 
   public communityChanges: Observable<Community> = this.communityStore.select().pipe(
     pluck('community'),
+    distinctUntilChanged(),
     filter((community: Community | null): community is Community => community !== null)
   )
 
@@ -80,7 +81,10 @@ export class CommunityReviewComponent {
   public communityUsers: Observable<User[]> = this.communityChanges.pipe(
     // distinctUntilChanged((a: Community, b: Community) => a.userIds.every((value: number) => b.userIds.includes(value)))
     switchMap(({ nickname }: Community) => this.communityService.getUsersByCommunity(nickname)),
-    shareReplay(1)
+    shareReplay({
+      bufferSize: 1,
+      refCount: true
+    })
   )
 
   public firstUsers: Observable<User[]> = this.communityUsers.pipe(

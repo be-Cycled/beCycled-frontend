@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
@@ -15,6 +15,7 @@ import { TrackerService } from '../../../../global/domain/services/tracker/track
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
+import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens/max-avatar-size'
 
 @Component({
   selector: 'cy-profile-container',
@@ -24,9 +25,6 @@ import { UserHolderService } from '../../../../global/services'
   providers: [ TuiDestroyService ]
 })
 export class ProfileContainerComponent {
-
-  // 1Mb
-  public maxFileSize: number = 1_000_000
 
   public activitiesFilterControl: FormControl = this.fb.control([ 'Тренировки' ])
 
@@ -210,7 +208,9 @@ export class ProfileContainerComponent {
               private trackerService: TrackerService,
               private telemetryService: TelemetryService,
               private title: Title,
-              private destroyService: TuiDestroyService) {
+              private destroyService: TuiDestroyService,
+              @Inject(MAX_AVATAR_FILE_SIZE)
+              public readonly maxAvatarFileSize: number) {
     this.previewAvatarCalc.subscribe()
     this.titleSetter.subscribe()
   }

@@ -50,14 +50,14 @@
 
 <aside class="sidebar">
   <div class="field avatar">
-    <p>Аватар</p>
+    <p>Аватар (макс. 1Мб)</p>
     <img [attr.src]="avatarChanges | async" [attr.alt]="form.value.name">
     <tui-input-file
       class="button-file"
       [formControl]="avatarInputFileControl"
-      accept="image/*"
-      link="Выберите файл"
-      label="или перетащите его (макс. 1Мб)"
+      [multiple]="false"
+      [maxFileSize]="maxAvatarFileSize"
+      accept="image/png,image/jpeg,image/jpg"
     ></tui-input-file>
   </div>
 </aside>
