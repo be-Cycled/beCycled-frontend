@@ -238,14 +238,22 @@ export class AddEventComponent implements OnInit {
      * Но нужно понимать, что этот хэндлер не гарантирует, что канвас закончил рендеринг.
      */
     this.map!.on('moveend', (evt: mapboxgl.MapboxEvent<any> & mapboxgl.EventData) => {
+      console.log('moveend')
       if (evt.fitBoundsEnd) {
-        setTimeout(() => {
-          this.preview = this.map!.getCanvas().toDataURL()
-        }, 0)
+        this.map!.once('dataloading', () => {
+          console.log('dataloading')
+          setTimeout(() => {
+            // this.preview = this.map!.getCanvas().toDataURL()
+          })
+        })
       }
     })
 
     this.map!.getContainer().classList.add('resized')
     this.map!.resize().fitBounds(bounds, { padding: 20, linear: true, animate: false }, { fitBoundsEnd: true })
+  }
+
+  public onRouteInfo(): void {
+    console.log(JSON.stringify(this.routeInfo))
   }
 }
