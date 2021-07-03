@@ -4,7 +4,7 @@ import { BrowserModule, Title } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ServiceWorkerModule } from '@angular/service-worker'
 import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core'
-import { TUI_INPUT_FILE_TEXTS } from '@taiga-ui/kit'
+import { TUI_LANGUAGE, TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 import { of } from 'rxjs'
 import { version } from '../../package.json'
@@ -67,17 +67,8 @@ class BeCycledTitle {
       useValue: version
     },
     {
-      provide: TUI_INPUT_FILE_TEXTS,
-      useValue: of({
-        defaultLabelSingle: 'или перетащите его сюда',
-        defaultLabelMultiple: 'или перетащите их сюда',
-        defaultLinkSingle: 'Выберите файл',
-        defaultLinkMultiple: 'Выберите файлы',
-        maxSizeRejectionReason: 'Размер файла превышает ',
-        formatRejectionReason: 'Неправильный формат ',
-        drop: 'Перетащите файл сюда',
-        dropMultiple: 'Перетащите файлы сюда'
-      })
+      provide: TUI_LANGUAGE,
+      useValue: of(TUI_RUSSIAN_LANGUAGE)
     }
   ],
   bootstrap: [ AppComponent ]

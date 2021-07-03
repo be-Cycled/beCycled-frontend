@@ -7,9 +7,9 @@
     <div class="community-info">
       <span class="community-type tui-island__category">{{ communityTypesMap[ community.communityType ] }}</span>
       <h1 class="community-name">{{ community.name }}</h1>
-      <p class="community-description" [innerHTML]="community.description | safe"></p>
+      <p class="community-description" *ngIf="community.description !== null && community.description !== ''" [innerHTML]="community.description | safe"></p>
       <ul class="community-additional">
-        <li>
+        <li *ngIf="community.url !== null && community.url !== ''">
           <span class="material-icons">link</span>
           <a [attr.href]="community.url | safe: 'url'">{{ community.url }}</a>
         </li>

@@ -6,6 +6,7 @@ import { TuiButtonModule, TuiDataListModule, TuiHintModule, TuiLinkModule, TuiLo
 import {
   TuiAvatarModule,
   TuiDataListWrapperModule,
+  TuiFieldErrorModule,
   TuiFilterModule,
   TuiInputFileModule,
   TuiInputModule,
@@ -22,6 +23,7 @@ import { CommunitiesRoutingModule } from './communities-routing.module'
 import { CommunityReviewComponent } from './components/community-review/community-review.component'
 import { CommunityUsersComponent } from './components/community-users/community-users.component'
 import { CommunitiesContainerComponent } from './containers/communities-container/communities-container.component'
+import { CommunityCreateContainerComponent } from './containers/community-create-container/community-create-container.component'
 import { CommunitySettingContainerComponent } from './containers/community-setting-container/community-setting-container.component'
 import { SingleCommunityContainerComponent } from './containers/single-community-container/single-community-container.component'
 import { CommunityStore } from './services/community-store/community-store.service'
@@ -32,7 +34,8 @@ import { CommunityStore } from './services/community-store/community-store.servi
     SingleCommunityContainerComponent,
     CommunityReviewComponent,
     CommunityUsersComponent,
-    CommunitySettingContainerComponent
+    CommunitySettingContainerComponent,
+    CommunityCreateContainerComponent
   ],
   imports: [
     CommonModule,
@@ -58,7 +61,8 @@ import { CommunityStore } from './services/community-store/community-store.servi
     TuiMultiSelectModule,
     SafePipeModule,
     TuiLoaderModule,
-    TuiInputFileModule
+    TuiInputFileModule,
+    TuiFieldErrorModule
   ],
   providers: [
     CommunityStore

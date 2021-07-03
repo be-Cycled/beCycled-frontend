@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.settings-header {
+  margin-bottom: 1rem;
+}
+
+.field:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.field.avatar {
+  img {
+    width: 200px;
+    margin-bottom: 1rem;
+  }
+
+  .button-file {
+    margin-bottom: 1rem;
+  }
+}

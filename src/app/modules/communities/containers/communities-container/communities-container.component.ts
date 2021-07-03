@@ -5,7 +5,7 @@ import { combineLatest, Observable } from 'rxjs'
 import { map, shareReplay, startWith } from 'rxjs/operators'
 import { Community, CommunityType, SportType } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
-import { buildCountString } from '../../../../global/utils/utils'
+import { buildCountString } from '../../../../global/utils'
 
 interface CommunityFiltration {
   search: string
