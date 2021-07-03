@@ -56,7 +56,6 @@ export class CommunityCreateContainerComponent {
     takeUntil(this.destroyService),
     tap((file: File | null) => {
       if (file === null) {
-        debugger
         return
       }
 
