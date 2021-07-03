@@ -1,3 +1,7 @@
+<div class="settings-header">
+  <a tuiLink [routerLink]="linkToBack | async">🔙 Вернуться на страницу сообщества</a>
+</div>
+
 <div class="main-tread" [formGroup]="form">
   <div class="field">
     <tui-input formControlName="name" tuiTextfieldSize="m">Название</tui-input>
@@ -28,7 +32,7 @@
       [editable]="false"
       [tuiTextfieldLabelOutside]="true"
     >
-      Типы спорта
+      Виды спорта
       <tui-data-list *tuiDataList tuiMultiSelectGroup>
         <button tuiOption *ngFor="let sportType of sportTypeKeys" [value]="sportType">{{ sportTypesMap[ sportType ] }}</button>
       </tui-data-list>
@@ -45,8 +49,21 @@
 </div>
 
 <aside class="sidebar">
-  <p>Аватар</p>
-  <img [attr.src]="form.value.avatar" [attr.alt]="form.value.name">
+  <div class="field avatar">
+    <p>Аватар</p>
+    <img [attr.src]="avatarChanges | async" [attr.alt]="form.value.name">
+    <tui-input-file
+      class="button-file"
+      [formControl]="avatarInputFileControl"
+      accept="image/*"
+      link="Выберите файл"
+      label="или перетащите его (макс. 1Мб)"
+    ></tui-input-file>
+  </div>
 </aside>
+
+<div class="actions-container">
+  <button tuiButton (click)="onClickSaveButton()" type="button" size="m">Сохранить</button>
+</div>
 
 <ng-template #communityTypeValueRef let-option>{{ communityTypesMap[ option ] }}</ng-template>

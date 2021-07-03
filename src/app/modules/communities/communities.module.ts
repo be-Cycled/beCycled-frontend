@@ -3,15 +3,26 @@ import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiLetModule, TuiMapperPipeModule } from '@taiga-ui/cdk'
 import { TuiButtonModule, TuiDataListModule, TuiHintModule, TuiLinkModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
-import { TuiAvatarModule, TuiDataListWrapperModule, TuiFilterModule, TuiInputModule, TuiIslandModule, TuiMultiSelectModule, TuiSelectModule, TuiTabsModule, TuiTextAreaModule } from '@taiga-ui/kit'
+import {
+  TuiAvatarModule,
+  TuiDataListWrapperModule,
+  TuiFilterModule,
+  TuiInputFileModule,
+  TuiInputModule,
+  TuiIslandModule,
+  TuiMultiSelectModule,
+  TuiSelectModule,
+  TuiTabsModule,
+  TuiTextAreaModule
+} from '@taiga-ui/kit'
 import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 import { SafePipeModule } from '../../global/cdk/pipes/safe/safe-pipe.module'
 
 import { CommunitiesRoutingModule } from './communities-routing.module'
 import { CommunityReviewComponent } from './components/community-review/community-review.component'
-import { CommunitySettingsComponent } from './components/community-settings/community-settings.component'
 import { CommunityUsersComponent } from './components/community-users/community-users.component'
 import { CommunitiesContainerComponent } from './containers/communities-container/communities-container.component'
+import { CommunitySettingContainerComponent } from './containers/community-setting-container/community-setting-container.component'
 import { SingleCommunityContainerComponent } from './containers/single-community-container/single-community-container.component'
 import { CommunityStore } from './services/community-store/community-store.service'
 
@@ -20,8 +31,8 @@ import { CommunityStore } from './services/community-store/community-store.servi
     CommunitiesContainerComponent,
     SingleCommunityContainerComponent,
     CommunityReviewComponent,
-    CommunitySettingsComponent,
-    CommunityUsersComponent
+    CommunityUsersComponent,
+    CommunitySettingContainerComponent
   ],
   imports: [
     CommonModule,
@@ -46,7 +57,8 @@ import { CommunityStore } from './services/community-store/community-store.servi
     TuiTextAreaModule,
     TuiMultiSelectModule,
     SafePipeModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiInputFileModule
   ],
   providers: [
     CommunityStore

@@ -10,7 +10,7 @@ export interface CommunityState {
   communityShowLoader: boolean
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class CommunityStore extends ComponentStore<CommunityState> {
   constructor(private communityService: CommunityService) {
     super({
@@ -31,6 +31,18 @@ export class CommunityStore extends ComponentStore<CommunityState> {
 
     return nicknameChanges.pipe(
       switchMap((nickname: string) => this.communityService.getByNickname(nickname).pipe(
+        tap((community: Community) => this.patchState({ community })),
+        catchError(() => EMPTY),
+        tap(() => this.setCommunityShowLoader(false))
+      ))
+    )
+  })
+
+  public updateCommunity: StateDispatcher<Community> = this.createEffect((community: Observable<Community>) => {
+    this.setCommunityShowLoader(true)
+
+    return community.pipe(
+      switchMap((community: Community) => this.communityService.update(community.id, community).pipe(
         tap((community: Community) => this.patchState({ community })),
         catchError(() => EMPTY),
         tap(() => this.setCommunityShowLoader(false))
