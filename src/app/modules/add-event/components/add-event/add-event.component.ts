@@ -5,8 +5,9 @@ import mapboxgl, { AnyLayer, LngLat } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteInfo } from '../../../../global/domain'
 import { take } from 'rxjs/operators'
+import { generateGeoJsonFeature } from '../../../../global/utils'
 
-const blankGeoJson: any = {
+const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
   properties: {},
   geometry: {
@@ -22,12 +23,15 @@ const blankGeoJson: any = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddEventComponent implements OnInit {
-  public coordinates: LngLat[] = []
   public map: mapboxgl.Map | null = null
+
+  public coordinates: LngLat[] = []
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
+
   public routeInfos: MapboxRouteInfo[] = []
-  public geoJson: any = blankGeoJson
+  public geoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = blankGeoJsonFeature
+
   public preview: string = ''
 
   public form: FormGroup = new FormGroup({
@@ -40,7 +44,7 @@ export class AddEventComponent implements OnInit {
   public ngOnInit(): void {
   }
 
-  public buildCurrentDate(): TuiDay {
+  public buildCurrentTuiDay(): TuiDay {
     const currentDate: Date = new Date()
 
     return new TuiDay(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
@@ -63,17 +67,6 @@ export class AddEventComponent implements OnInit {
 
     this.startPoint = new mapboxgl.Marker(startPoint)
     this.endPoint = new mapboxgl.Marker(endPoint)
-  }
-
-  public generateGeoJson(coordinates: number[][]): any {
-    return {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates
-      }
-    }
   }
 
   public generateBounds(coordinates: any): any {
@@ -122,10 +115,10 @@ export class AddEventComponent implements OnInit {
           let coordinatesFromRouteInfos: number[][] = []
           this.routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
 
-          this.geoJson = this.generateGeoJson(coordinatesFromRouteInfos)
+          this.geoJsonFeature = generateGeoJsonFeature(coordinatesFromRouteInfos)
 
           if (this.map !== null) {
-            (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
+            (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJsonFeature)
           }
         })
     }
@@ -133,8 +126,8 @@ export class AddEventComponent implements OnInit {
 
   private resetDirection(): void {
     if (this.map !== null) {
-      this.geoJson = blankGeoJson;
-      (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
+      this.geoJsonFeature = blankGeoJsonFeature;
+      (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJsonFeature)
     }
   }
 

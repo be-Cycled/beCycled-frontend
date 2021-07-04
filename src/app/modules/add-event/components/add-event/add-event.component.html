@@ -1,7 +1,7 @@
 <form class="b-form" [formGroup]="form">
   <tui-input-date-time
     formControlName="date"
-    [min]="buildCurrentDate()"
+    [min]="buildCurrentTuiDay()"
   >
     Выберите дату и время
   </tui-input-date-time>
@@ -19,7 +19,7 @@
 >
   <mgl-geojson-source
     id="geojson-route"
-    [data]="geoJson"
+    [data]="geoJsonFeature"
   >
   </mgl-geojson-source>
   <mgl-layer
