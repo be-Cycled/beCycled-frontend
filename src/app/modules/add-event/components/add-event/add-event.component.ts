@@ -113,7 +113,9 @@ export class AddEventComponent implements OnInit {
           /**
            * Это нужно для очистки элементов, когда идет удаление точек.
            */
-          this.routeInfos = this.routeInfos.slice(0, currentRouteInfoIndex + 1)
+          if (this.routeInfos.length > currentRouteInfoIndex + 1) {
+            this.routeInfos = this.routeInfos.slice(0, currentRouteInfoIndex + 1)
+          }
 
           this.routeInfos[ currentRouteInfoIndex ] = response
 
