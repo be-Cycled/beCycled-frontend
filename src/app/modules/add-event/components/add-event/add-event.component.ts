@@ -26,7 +26,7 @@ export class AddEventComponent implements OnInit {
   public map: mapboxgl.Map | null = null
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
-  public routeInfo: MapboxRouteInfo | null = null
+  public routeInfos: MapboxRouteInfo[] = []
   public geoJson: any = blankGeoJson
   public preview: string = ''
 
@@ -90,12 +90,37 @@ export class AddEventComponent implements OnInit {
       this.startPoint?.setLngLat(this.coordinates[ 0 ]).addTo(this.map)
       this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
 
+      /**
+       * Т.к. запрос на Directions API может содержать не больше, чем 25 точек,
+       * то мы делим массив всех точек на запросы по 25 точки.
+       */
+      const currentRouteInfoIndex: number = Math.floor((this.coordinates.length - 1) / 25)
+      let coordinatesForDirectionApi: mapboxgl.LngLat[] = this.coordinates.slice(currentRouteInfoIndex * 25)
+
+      /**
+       * Условие, чтобы отправлялся запрос минимум с двумя точками.
+       * Ведь после слайса массив может быть пустой.
+       */
+      if (coordinatesForDirectionApi.length < 2) {
+        coordinatesForDirectionApi = this.coordinates.slice(-2)
+      }
+
       this.mapboxNetworkService
-        .buildDirection(this.coordinates, DirectionType.cycling)
+        .buildDirection(coordinatesForDirectionApi, DirectionType.cycling)
         .pipe(take(1))
         .subscribe((response: MapboxRouteInfo) => {
-          this.routeInfo = response
-          this.geoJson = this.generateGeoJson(response.routes[ 0 ].geometry.coordinates)
+
+          /**
+           * Это нужно для очистки элементов, когда идет удаление точек.
+           */
+          this.routeInfos = this.routeInfos.slice(0, currentRouteInfoIndex + 1)
+
+          this.routeInfos[ currentRouteInfoIndex ] = response
+
+          let coordinatesFromRouteInfos: number[][] = []
+          this.routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
+
+          this.geoJson = this.generateGeoJson(coordinatesFromRouteInfos)
 
           if (this.map !== null) {
             (this.map.getSource('geojson-route') as mapboxgl.GeoJSONSource).setData(this.geoJson)
@@ -111,9 +136,6 @@ export class AddEventComponent implements OnInit {
     }
   }
 
-  /**
-   * TODO: Реализовать градиентный переход трека от зеленой точки к красной.
-   */
   public onMapClick(point: mapboxgl.MapMouseEvent & mapboxgl.EventData): void {
     const coordinates: mapboxgl.LngLat = point.lngLat
     if (this.map !== null) {
@@ -231,29 +253,24 @@ export class AddEventComponent implements OnInit {
     /**
      * Готовим точки для фитинга карты
      */
-    const bounds: any = this.generateBounds(this.routeInfo!.routes[ 0 ].geometry.coordinates)
+    let coordinatesFromRouteInfos: number[][] = []
+    this.routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
+
+    const bounds: any = this.generateBounds(coordinatesFromRouteInfos)
 
     /**
      * Вешает хэндлер.
      * Но нужно понимать, что этот хэндлер не гарантирует, что канвас закончил рендеринг.
      */
     this.map!.on('moveend', (evt: mapboxgl.MapboxEvent<any> & mapboxgl.EventData) => {
-      console.log('moveend')
       if (evt.fitBoundsEnd) {
-        this.map!.once('dataloading', () => {
-          console.log('dataloading')
-          setTimeout(() => {
-            // this.preview = this.map!.getCanvas().toDataURL()
-          })
+        this.map!.once('idle', () => {
+          this.preview = this.map!.getCanvas().toDataURL()
         })
       }
     })
 
     this.map!.getContainer().classList.add('resized')
     this.map!.resize().fitBounds(bounds, { padding: 20, linear: true, animate: false }, { fitBoundsEnd: true })
-  }
-
-  public onRouteInfo(): void {
-    console.log(JSON.stringify(this.routeInfo))
   }
 }
