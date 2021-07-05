@@ -40,6 +40,10 @@ export interface Route {
   id: number
   userId: number
   name: string
+
+  /**
+   * Здесь будет храниться массив MapboxRouteInfo, который будет доступен после JSON.parse()
+   */
   routeInfo: string
   sportType: SportType[]
   disposable: boolean
