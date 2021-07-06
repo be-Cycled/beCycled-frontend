@@ -51,17 +51,18 @@ export class AddEventComponent implements OnInit {
       text: 'Маршрут',
       icon: 'map'
     },
+
+    {
+      text: 'Длительность',
+      icon: 'timer'
+    },
     {
       text: 'Место сбора',
       icon: 'place'
     },
     {
-      text: 'Характеристики',
-      icon: 'speed'
-    },
-    {
-      text: 'Комментарий',
-      icon: 'comment'
+      text: 'Описание',
+      icon: 'description'
     }
   ]
 
@@ -78,16 +79,19 @@ export class AddEventComponent implements OnInit {
 
   public preview: string = ''
 
-  public form: FormGroup = new FormGroup({
+  public eventForm: FormGroup = new FormGroup({
     date: new FormControl(),
-    sportType: new FormControl(SportType.bicycle)
+    sportType: new FormControl(SportType.bicycle),
+    venue: new FormControl(),
+    description: new FormControl(),
+    duration: new FormControl()
   })
 
   constructor(private mapboxNetworkService: MapboxNetworkService) {
   }
 
   public ngOnInit(): void {
-    this.form.valueChanges.subscribe((data: any) => console.log(data))
+    this.eventForm.valueChanges.subscribe((data: any) => console.log(data))
   }
 
   public buildCurrentTuiDay(): TuiDay {

@@ -51,7 +51,6 @@ mgl-map {
 
 .material-icons-outlined {
   display: inline-block;
-  margin-right: 8px;
 }
 
 .actions {
@@ -66,6 +65,10 @@ mgl-map {
 @media (min-width: 600px) {
   :host {
     padding: 36px;
+  }
+
+  .material-icons-outlined {
+    margin-right: 8px;
   }
 
   .tab-label {

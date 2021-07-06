@@ -18,7 +18,7 @@
   <form
     class="sport-type-form"
     [class.hide]="activeItemIndex !== 0"
-    [formGroup]="form"
+    [formGroup]="eventForm"
   >
     <div tuiGroup class="sport-type-inner" orientation="vertical" [collapsed]="true">
       <tui-radio-block
@@ -59,7 +59,7 @@
   <form
     class="date-form"
     [class.hide]="activeItemIndex !== 1"
-    [formGroup]="form"
+    [formGroup]="eventForm"
   >
     <tui-input-date-time
       formControlName="date"
@@ -67,6 +67,27 @@
     >
       Выберите дату и время
     </tui-input-date-time>
+  </form>
+
+  <form
+    class="duration-form"
+    [class.hide]="activeItemIndex !== 3"
+    [formGroup]="eventForm"
+  >
+    Длительность
+  </form>
+
+  <form
+    class="description-form"
+    [class.hide]="activeItemIndex !== 5"
+    [formGroup]="eventForm"
+  >
+    <tui-text-area
+      class="tui-space_bottom-4 field-large"
+      formControlName="description"
+    >
+      Введите описание
+    </tui-text-area>
   </form>
 
   <mgl-map
