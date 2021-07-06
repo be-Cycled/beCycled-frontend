@@ -100,10 +100,11 @@ mgl-map {
 
   .start-point,
   .end-point {
-    width: 24px;
-    height: 24px;
+    width: 16px;
+    height: 16px;
 
     border-radius: 50%;
+    border: 2px solid white;
 
     cursor: pointer;
   }
@@ -117,23 +118,6 @@ mgl-map {
     align-items: center;
     justify-content: center;
 
-    background-color: tomato;
-
-    &:hover::after {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-
-      line-height: 1;
-      color: white;
-
-      border: 1px solid white;
-
-      border-radius: 50%;
-
-      content: "X";
-    }
+    background-color: var(--cy-alert);
   }
 }

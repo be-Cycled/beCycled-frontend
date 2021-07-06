@@ -279,22 +279,18 @@ export class AddEventComponent implements OnInit {
       type: 'circle',
       source: 'points',
       paint: {
-        'circle-radius': {
-          base: 1.75,
-          stops: [
-            [ 12, 8 ],
-            [ 22, 180 ]
-          ]
-        },
+        'circle-radius': 6,
         'circle-color': [
           'match',
           [ 'get', 'pointType' ],
           'Start',
-          '#fbb03b',
+          '#5ABF5A',
           'End',
-          '#223b53',
+          '#FF6639',
           '#cccccc'
-        ]
+        ],
+        'circle-stroke-color': '#FFFFFF',
+        'circle-stroke-width': 2
       }
     })
   }

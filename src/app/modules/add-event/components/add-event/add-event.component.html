@@ -127,16 +127,18 @@
       [data]="geoJsonFeature"
     >
     </mgl-geojson-source>
+
     <mgl-layer
       id="route"
       type="line"
       source="geojson-route"
       [paint]="{
-      'line-color': '#FC6719',
+      'line-color': '#0093D1',
       'line-width': 4
     }"
     >
     </mgl-layer>
+
     <mgl-control position="top-left" mglGeocoder></mgl-control>
     <mgl-control position="bottom-right" mglFullscreen></mgl-control>
   </mgl-map>
@@ -155,7 +157,7 @@
   </form>
 
   <!--  <button (click)="generatePreview()">Preview</button>-->
-  <!--  <button (click)="generateTrack()">Track</button>-->
+  <!--    <button (click)="generateTrack()">Track</button>-->
   <!--  <button (click)="hideMap()">Hide</button>-->
   <!--  <button (click)="onResize()">Resize</button>-->
   <!--  <img [attr.src]="preview">-->
