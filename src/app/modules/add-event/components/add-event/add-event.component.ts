@@ -7,6 +7,7 @@ import { DirectionType, MapboxRouteInfo, SportType } from '../../../../global/do
 import { take } from 'rxjs/operators'
 import { generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
+import { EventType } from '../../../../global/models'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -51,11 +52,6 @@ export class AddEventComponent implements OnInit {
       text: 'Маршрут',
       icon: 'map'
     },
-
-    {
-      text: 'Длительность',
-      icon: 'timer'
-    },
     {
       text: 'Место сбора',
       icon: 'place'
@@ -80,11 +76,13 @@ export class AddEventComponent implements OnInit {
   public preview: string = ''
 
   public eventForm: FormGroup = new FormGroup({
+    eventType: new FormControl(EventType.workout),
     date: new FormControl(),
     sportType: new FormControl(SportType.bicycle),
     venue: new FormControl(),
     description: new FormControl(),
-    duration: new FormControl()
+    durationHour: new FormControl(),
+    durationMinutes: new FormControl()
   })
 
   constructor(private mapboxNetworkService: MapboxNetworkService) {
@@ -317,5 +315,13 @@ export class AddEventComponent implements OnInit {
 
     this.map!.getContainer().classList.add('resized')
     this.map!.resize().fitBounds(bounds, { padding: 20, linear: true, animate: false }, { fitBoundsEnd: true })
+  }
+
+  public onNextButtonClick(): void {
+    this.activeItemIndex += 1
+  }
+
+  public onBackButtonClick(): void {
+    this.activeItemIndex -= 1
   }
 }

@@ -7,6 +7,7 @@ import { TuiButtonModule, TuiCalendarModule, TuiGroupModule, TuiSvgModule } from
 import { ReactiveFormsModule } from '@angular/forms'
 import {
   TuiInputDateTimeModule,
+  TuiInputNumberModule,
   TuiIslandModule,
   TuiRadioBlockModule,
   TuiTabsModule,
@@ -34,7 +35,8 @@ import { TuiRippleModule } from '@taiga-ui/addon-mobile'
     TuiButtonModule,
     TuiGroupModule,
     TuiRadioBlockModule,
-    TuiTextAreaModule
+    TuiTextAreaModule,
+    TuiInputNumberModule
   ],
   providers: [
     MapboxNetworkService

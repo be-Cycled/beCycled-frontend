@@ -9,6 +9,11 @@ body {
   --cy-success: hsl(120, 44%, 55%);
 }
 
+tui-root {
+  flex: none !important;
+  height: 100%;
+}
+
 :root {
   --icon-color: var(--tui-base-06);
   --tui-primary: #0093D1 !important;
@@ -18,6 +23,7 @@ body {
   --background: #F0F2F3;
 
   --header-height: 76px;
+  --menu-height: 66px;
 }
 
 .event-list {
