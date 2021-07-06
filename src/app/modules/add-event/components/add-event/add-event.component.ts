@@ -3,7 +3,7 @@ import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay } from '@taiga-ui/cdk'
 import { FormControl, FormGroup } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { DirectionType, MapboxRouteInfo } from '../../../../global/domain'
+import { DirectionType, MapboxRouteInfo, SportType } from '../../../../global/domain'
 import { take } from 'rxjs/operators'
 import { generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
@@ -79,13 +79,15 @@ export class AddEventComponent implements OnInit {
   public preview: string = ''
 
   public form: FormGroup = new FormGroup({
-    date: new FormControl()
+    date: new FormControl(),
+    sportType: new FormControl(SportType.bicycle)
   })
 
   constructor(private mapboxNetworkService: MapboxNetworkService) {
   }
 
   public ngOnInit(): void {
+    this.form.valueChanges.subscribe((data: any) => console.log(data))
   }
 
   public buildCurrentTuiDay(): TuiDay {

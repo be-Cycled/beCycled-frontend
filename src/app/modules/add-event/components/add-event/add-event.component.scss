@@ -1,7 +1,35 @@
 :host {
   display: block;
   min-height: calc(100vh - var(--header-height));
-  padding: 36px;
+  padding: 1rem;
+}
+
+tui-island {
+  height: calc(100vh - var(--header-height) - 36px * 3);
+}
+
+tui-tabs {
+  margin-bottom: 20px;
+}
+
+.tab-label {
+  display: none;
+}
+
+.sport-type-form {
+  width: 290px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.sport-type-inner {
+  width: 290px;
+}
+
+.date-form {
+  width: 290px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 mgl-map {
@@ -24,6 +52,25 @@ mgl-map {
 .material-icons-outlined {
   display: inline-block;
   margin-right: 8px;
+}
+
+.actions {
+  display: flex;
+  width: 100%;
+
+  .forward {
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 600px) {
+  :host {
+    padding: 36px;
+  }
+
+  .tab-label {
+    display: inline;
+  }
 }
 
 ::ng-deep {

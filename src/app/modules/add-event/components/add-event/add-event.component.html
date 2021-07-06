@@ -8,11 +8,56 @@
       <span class="material-icons-outlined">
         {{ item.icon }}
       </span>
-      {{ item.text }}
+      <span class="tab-label">
+        {{ item.text }}
+      </span>
+
     </button>
   </tui-tabs>
 
   <form
+    class="sport-type-form"
+    [class.hide]="activeItemIndex !== 0"
+    [formGroup]="form"
+  >
+    <div tuiGroup class="sport-type-inner" orientation="vertical" [collapsed]="true">
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="sportType"
+        item="BICYCLE"
+        size="m"
+      >
+        Велосипед
+      </tui-radio-block>
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="sportType"
+        item="RUN"
+        size="m"
+      >
+        Бег
+      </tui-radio-block>
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="sportType"
+        item="ROLLERBLADE"
+        size="m"
+      >
+        Роликовые коньки
+      </tui-radio-block>
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="sportType"
+        item="SKI"
+        size="m"
+      >
+        Лыжи
+      </tui-radio-block>
+    </div>
+  </form>
+
+  <form
+    class="date-form"
     [class.hide]="activeItemIndex !== 1"
     [formGroup]="form"
   >
@@ -52,9 +97,33 @@
     </mgl-layer>
     <mgl-control mglNavigation></mgl-control>
   </mgl-map>
-  <button (click)="generatePreview()">Preview</button>
-  <button (click)="generateTrack()">Track</button>
-  <button (click)="hideMap()">Hide</button>
-  <button (click)="onResize()">Resize</button>
-  <img [attr.src]="preview">
+
+  <!--  <button (click)="generatePreview()">Preview</button>-->
+  <!--  <button (click)="generateTrack()">Track</button>-->
+  <!--  <button (click)="hideMap()">Hide</button>-->
+  <!--  <button (click)="onResize()">Resize</button>-->
+  <!--  <img [attr.src]="preview">-->
+
+  <div class="actions">
+    <button
+      *ngIf="activeItemIndex !== 0"
+      tuiButton
+      appearance="secondary"
+      size="m"
+      class="back"
+    >
+      Назад
+    </button>
+
+    <button
+      *ngIf="activeItemIndex !== 5"
+      tuiButton
+      appearance="primary"
+      size="m"
+      class="forward"
+    >
+      Далее
+    </button>
+  </div>
+
 </tui-island>
