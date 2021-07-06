@@ -1,41 +1,60 @@
-<form class="b-form" [formGroup]="form">
-  <tui-input-date-time
-    formControlName="date"
-    [min]="buildCurrentTuiDay()"
-  >
-    Выберите дату и время
-  </tui-input-date-time>
-</form>
+<tui-island>
+  <tui-tabs [(activeItemIndex)]="activeItemIndex">
+    <button
+      *ngFor="let item of items"
+      tuiTab
+      tuiRipple="var(--tui-text-01)"
+    >
+      <span class="material-icons-outlined">
+        {{ item.icon }}
+      </span>
+      {{ item.text }}
+    </button>
+  </tui-tabs>
 
-<mgl-map
-  [style]="'mapbox://styles/mapbox/streets-v11'"
-  [attributionControl]="false"
-  [doubleClickZoom]="false"
-  [zoom]="15"
-  [preserveDrawingBuffer]="true"
-  [center]="[ 39.949127487394094,43.414052415946685 ]"
-  (mapLoad)="onMapboxLoad($event)"
-  (mapClick)="onMapClick($event)"
->
-  <mgl-geojson-source
-    id="geojson-route"
-    [data]="geoJsonFeature"
+  <form
+    [class.hide]="activeItemIndex !== 1"
+    [formGroup]="form"
   >
-  </mgl-geojson-source>
-  <mgl-layer
-    id="route"
-    type="line"
-    source="geojson-route"
-    [paint]="{
+    <tui-input-date-time
+      formControlName="date"
+      [min]="buildCurrentTuiDay()"
+    >
+      Выберите дату и время
+    </tui-input-date-time>
+  </form>
+
+  <mgl-map
+    [class.hide]="activeItemIndex !== 2"
+    [style]="'mapbox://styles/mapbox/streets-v11'"
+    [attributionControl]="false"
+    [doubleClickZoom]="false"
+    [zoom]="15"
+    [preserveDrawingBuffer]="true"
+    [center]="[ 39.949127487394094,43.414052415946685 ]"
+    (mapLoad)="onMapboxLoad($event)"
+    (mapClick)="onMapClick($event)"
+  >
+    <mgl-geojson-source
+      id="geojson-route"
+      [data]="geoJsonFeature"
+    >
+    </mgl-geojson-source>
+    <mgl-layer
+      id="route"
+      type="line"
+      source="geojson-route"
+      [paint]="{
       'line-color': '#FC6719',
       'line-width': 4
     }"
-  >
-  </mgl-layer>
-  <mgl-control mglNavigation></mgl-control>
-</mgl-map>
-<button (click)="generatePreview()">Preview</button>
-<button (click)="generateTrack()">Track</button>
-<button (click)="hideMap()">Hide</button>
-<button (click)="onResize()">Resize</button>
-<img [attr.src]="preview">
+    >
+    </mgl-layer>
+    <mgl-control mglNavigation></mgl-control>
+  </mgl-map>
+  <button (click)="generatePreview()">Preview</button>
+  <button (click)="generateTrack()">Track</button>
+  <button (click)="hideMap()">Hide</button>
+  <button (click)="onResize()">Resize</button>
+  <img [attr.src]="preview">
+</tui-island>

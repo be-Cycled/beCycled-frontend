@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
-import { TuiDay } from '@taiga-ui/cdk'
+import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay } from '@taiga-ui/cdk'
 import { FormControl, FormGroup } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteInfo } from '../../../../global/domain'
 import { take } from 'rxjs/operators'
 import { generateGeoJsonFeature } from '../../../../global/utils'
+import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -20,9 +21,52 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   selector: 'cy-add-event',
   templateUrl: './add-event.component.html',
   styleUrls: [ './add-event.component.scss' ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: TUI_MOBILE_AWARE,
+      useValue: true
+    },
+    {
+      provide: TUI_IS_IOS,
+      useValue: false
+    },
+    {
+      provide: TUI_IS_ANDROID,
+      useValue: true
+    }
+  ]
 })
 export class AddEventComponent implements OnInit {
+  public readonly items: any = [
+    {
+      text: 'Вид спорта',
+      icon: 'emoji_people'
+    },
+    {
+      text: 'Дата',
+      icon: 'event'
+    },
+    {
+      text: 'Маршрут',
+      icon: 'map'
+    },
+    {
+      text: 'Место сбора',
+      icon: 'place'
+    },
+    {
+      text: 'Характеристики',
+      icon: 'speed'
+    },
+    {
+      text: 'Комментарий',
+      icon: 'comment'
+    }
+  ]
+
+  public activeItemIndex: number = 0
+
   public map: mapboxgl.Map | null = null
 
   public coordinates: LngLat[] = []
