@@ -5,7 +5,7 @@
 
   <tui-tabs
     class="tui-space_bottom-4"
-    [(activeItemIndex)]="activeItemIndex"
+    [(activeItemIndex)]="activeTabIndex"
   >
     <button
       *ngFor="let item of items"
@@ -24,7 +24,7 @@
 
   <form
     class="sport-type-form tui-space_bottom-5"
-    [class.hide]="activeItemIndex !== 0"
+    [class.hide]="activeTabIndex !== 0"
     [formGroup]="eventForm"
   >
     <p class="form-label">Тип события</p>
@@ -78,7 +78,7 @@
 
   <form
     class="date-form tui-space_bottom-5"
-    [class.hide]="activeItemIndex !== 1"
+    [class.hide]="activeTabIndex !== 1"
     [formGroup]="eventForm"
   >
     <p class="form-label">Дата</p>
@@ -108,11 +108,11 @@
 
   </form>
 
-  <p class="form-label" [class.hide]="activeItemIndex !== 2">Маршрут</p>
-  <p class="form-label" [class.hide]="activeItemIndex !== 3">Место сбора</p>
+  <p class="form-label" [class.hide]="activeTabIndex !== 2">Маршрут</p>
+  <p class="form-label" [class.hide]="activeTabIndex !== 3">Место сбора</p>
   <mgl-map
     class="tui-space_bottom-5"
-    [class.hide]="activeItemIndex !== 2 && activeItemIndex !== 3"
+    [class.hide]="activeTabIndex !== 2 && activeTabIndex !== 3"
     [style]="'mapbox://styles/mapbox/streets-v11'"
     [attributionControl]="false"
     [doubleClickZoom]="false"
@@ -137,12 +137,13 @@
     }"
     >
     </mgl-layer>
-    <mgl-control mglNavigation></mgl-control>
+    <mgl-control position="top-left" mglGeocoder></mgl-control>
+    <mgl-control position="bottom-right" mglFullscreen></mgl-control>
   </mgl-map>
 
   <form
     class="description-form tui-space_bottom-5"
-    [class.hide]="activeItemIndex !== 4"
+    [class.hide]="activeTabIndex !== 4"
     [formGroup]="eventForm"
   >
     <tui-text-area
@@ -161,7 +162,7 @@
 
   <div class="actions">
     <button
-      *ngIf="activeItemIndex !== 0"
+      *ngIf="activeTabIndex !== 0"
       tuiButton
       appearance="secondary"
       size="m"
@@ -172,7 +173,7 @@
     </button>
 
     <button
-      *ngIf="activeItemIndex !== 4"
+      *ngIf="activeTabIndex !== 4"
       tuiButton
       appearance="primary"
       size="m"

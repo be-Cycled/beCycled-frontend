@@ -62,13 +62,14 @@ export class AddEventComponent implements OnInit {
     }
   ]
 
-  public activeItemIndex: number = 0
+  public activeTabIndex: number = 0
 
   public map: mapboxgl.Map | null = null
 
   public coordinates: LngLat[] = []
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
+  public venuePoint: mapboxgl.Marker | null = null
 
   public routeInfos: MapboxRouteInfo[] = []
   public geoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = blankGeoJsonFeature
@@ -115,6 +116,7 @@ export class AddEventComponent implements OnInit {
 
     this.startPoint = new mapboxgl.Marker(startPoint)
     this.endPoint = new mapboxgl.Marker(endPoint)
+    this.venuePoint = new mapboxgl.Marker()
   }
 
   public generateBounds(coordinates: any): any {
@@ -182,38 +184,47 @@ export class AddEventComponent implements OnInit {
   public onMapClick(point: mapboxgl.MapMouseEvent & mapboxgl.EventData): void {
     const coordinates: mapboxgl.LngLat = point.lngLat
     if (this.map !== null) {
+
       /**
-       * Удаление точек маршрута по клику
+       * Логика добавления точки сбора
        */
-      if ((point.originalEvent.target as HTMLElement).className.includes('end-point')) {
-
-        if (this.coordinates.length > 2) {
-          this.coordinates.pop()
-          this.updateDirection()
-
-        } else if (this.coordinates.length === 2) {
-
-          this.coordinates.pop()
-          this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
-          this.resetDirection()
-          this.startPoint?.remove()
-        } else if (this.coordinates.length === 1) {
-
-          this.coordinates.pop()
-          this.resetDirection()
-          this.endPoint?.remove()
-        }
+      if (this.activeTabIndex === 3) {
+        this.venuePoint?.setLngLat(coordinates).addTo(this.map)
       } else {
 
         /**
-         * Логика добавления точек маршрута
+         * Удаление точек маршрута по клику
          */
-        this.coordinates.push(point.lngLat)
+        if ((point.originalEvent.target as HTMLElement).className.includes('end-point')) {
 
-        if (this.coordinates.length > 1 && this.startPoint !== null) {
-          this.updateDirection()
+          if (this.coordinates.length > 2) {
+            this.coordinates.pop()
+            this.updateDirection()
+
+          } else if (this.coordinates.length === 2) {
+
+            this.coordinates.pop()
+            this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
+            this.resetDirection()
+            this.startPoint?.remove()
+          } else if (this.coordinates.length === 1) {
+
+            this.coordinates.pop()
+            this.resetDirection()
+            this.endPoint?.remove()
+          }
         } else {
-          this.endPoint?.setLngLat(coordinates).addTo(this.map)
+
+          /**
+           * Логика добавления точек маршрута
+           */
+          this.coordinates.push(point.lngLat)
+
+          if (this.coordinates.length > 1 && this.startPoint !== null) {
+            this.updateDirection()
+          } else {
+            this.endPoint?.setLngLat(coordinates).addTo(this.map)
+          }
         }
       }
     }
@@ -221,10 +232,6 @@ export class AddEventComponent implements OnInit {
 
   public generatePreview(): void {
     this.preview = this.map!.getCanvas().toDataURL()
-  }
-
-  public hideMap(): void {
-    this.map!.getContainer().classList.add('none')
   }
 
   public generateTrack(): void {
@@ -318,10 +325,10 @@ export class AddEventComponent implements OnInit {
   }
 
   public onNextButtonClick(): void {
-    this.activeItemIndex += 1
+    this.activeTabIndex += 1
   }
 
   public onBackButtonClick(): void {
-    this.activeItemIndex -= 1
+    this.activeTabIndex -= 1
   }
 }
