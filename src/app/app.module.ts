@@ -4,6 +4,7 @@ import { BrowserModule, Title } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ServiceWorkerModule } from '@angular/service-worker'
 import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core'
+import { TUI_LANGUAGE, TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 import { version } from '../../package.json'
 
@@ -16,6 +17,7 @@ import { DomainModule } from './global/domain/domain.module'
 import { APP_VERSION } from './global/tokens'
 import { titleBuilder } from './global/utils'
 import { MAPBOX_TOKEN } from './global/models'
+import { of } from 'rxjs'
 
 @Injectable()
 class BeCycledTitle {
@@ -64,6 +66,10 @@ class BeCycledTitle {
     {
       provide: APP_VERSION,
       useValue: version
+    },
+    {
+      provide: TUI_LANGUAGE,
+      useValue: of(TUI_RUSSIAN_LANGUAGE)
     }
   ],
   bootstrap: [ AppComponent ]
