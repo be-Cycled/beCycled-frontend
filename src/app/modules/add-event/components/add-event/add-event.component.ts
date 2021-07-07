@@ -39,7 +39,7 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   ]
 })
 export class AddEventComponent implements OnInit {
-  public readonly items: any = [
+  public readonly tabs: any = [
     {
       text: 'Вид спорта',
       icon: 'emoji_people'
@@ -61,6 +61,17 @@ export class AddEventComponent implements OnInit {
       icon: 'description'
     }
   ]
+
+  public routes: string[] = [
+    'Кутаис',
+    'М4',
+    'Копаны',
+    'Мезмай',
+    'Туапсинский бревет',
+    'Красная поляна'
+  ]
+
+  public testValue: FormControl = new FormControl()
 
   public activeTabIndex: number = 0
 

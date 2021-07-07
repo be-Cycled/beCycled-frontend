@@ -8,7 +8,7 @@
     [(activeItemIndex)]="activeTabIndex"
   >
     <button
-      *ngFor="let item of items"
+      *ngFor="let item of tabs"
       tuiTab
       tuiRipple="var(--tui-text-01)"
     >
@@ -84,6 +84,7 @@
     <p class="form-label">Дата</p>
     <tui-input-date-time
       formControlName="date"
+      tuiTextfieldSize="m"
       [min]="buildCurrentTuiDay()"
     >
       Выберите дату и время
@@ -93,14 +94,14 @@
     <div class="duration-container">
       <tui-input-number
         formControlName="durationHour"
-        tuiTextfieldSize="s"
+        tuiTextfieldSize="m"
       >
         Часы
       </tui-input-number>
 
       <tui-input-number
         formControlName="durationMinutes"
-        tuiTextfieldSize="s"
+        tuiTextfieldSize="m"
       >
         Минуты
       </tui-input-number>
@@ -110,6 +111,21 @@
 
   <p class="form-label" [class.hide]="activeTabIndex !== 2">Маршрут</p>
   <p class="form-label" [class.hide]="activeTabIndex !== 3">Место сбора</p>
+
+  <!--  <p class="b-form" [class.hide]="activeTabIndex !== 2">-->
+  <!--    <tui-select-->
+  <!--      tuiTextfieldSize="m"-->
+  <!--      [formControl]="testValue"-->
+  <!--      [tuiTextfieldLabelOutside]="true"-->
+  <!--    >-->
+  <!--      Выберите маршрут-->
+  <!--      <tui-data-list-wrapper-->
+  <!--        *tuiDataList-->
+  <!--        [items]="routes"-->
+  <!--      ></tui-data-list-wrapper>-->
+  <!--    </tui-select>-->
+  <!--  </p>-->
+
   <mgl-map
     class="tui-space_bottom-5 add-event-map"
     [class.hide]="activeTabIndex !== 2 && activeTabIndex !== 3"

@@ -3,13 +3,22 @@ import { CommonModule } from '@angular/common'
 
 import { AddEventRoutingModule } from './add-event-routing.module'
 import { AddEventComponent } from './components/add-event/add-event.component'
-import { TuiButtonModule, TuiCalendarModule, TuiGroupModule, TuiSvgModule } from '@taiga-ui/core'
+import {
+  TuiButtonModule,
+  TuiCalendarModule,
+  TuiDataListModule,
+  TuiGroupModule,
+  TuiSvgModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import {
+  TuiDataListWrapperModule,
   TuiInputDateTimeModule,
   TuiInputNumberModule,
   TuiIslandModule,
   TuiRadioBlockModule,
+  TuiSelectModule,
   TuiTabsModule,
   TuiTextAreaModule
 } from '@taiga-ui/kit'
@@ -36,7 +45,11 @@ import { TuiRippleModule } from '@taiga-ui/addon-mobile'
     TuiGroupModule,
     TuiRadioBlockModule,
     TuiTextAreaModule,
-    TuiInputNumberModule
+    TuiInputNumberModule,
+    TuiSelectModule,
+    TuiTextfieldControllerModule,
+    TuiDataListWrapperModule,
+    TuiDataListModule
   ],
   providers: [
     MapboxNetworkService
