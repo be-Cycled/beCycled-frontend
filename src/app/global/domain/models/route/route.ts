@@ -42,7 +42,7 @@ export interface Route {
   name: string
 
   /**
-   * Здесь будет храниться массив MapboxRouteInfo, который будет доступен после JSON.parse()
+   * Строковое представление JSON: MapboxRouteInfo[]
    */
   routeInfo: string
   sportType: SportType[]

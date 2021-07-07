@@ -9,6 +9,10 @@ export interface Workout {
   startDate: ISO8601
   routeId: number
   sportType: SportType
+
+  /**
+   * Строковое представление JSON: { lng: number, lat: number }
+   */
   venue: string
   userIds: number[]
   duration: number
