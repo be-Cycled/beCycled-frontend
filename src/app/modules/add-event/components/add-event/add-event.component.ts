@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay } from '@taiga-ui/cdk'
 import { FormControl, FormGroup } from '@angular/forms'
-import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike, LngLatLike } from 'mapbox-gl'
+import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteInfo, SportType } from '../../../../global/domain'
 import { take } from 'rxjs/operators'
-import { generateGeoJsonFeature } from '../../../../global/utils'
+import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import { EventType } from '../../../../global/models'
 
@@ -66,11 +66,12 @@ export class AddEventComponent implements OnInit {
 
   public map: mapboxgl.Map | null = null
 
-  public trackCoordinates: LngLat[] = []
   public venueCoordinates: LngLat | null = null
+  public venuePoint: mapboxgl.Marker | null = null
+
+  public trackCoordinates: LngLat[] = []
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
-  public venuePoint: mapboxgl.Marker | null = null
 
   public routeInfos: MapboxRouteInfo[] = []
   public geoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = blankGeoJsonFeature
@@ -121,18 +122,6 @@ export class AddEventComponent implements OnInit {
     this.startPoint = new mapboxgl.Marker(startPoint)
     this.endPoint = new mapboxgl.Marker(endPoint)
     this.venuePoint = new mapboxgl.Marker({ color: '#FF6639' })
-  }
-
-  /**
-   * TODO: Вынести этот метод в утилиты
-   */
-  public generateBounds(coordinates: number[][]): LngLatBoundsLike {
-    return coordinates.reduce(
-      (bounds: mapboxgl.LngLatBounds, coord: any) => {
-        return bounds.extend(coord)
-      },
-      new mapboxgl.LngLatBounds((coordinates[ 0 ] as LngLatLike), (coordinates[ 0 ] as LngLatLike))
-    )
   }
 
   private updateDirection(): void {
@@ -308,7 +297,7 @@ export class AddEventComponent implements OnInit {
     let coordinatesFromRouteInfos: number[][] = []
     this.routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
 
-    const bounds: LngLatBoundsLike = this.generateBounds(coordinatesFromRouteInfos)
+    const bounds: LngLatBoundsLike = generateBounds(coordinatesFromRouteInfos)
 
     /**
      * Вешает хэндлер.
