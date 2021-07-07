@@ -53,6 +53,7 @@ mgl-map {
   height: 100%;
 
   border-radius: var(--tui-radius-l);
+  border: 1px solid var(--tui-base-03);
 
   overflow: hidden;
 }
@@ -97,6 +98,18 @@ mgl-map {
     width: 448px;
     height: 240px;
   }
+
+  .add-event-map {
+    .mapboxgl-ctrl-top-left {
+      width: 100%;
+    }
+
+    .mapboxgl-ctrl-geocoder.mapboxgl-ctrl {
+      width: 100%;
+      margin: 0;
+    }
+  }
+
 
   .start-point,
   .end-point {

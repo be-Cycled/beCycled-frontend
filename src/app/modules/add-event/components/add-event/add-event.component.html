@@ -111,7 +111,7 @@
   <p class="form-label" [class.hide]="activeTabIndex !== 2">Маршрут</p>
   <p class="form-label" [class.hide]="activeTabIndex !== 3">Место сбора</p>
   <mgl-map
-    class="tui-space_bottom-5"
+    class="tui-space_bottom-5 add-event-map"
     [class.hide]="activeTabIndex !== 2 && activeTabIndex !== 3"
     [style]="'mapbox://styles/mapbox/streets-v11'"
     [attributionControl]="false"
@@ -157,10 +157,10 @@
   </form>
 
   <!--  <button (click)="generatePreview()">Preview</button>-->
-  <!--    <button (click)="generateTrack()">Track</button>-->
+  <!--      <button (click)="generateTrack()">Track</button>-->
   <!--  <button (click)="hideMap()">Hide</button>-->
-  <!--  <button (click)="onResize()">Resize</button>-->
-  <!--  <img [attr.src]="preview">-->
+  <!--    <button (click)="onResize()">Resize</button>-->
+  <!--    <img [attr.src]="preview">-->
 
   <div class="actions">
     <button

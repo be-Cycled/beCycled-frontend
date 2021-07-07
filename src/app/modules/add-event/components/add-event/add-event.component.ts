@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay } from '@taiga-ui/cdk'
 import { FormControl, FormGroup } from '@angular/forms'
-import mapboxgl, { AnyLayer, LngLat } from 'mapbox-gl'
+import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike, LngLatLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteInfo, SportType } from '../../../../global/domain'
 import { take } from 'rxjs/operators'
@@ -66,7 +66,8 @@ export class AddEventComponent implements OnInit {
 
   public map: mapboxgl.Map | null = null
 
-  public coordinates: LngLat[] = []
+  public trackCoordinates: LngLat[] = []
+  public venueCoordinates: LngLat | null = null
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
   public venuePoint: mapboxgl.Marker | null = null
@@ -102,6 +103,9 @@ export class AddEventComponent implements OnInit {
   public onMapboxLoad(map: mapboxgl.Map): void {
     this.map = map
 
+    /**
+     * Русская локализация
+     */
     this.map.getStyle().layers!.forEach((layer: AnyLayer) => {
       if (layer.id.indexOf('-label') > 0) {
         map.setLayoutProperty(layer.id, 'text-field', [ 'get', 'name_ru' ])
@@ -116,36 +120,39 @@ export class AddEventComponent implements OnInit {
 
     this.startPoint = new mapboxgl.Marker(startPoint)
     this.endPoint = new mapboxgl.Marker(endPoint)
-    this.venuePoint = new mapboxgl.Marker()
+    this.venuePoint = new mapboxgl.Marker({ color: '#FF6639' })
   }
 
-  public generateBounds(coordinates: any): any {
+  /**
+   * TODO: Вынести этот метод в утилиты
+   */
+  public generateBounds(coordinates: number[][]): LngLatBoundsLike {
     return coordinates.reduce(
       (bounds: mapboxgl.LngLatBounds, coord: any) => {
         return bounds.extend(coord)
       },
-      new mapboxgl.LngLatBounds(coordinates[ 0 ], coordinates[ 0 ])
+      new mapboxgl.LngLatBounds((coordinates[ 0 ] as LngLatLike), (coordinates[ 0 ] as LngLatLike))
     )
   }
 
   private updateDirection(): void {
     if (this.map !== null) {
-      this.startPoint?.setLngLat(this.coordinates[ 0 ]).addTo(this.map)
-      this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
+      this.startPoint?.setLngLat(this.trackCoordinates[ 0 ]).addTo(this.map)
+      this.endPoint?.setLngLat(this.trackCoordinates[ this.trackCoordinates.length - 1 ]).addTo(this.map)
 
       /**
        * Т.к. запрос на Directions API может содержать не больше, чем 25 точек,
        * то мы делим массив всех точек на запросы по 25 точки.
        */
-      const currentRouteInfoIndex: number = Math.floor((this.coordinates.length - 1) / 25)
-      let coordinatesForDirectionApi: mapboxgl.LngLat[] = this.coordinates.slice(currentRouteInfoIndex * 25)
+      const currentRouteInfoIndex: number = Math.floor((this.trackCoordinates.length - 1) / 25)
+      let coordinatesForDirectionApi: mapboxgl.LngLat[] = this.trackCoordinates.slice(currentRouteInfoIndex * 25)
 
       /**
        * Условие, чтобы отправлялся запрос минимум с двумя точками.
        * Ведь после слайса массив может быть пустой.
        */
       if (coordinatesForDirectionApi.length < 2) {
-        coordinatesForDirectionApi = this.coordinates.slice(-2)
+        coordinatesForDirectionApi = this.trackCoordinates.slice(-2)
       }
 
       this.mapboxNetworkService
@@ -189,6 +196,8 @@ export class AddEventComponent implements OnInit {
        * Логика добавления точки сбора
        */
       if (this.activeTabIndex === 3) {
+
+        this.venueCoordinates = coordinates
         this.venuePoint?.setLngLat(coordinates).addTo(this.map)
       } else {
 
@@ -197,19 +206,16 @@ export class AddEventComponent implements OnInit {
          */
         if ((point.originalEvent.target as HTMLElement).className.includes('end-point')) {
 
-          if (this.coordinates.length > 2) {
-            this.coordinates.pop()
+          if (this.trackCoordinates.length > 2) {
+            this.trackCoordinates.pop()
             this.updateDirection()
-
-          } else if (this.coordinates.length === 2) {
-
-            this.coordinates.pop()
-            this.endPoint?.setLngLat(this.coordinates[ this.coordinates.length - 1 ]).addTo(this.map)
+          } else if (this.trackCoordinates.length === 2) {
+            this.trackCoordinates.pop()
+            this.endPoint?.setLngLat(this.trackCoordinates[ this.trackCoordinates.length - 1 ]).addTo(this.map)
             this.resetDirection()
             this.startPoint?.remove()
-          } else if (this.coordinates.length === 1) {
-
-            this.coordinates.pop()
+          } else if (this.trackCoordinates.length === 1) {
+            this.trackCoordinates.pop()
             this.resetDirection()
             this.endPoint?.remove()
           }
@@ -218,9 +224,9 @@ export class AddEventComponent implements OnInit {
           /**
            * Логика добавления точек маршрута
            */
-          this.coordinates.push(point.lngLat)
+          this.trackCoordinates.push(point.lngLat)
 
-          if (this.coordinates.length > 1 && this.startPoint !== null) {
+          if (this.trackCoordinates.length > 1 && this.startPoint !== null) {
             this.updateDirection()
           } else {
             this.endPoint?.setLngLat(coordinates).addTo(this.map)
@@ -236,13 +242,13 @@ export class AddEventComponent implements OnInit {
 
   public generateTrack(): void {
     const startPoint: number[] = [
-      this.coordinates[ 0 ].lng,
-      this.coordinates[ 0 ].lat
+      this.trackCoordinates[ 0 ].lng,
+      this.trackCoordinates[ 0 ].lat
     ]
 
     const endPoint: number[] = [
-      this.coordinates[ this.coordinates.length - 1 ].lng,
-      this.coordinates[ this.coordinates.length - 1 ].lat
+      this.trackCoordinates[ this.trackCoordinates.length - 1 ].lng,
+      this.trackCoordinates[ this.trackCoordinates.length - 1 ].lat
     ]
 
     this.map?.addSource('points', {
@@ -302,7 +308,7 @@ export class AddEventComponent implements OnInit {
     let coordinatesFromRouteInfos: number[][] = []
     this.routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
 
-    const bounds: any = this.generateBounds(coordinatesFromRouteInfos)
+    const bounds: LngLatBoundsLike = this.generateBounds(coordinatesFromRouteInfos)
 
     /**
      * Вешает хэндлер.
