@@ -2,19 +2,24 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Route } from '../../models'
 import { Observable } from 'rxjs'
-import { BASE_URL } from '../../../models'
+import { ConfigService } from '../../../services'
 
 @Injectable()
 export class RouteService {
 
-  constructor(private http: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private configService: ConfigService) {
   }
 
-  public getById(id: number): Observable<Route> {
-    return this.http.get<Route>(`${ BASE_URL }/routes/${ id }`)
+  public create(entity: Route): Observable<Route> {
+    return this.httpClient.post<Route>(`${ this.configService.baseApiUrl }/routes/`, entity)
   }
 
-  public getAll(): Observable<Route[]> {
-    return this.http.get<Route[]>(`${ BASE_URL }/routes/all`)
+  public readById(id: number): Observable<Route> {
+    return this.httpClient.get<Route>(`${ this.configService.baseApiUrl }/routes/${ id }`)
+  }
+
+  public readAll(): Observable<Route[]> {
+    return this.httpClient.get<Route[]>(`${ this.configService.baseApiUrl }/routes/all`)
   }
 }

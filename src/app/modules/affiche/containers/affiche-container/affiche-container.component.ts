@@ -30,14 +30,14 @@ export class AfficheContainerComponent implements OnInit {
   public filters: FormControl = new FormControl()
 
   public events: Observable<[ Workout[], Competition[] ]> = combineLatest([
-    this.workoutService.getWorkouts().pipe(
+    this.workoutService.readWorkouts().pipe(
       map((workouts: Workout[]) => {
         const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
 
         return workouts.filter((item: Workout) => new Date(item.startDate).getTime() >= currentTime)
       })
     ),
-    this.competitionService.getCompetitions().pipe(
+    this.competitionService.readCompetitions().pipe(
       map((competitions: Competition[]) => {
         const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
 

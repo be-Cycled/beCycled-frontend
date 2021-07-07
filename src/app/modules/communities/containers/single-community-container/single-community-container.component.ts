@@ -37,8 +37,8 @@ export class SingleCommunityContainerComponent {
   }
 
   public events: Observable<SomeWrappedEvent[]> = forkJoin([
-    this.workoutService.getWorkoutsByCommunity(this.communityHolder.value.nickname),
-    this.competitionService.getCompetitionsByCommunity(this.communityHolder.value.nickname)
+    this.workoutService.readWorkoutsByCommunity(this.communityHolder.value.nickname),
+    this.competitionService.readCompetitionsByCommunity(this.communityHolder.value.nickname)
   ]).pipe(
     map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
       const result: SomeWrappedEvent[] = []

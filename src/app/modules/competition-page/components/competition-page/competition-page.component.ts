@@ -18,7 +18,7 @@ import { generateBounds, generateGeoJsonFeature, generateStartTime, getWorkoutLi
 export class CompetitionPageComponent extends AbstractEventPage {
   public competition$: Observable<Competition> = this.activatedRoute.paramMap.pipe(
     map((paramMap: ParamMap) => paramMap.get('id')),
-    switchMap((id: string | null) => this.competitionService.getById(Number.parseInt(id!, 10))),
+    switchMap((id: string | null) => this.competitionService.readById(Number.parseInt(id!, 10))),
     shareReplay(1),
     tap((competition: Competition) => {
       this.title.setTitle(`Соревнование ${ getWorkoutListDate(competition.startDate) } ${ generateStartTime(competition.startDate) }`)
@@ -26,7 +26,7 @@ export class CompetitionPageComponent extends AbstractEventPage {
   )
 
   public route: Observable<Route> = this.competition$.pipe(
-    switchMap((workout: Workout) => this.routeService.getById(workout.routeId)),
+    switchMap((workout: Workout) => this.routeService.readById(workout.routeId)),
     shareReplay(1)
   )
 

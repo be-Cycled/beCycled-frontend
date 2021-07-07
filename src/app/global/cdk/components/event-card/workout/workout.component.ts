@@ -16,7 +16,7 @@ export class WorkoutComponent extends AbstractEventCard {
   @Input()
   public workout: Workout | null = null
 
-  public route: Observable<Route> = defer(() => this.routeService.getById(this.workout?.routeId!)).pipe(
+  public route: Observable<Route> = defer(() => this.routeService.readById(this.workout?.routeId!)).pipe(
     shareReplay(1)
   )
 

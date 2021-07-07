@@ -4,7 +4,19 @@ import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
-import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
+import {
+  catchError,
+  filter,
+  finalize,
+  map,
+  pluck,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators'
 import { Community, Competition, User, UserService, Workout } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
@@ -70,8 +82,8 @@ export class ProfileContainerComponent {
 
   public events: Observable<SomeWrappedEvent[]> = this.user.pipe(
     switchMap((user: User) => forkJoin([
-      this.workoutService.getByUser(user.login),
-      this.competitionService.getByUser(user.login)
+      this.workoutService.readByUser(user.login),
+      this.competitionService.readByUser(user.login)
     ]).pipe(
       map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
         const result: SomeWrappedEvent[] = []

@@ -18,7 +18,7 @@ import { generateBounds, generateGeoJsonFeature, generateStartTime, getWorkoutLi
 export class WorkoutPageComponent extends AbstractEventPage {
   public workout$: Observable<Workout> = this.activatedRoute.paramMap.pipe(
     map((paramMap: ParamMap) => paramMap.get('id')),
-    switchMap((id: string | null) => this.workoutService.getById(Number.parseInt(id!, 10))),
+    switchMap((id: string | null) => this.workoutService.readById(Number.parseInt(id!, 10))),
     shareReplay(1),
     tap((workout: Workout) => {
       this.title.setTitle(`Тренировка ${ getWorkoutListDate(workout.startDate) } ${ generateStartTime(workout.startDate) }`)
@@ -26,7 +26,7 @@ export class WorkoutPageComponent extends AbstractEventPage {
   )
 
   public route: Observable<Route> = this.workout$.pipe(
-    switchMap((workout: Workout) => this.routeService.getById(workout.routeId)),
+    switchMap((workout: Workout) => this.routeService.readById(workout.routeId)),
     shareReplay(1)
   )
 

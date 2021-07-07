@@ -16,7 +16,7 @@ export class CompetitionComponent extends AbstractEventCard {
   @Input()
   public competition: Competition | null = null
 
-  public route: Observable<Route> = defer(() => this.routeService.getById(this.competition?.routeId!)).pipe(
+  public route: Observable<Route> = defer(() => this.routeService.readById(this.competition?.routeId!)).pipe(
     shareReplay(1)
   )
 
