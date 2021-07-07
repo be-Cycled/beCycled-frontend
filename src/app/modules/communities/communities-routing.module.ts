@@ -1,46 +1,39 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { CommunityReviewComponent } from './components/community-review/community-review.component'
-import { CommunityUsersComponent } from './components/community-users/community-users.component'
-import { CommunitiesContainerComponent } from './containers/communities-container/communities-container.component'
-import { CommunityCreateContainerComponent } from './containers/community-create-container/community-create-container.component'
-import { CommunitySettingContainerComponent } from './containers/community-setting-container/community-setting-container.component'
-import { SingleCommunityContainerComponent } from './containers/single-community-container/single-community-container.component'
+import { PATH_PARAMS } from '../../global/models'
+import { CommunitySingleMainComponent, CommunitySingleSettingsComponent, CommunitySingleUsersComponent } from './components'
+import { CommunityCreateContainerComponent, CommunityListContainerComponent, CommunitySingleContainerComponent } from './containers'
+import { CommunitySettingsGuard } from './guards'
 
 const routes: Routes = [
   {
-    path: '',
-    component: CommunitiesContainerComponent
+    path: ``,
+    component: CommunityListContainerComponent
   },
   {
-    path: 'create',
+    path: `create`,
     component: CommunityCreateContainerComponent
   },
   {
-    path: ':nickname',
-    component: SingleCommunityContainerComponent,
+    path: `:${ PATH_PARAMS.communityNickname }`,
+    component: CommunitySingleContainerComponent,
     children: [
       {
-        path: '',
-        component: CommunityReviewComponent
+        path: ``,
+        component: CommunitySingleMainComponent
       },
-/*      {
-        path: 'settings',
-        component: CommunitySettingsComponent,
-        data: {
-          showHeader: false,
-          showTabs: false
-        }
-      },*/
       {
-        path: 'users',
-        component: CommunityUsersComponent
+        path: `users`,
+        component: CommunitySingleUsersComponent
+      },
+      {
+        path: `settings`,
+        component: CommunitySingleSettingsComponent,
+        canActivate: [
+          CommunitySettingsGuard
+        ]
       }
     ]
-  },
-  {
-    path: ':nickname/settings',
-    component: CommunitySettingContainerComponent
   }
 ]
 
