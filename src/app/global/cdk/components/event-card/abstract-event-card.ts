@@ -17,29 +17,9 @@ export abstract class AbstractEventCard {
 
   public map: mapboxgl.Map | null = null
 
-  public generateBounds(coordinates: any): any {
-    return coordinates.reduce(
-      (bounds: mapboxgl.LngLatBounds, coord: any) => {
-        return bounds.extend(coord)
-      },
-      new mapboxgl.LngLatBounds(coordinates[ 0 ], coordinates[ 0 ])
-    )
-  }
-
   public generateStartTime(date: ISO8601): string {
     const parsedDate: Date = new Date(date)
     return new Intl.DateTimeFormat('ru-RU', { hour: 'numeric', minute: 'numeric' }).format(parsedDate)
-  }
-
-  public generateGeoJson(coordinates: number[][]): any {
-    return {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates
-      }
-    }
   }
 
   public generateDistanceString(distance: number): string {

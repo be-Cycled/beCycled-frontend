@@ -7,7 +7,7 @@ import { AbstractEventPage } from '../../../global/cdk/components/abstract-event
 import { MapboxRouteInfo, Route, Workout } from '../../../global/domain'
 import { RouteService } from '../../../global/domain/services/route/route.service'
 import { WorkoutService } from '../../../global/domain/services/workout/workout.service'
-import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
+import { generateBounds, generateGeoJsonFeature, generateStartTime, getWorkoutListDate } from '../../../global/utils'
 
 @Component({
   selector: 'cy-workout-page',
@@ -46,11 +46,11 @@ export class WorkoutPageComponent extends AbstractEventPage {
   )
 
   public bounds: Observable<any> = this.coordinates.pipe(
-    map((coordinates: number[][]) => this.generateBounds(coordinates))
+    map((coordinates: number[][]) => generateBounds(coordinates))
   )
 
   public geoJson: Observable<any> = this.coordinates.pipe(
-    map((coordinates: number[][]) => this.generateGeoJson(coordinates))
+    map((coordinates: number[][]) => generateGeoJsonFeature(coordinates))
   )
 
   constructor(private routeService: RouteService,

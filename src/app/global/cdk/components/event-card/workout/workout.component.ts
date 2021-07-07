@@ -4,6 +4,7 @@ import { map, shareReplay, tap } from 'rxjs/operators'
 import { defer, Observable, ObservedValueOf } from 'rxjs'
 import { AbstractEventCard } from '../abstract-event-card'
 import { RouteService } from '../../../../domain/services/route/route.service'
+import { generateBounds, generateGeoJsonFeature } from '../../../../utils'
 
 @Component({
   selector: 'cy-workout',
@@ -35,11 +36,11 @@ export class WorkoutComponent extends AbstractEventCard {
   )
 
   public bounds: Observable<any> = this.coordinates.pipe(
-    map((coordinates: number[][]) => this.generateBounds(coordinates))
+    map((coordinates: number[][]) => generateBounds(coordinates))
   )
 
   public geoJson: Observable<any> = this.coordinates.pipe(
-    map((coordinates: number[][]) => this.generateGeoJson(coordinates))
+    map((coordinates: number[][]) => generateGeoJsonFeature(coordinates))
   )
 
   constructor(private routeService: RouteService) {
