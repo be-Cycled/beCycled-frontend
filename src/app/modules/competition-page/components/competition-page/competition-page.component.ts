@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
-import { Observable, ObservedValueOf } from 'rxjs'
+import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../../global/cdk/components/abstract-event-page'
 import { Competition, MapboxRouteInfo, Route, Workout } from '../../../../global/domain'
@@ -30,16 +30,26 @@ export class CompetitionPageComponent extends AbstractEventPage {
     shareReplay(1)
   )
 
-  public routeInfo: Observable<MapboxRouteInfo> = this.route.pipe(
-    map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo))
+  public routeInfos: Observable<MapboxRouteInfo[]> = this.route.pipe(
+    map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo[]))
   )
 
-  public distance: Observable<number> = this.routeInfo.pipe(
-    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].distance)
+  public distance: Observable<number> = this.routeInfos.pipe(
+    map((routeInfos: MapboxRouteInfo[]) => {
+      let distance: number = 0
+      routeInfos.forEach((routeInfo: MapboxRouteInfo) => distance += routeInfo.routes[ 0 ].distance)
+
+      return distance
+    })
   )
 
-  public coordinates: Observable<ObservedValueOf<Observable<number[][]>>> = this.routeInfo.pipe(
-    map((routeInfo: MapboxRouteInfo) => routeInfo.routes[ 0 ].geometry.coordinates),
+  public coordinates: Observable<number[][]> = this.routeInfos.pipe(
+    map((routeInfos: MapboxRouteInfo[]) => {
+      let coordinatesFromRouteInfos: number[][] = []
+      routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
+
+      return coordinatesFromRouteInfos
+    }),
     tap((coordinates: number[][]) => {
       this.currentCoords = coordinates
     })

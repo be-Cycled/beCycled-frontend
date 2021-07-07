@@ -25,6 +25,7 @@ import {
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 import { MapboxNetworkService } from '../../global/services/mapbox-network/mapbox-network.service'
 import { TuiRippleModule } from '@taiga-ui/addon-mobile'
+import { AddEventService } from './services/add-event.service'
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { TuiRippleModule } from '@taiga-ui/addon-mobile'
     TuiDataListModule
   ],
   providers: [
-    MapboxNetworkService
+    MapboxNetworkService,
+    AddEventService
   ]
 })
 export class AddEventModule {
