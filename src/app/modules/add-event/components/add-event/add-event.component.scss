@@ -22,6 +22,9 @@ tui-island {
 
 form {
   width: 100%;
+  max-width: 320px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .form-label {
@@ -69,19 +72,31 @@ mgl-map {
   display: inline-block;
 }
 
+.description-form {
+  flex-grow: 1;
+}
+
+.description-text-area {
+  height: 100%;
+}
+
 .actions {
   display: flex;
   width: 100%;
+  max-width: 320px;
   margin-top: auto;
+  margin-right: auto;
+  margin-left: auto;
 
   .next {
     margin-left: auto;
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   :host {
     padding: 36px;
+    height: calc(100% - var(--header-height));
   }
 
   .material-icons-outlined {

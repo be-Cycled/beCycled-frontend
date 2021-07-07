@@ -106,25 +106,23 @@
         Минуты
       </tui-input-number>
     </div>
+  </form>
 
+  <form
+    class="description-form tui-space_bottom-5"
+    [class.hide]="activeTabIndex !== 4"
+    [formGroup]="eventForm"
+  >
+    <tui-text-area
+      class="description-text-area"
+      formControlName="description"
+    >
+      Введите описание
+    </tui-text-area>
   </form>
 
   <p class="form-label" [class.hide]="activeTabIndex !== 2">Маршрут</p>
   <p class="form-label" [class.hide]="activeTabIndex !== 3">Место сбора</p>
-
-  <!--  <p class="b-form" [class.hide]="activeTabIndex !== 2">-->
-  <!--    <tui-select-->
-  <!--      tuiTextfieldSize="m"-->
-  <!--      [formControl]="testValue"-->
-  <!--      [tuiTextfieldLabelOutside]="true"-->
-  <!--    >-->
-  <!--      Выберите маршрут-->
-  <!--      <tui-data-list-wrapper-->
-  <!--        *tuiDataList-->
-  <!--        [items]="routes"-->
-  <!--      ></tui-data-list-wrapper>-->
-  <!--    </tui-select>-->
-  <!--  </p>-->
 
   <mgl-map
     class="tui-space_bottom-5 add-event-map"
@@ -158,19 +156,6 @@
     <mgl-control position="top-left" mglGeocoder></mgl-control>
     <mgl-control position="bottom-right" mglFullscreen></mgl-control>
   </mgl-map>
-
-  <form
-    class="description-form tui-space_bottom-5"
-    [class.hide]="activeTabIndex !== 4"
-    [formGroup]="eventForm"
-  >
-    <tui-text-area
-      class="field-large"
-      formControlName="description"
-    >
-      Введите описание
-    </tui-text-area>
-  </form>
 
   <!--  <button (click)="generatePreview()">Preview</button>-->
   <!--      <button (click)="generateTrack()">Track</button>-->

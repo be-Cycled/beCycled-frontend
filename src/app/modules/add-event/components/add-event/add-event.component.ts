@@ -62,17 +62,6 @@ export class AddEventComponent implements OnInit {
     }
   ]
 
-  public routes: string[] = [
-    'Кутаис',
-    'М4',
-    'Копаны',
-    'Мезмай',
-    'Туапсинский бревет',
-    'Красная поляна'
-  ]
-
-  public testValue: FormControl = new FormControl()
-
   public activeTabIndex: number = 0
 
   public map: mapboxgl.Map | null = null
