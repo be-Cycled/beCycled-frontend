@@ -22,6 +22,7 @@ export class WorkoutPageComponent extends AbstractEventPage {
     shareReplay(1),
     tap((workout: Workout) => {
       this.title.setTitle(`Тренировка ${ getWorkoutListDate(workout.startDate) } ${ generateStartTime(workout.startDate) }`)
+      this.venueCoordinates = JSON.parse(workout.venue)
     })
   )
 
@@ -30,6 +31,9 @@ export class WorkoutPageComponent extends AbstractEventPage {
     shareReplay(1)
   )
 
+  /**
+   * TODO: Переименовать в routeInfos везде!
+   */
   public routeInfos: Observable<MapboxRouteInfo[]> = this.route.pipe(
     map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo[]))
   )

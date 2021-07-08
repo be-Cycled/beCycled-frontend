@@ -50,7 +50,7 @@ export interface Route {
    * base64 картинки с превью маршрута
    */
   routePreview: string
-  sportType: SportType[]
+  sportTypes: SportType[]
 
   /**
    * Флаг, что маршрут одноразовый
@@ -64,7 +64,7 @@ export interface Route {
 export interface RouteDto {
   id: null
   userId: number
-  name: string
+  name: string | null
 
   /**
    * Строковое представление JSON: MapboxRouteInfo[]
@@ -75,7 +75,7 @@ export interface RouteDto {
    * base64 картинки с превью маршрута
    */
   routePreview: string
-  sportType: SportType[]
+  sportTypes: SportType[]
 
   /**
    * Флаг, что маршрут одноразовый

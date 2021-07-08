@@ -346,10 +346,10 @@ export class AddEventComponent implements OnInit {
             const route: RouteDto = {
               id: null,
               userId: currentUser.id,
-              name: '',
+              name: null,
               routeInfo: JSON.stringify(this.routeInfos),
               routePreview: this.preview,
-              sportType: [],
+              sportTypes: [ this.eventForm.get('sportType')?.value ],
               disposable: true,
               description: '',
               popularity: 0,

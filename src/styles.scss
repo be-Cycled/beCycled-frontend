@@ -41,6 +41,29 @@ tui-root {
   position: relative;
 }
 
+.start-point,
+.end-point {
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+  border: 2px solid white;
+
+  cursor: pointer;
+}
+
+.start-point {
+  background-color: var(--cy-success);
+}
+
+.end-point {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--cy-alert);
+}
+
 @media (max-width: 599px) {
   tui-root {
     padding-bottom: 66px;

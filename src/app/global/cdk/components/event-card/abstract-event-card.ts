@@ -2,13 +2,13 @@ import { Directive } from '@angular/core'
 import mapboxgl, { AnyLayer } from 'mapbox-gl'
 import { SportType } from '../../../domain'
 import { ISO8601 } from '../../../models'
-import { buildCountString } from '../../../utils/utils'
+import { buildCountString } from '../../../utils'
 
 @Directive()
 export abstract class AbstractEventCard {
   protected currentCoords: number[][] | null = null
 
-  public sportTypeMap: any = {
+  public sportTypeMap: Record<SportType, string> = {
     [ SportType.bicycle ]: 'Велосипед',
     [ SportType.rollerblade ]: 'Роликовые коньки',
     [ SportType.run ]: 'Бег',
@@ -33,7 +33,7 @@ export abstract class AbstractEventCard {
     let minutes: number = 0
 
     if (duration < 60) {
-      return `${ duration } ${ buildCountString(duration, [ 'минута', 'минуты', 'минут' ]) }`
+      return `${ buildCountString(duration, [ 'минута', 'минуты', 'минут' ]) }`
     }
 
     hours = Math.floor(duration / 60)

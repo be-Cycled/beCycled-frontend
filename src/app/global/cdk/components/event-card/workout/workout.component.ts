@@ -20,6 +20,10 @@ export class WorkoutComponent extends AbstractEventCard {
     shareReplay(1)
   )
 
+  public routePreview: Observable<string> = defer(() => this.route.pipe(
+    map((route: Route) => route.routePreview)
+  ))
+
   public routeInfos: Observable<MapboxRouteInfo[]> = this.route.pipe(
     map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo[]))
   )

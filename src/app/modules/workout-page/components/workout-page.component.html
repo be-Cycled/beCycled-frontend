@@ -22,12 +22,13 @@
         type="line"
         source="geojson-route"
         [paint]="{
-      'line-color': '#FC6719',
-      'line-width': 2
-    }"
+          'line-color': '#0093D1',
+          'line-width': 4
+        }"
       >
       </mgl-layer>
       <mgl-control mglNavigation></mgl-control>
+      <mgl-control position="bottom-right" mglFullscreen></mgl-control>
     </mgl-map>
     <ul class="icon-list">
       <li>
@@ -54,14 +55,14 @@
         Длительность: {{ generateDurationString(workout.duration) }}
       </span>
       </li>
-      <li>
-      <span class="material-icons-outlined">
-        place
-      </span>
-        <span>
-        Место сбора: {{ workout.venue }}
-      </span>
-      </li>
+      <!--      <li>-->
+      <!--      <span class="material-icons-outlined">-->
+      <!--        place-->
+      <!--      </span>-->
+      <!--        <span>-->
+      <!--        Место сбора: {{ workout.venue }}-->
+      <!--      </span>-->
+      <!--      </li>-->
       <li>
       <span class="material-icons-outlined">
         description
