@@ -1,14 +1,17 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
-import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay } from '@taiga-ui/cdk'
+import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay, TuiTime } from '@taiga-ui/cdk'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { DirectionType, MapboxRouteInfo, SportType } from '../../../../global/domain'
+import { DirectionType, MapboxRouteInfo, SportType, User, Workout } from '../../../../global/domain'
 import { map, startWith, take } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
-import { EventType } from '../../../../global/models'
+import { EventType, ISO8601 } from '../../../../global/models'
 import { Observable } from 'rxjs'
+import { UserHolderService } from '../../../../global/services'
+import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
+import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -81,7 +84,10 @@ export class AddEventComponent implements OnInit {
 
   public eventForm: FormGroup = new FormGroup({
     eventType: new FormControl(EventType.workout, Validators.required),
-    date: new FormControl(null, Validators.required),
+    /**
+     * TODO: Валидация проходит, даже если не заполнено поле времени
+     */
+    startDate: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
     description: new FormControl(),
     durationHour: new FormControl(),
@@ -93,7 +99,10 @@ export class AddEventComponent implements OnInit {
     map(() => this.eventForm.invalid || this.trackCoordinates.length < 2 || this.venuePoint === null)
   )
 
-  constructor(private mapboxNetworkService: MapboxNetworkService) {
+  constructor(private mapboxNetworkService: MapboxNetworkService,
+              private userHolderService: UserHolderService,
+              private workoutService: WorkoutService,
+              private competitionService: CompetitionService) {
   }
 
   public ngOnInit(): void {
@@ -246,7 +255,7 @@ export class AddEventComponent implements OnInit {
     this.preview = this.map!.getCanvas().toDataURL()
   }
 
-  public generateTrack(): void {
+  public drawTrackPointsOnCanvas(): void {
     const startPoint: number[] = [
       this.trackCoordinates[ 0 ].lng,
       this.trackCoordinates[ 0 ].lat
@@ -307,30 +316,59 @@ export class AddEventComponent implements OnInit {
     })
   }
 
-  public onResize(): void {
-    /**
-     * Готовим точки для фитинга карты
-     */
-    let coordinatesFromRouteInfos: number[][] = []
-    this.routeInfos.forEach((routeInfo: MapboxRouteInfo) =>
-      coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
+  public onPublishButtonClick(): void {
+    this.drawTrackPointsOnCanvas()
+    const currentUser: User | null = this.userHolderService.getUser()
+    if (currentUser !== null) {
 
-    const bounds: LngLatBoundsLike = generateBounds(coordinatesFromRouteInfos)
+      /**
+       * Готовим точки для фитинга карты
+       */
+      let coordinatesFromRouteInfos: number[][] = []
+      this.routeInfos.forEach((routeInfo: MapboxRouteInfo) =>
+        coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
 
-    /**
-     * Вешает хэндлер.
-     * Но нужно понимать, что этот хэндлер не гарантирует, что канвас закончил рендеринг.
-     */
-    this.map!.on('moveend', (evt: mapboxgl.MapboxEvent<any> & mapboxgl.EventData) => {
-      if (evt.fitBoundsEnd) {
-        this.map!.once('idle', () => {
-          this.preview = this.map!.getCanvas().toDataURL()
-        })
-      }
-    })
+      const bounds: LngLatBoundsLike = generateBounds(coordinatesFromRouteInfos)
 
-    this.map!.getContainer().classList.add('resized')
-    this.map!.resize().fitBounds(bounds, { padding: 20, linear: true, animate: false }, { fitBoundsEnd: true })
+      /**
+       * Хендлер, который гарантирует, что канвас закончил рендеринг элементов.
+       */
+      this.map!.on('moveend', (evt: mapboxgl.MapboxEvent<any> & mapboxgl.EventData) => {
+        if (evt.fitBoundsEnd) {
+          this.map!.once('idle', () => {
+            this.generatePreview()
+
+            const startDateValue: [ TuiDay, TuiTime ] = this.eventForm.get('startDate')?.value
+            const [ startDay, startTime ]: [ TuiDay, TuiTime ] = startDateValue
+            const startDateUtc: Date = startDay.toUtcNativeDate()
+            startDateUtc.setHours(startTime.hours, startTime.minutes)
+
+            const workout: Workout = {
+              id: null,
+              userId: currentUser.id,
+              communityId: null,
+              private: false,
+              startDate: startDateUtc.toISOString() as ISO8601,
+              routeId: 0,
+              sportType: this.eventForm.get('sportType')?.value,
+              venue: JSON.stringify(this.venueCoordinates),
+              userIds: [ currentUser.id ],
+              duration: 0,
+              description: this.eventForm.get('description')?.value,
+              createdAd: '' as ISO8601
+            }
+
+            console.log(workout)
+          })
+        }
+      })
+
+      /**
+       * Подгоняем карту под требуемый размер preview.
+       */
+      this.map!.getContainer().classList.add('resized')
+      this.map!.resize().fitBounds(bounds, { padding: 20, linear: true, animate: false }, { fitBoundsEnd: true })
+    }
   }
 
   public onNextButtonClick(): void {
@@ -339,9 +377,5 @@ export class AddEventComponent implements OnInit {
 
   public onBackButtonClick(): void {
     this.activeTabIndex -= 1
-  }
-
-  public onPublishButtonClick(): void {
-
   }
 }
