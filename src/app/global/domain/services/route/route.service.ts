@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { Route } from '../../models'
+import { Route, RouteDto } from '../../models'
 import { Observable } from 'rxjs'
 import { ConfigService } from '../../../services'
 
@@ -11,8 +11,8 @@ export class RouteService {
               private configService: ConfigService) {
   }
 
-  public create(entity: Route): Observable<Route> {
-    return this.httpClient.post<Route>(`${ this.configService.baseApiUrl }/routes/`, entity)
+  public create(entity: RouteDto): Observable<Route> {
+    return this.httpClient.post<Route>(`${ this.configService.baseApiUrl }/routes`, entity)
   }
 
   public readById(id: number): Observable<Route> {

@@ -19,3 +19,22 @@ export interface Workout {
   description: string
   createdAd: ISO8601
 }
+
+export interface WorkoutDto {
+  id: null
+  userId: number
+  communityId: number | null
+  private: boolean
+  startDate: ISO8601
+  routeId: number
+  sportType: SportType
+
+  /**
+   * Строковое представление JSON: { lng: number, lat: number }
+   */
+  venue: string
+  userIds: number[]
+  duration: number
+  description: string
+  createdAd: null
+}

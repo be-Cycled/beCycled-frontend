@@ -3,8 +3,8 @@ import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay, TuiTime } from '@taiga-ui/cdk'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { DirectionType, MapboxRouteInfo, SportType, User, Workout } from '../../../../global/domain'
-import { map, startWith, take } from 'rxjs/operators'
+import { DirectionType, MapboxRouteInfo, Route, RouteDto, SportType, User, WorkoutDto } from '../../../../global/domain'
+import { finalize, map, startWith, switchMap, take, tap } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import { EventType, ISO8601 } from '../../../../global/models'
@@ -12,6 +12,7 @@ import { Observable } from 'rxjs'
 import { UserHolderService } from '../../../../global/services'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
+import { RouteService } from '../../../../global/domain/services/route/route.service'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -96,13 +97,17 @@ export class AddEventComponent implements OnInit {
 
   public isPublishButtonDisabled: Observable<boolean> = this.eventForm.valueChanges.pipe(
     startWith(false),
-    map(() => this.eventForm.invalid || this.trackCoordinates.length < 2 || this.venuePoint === null)
+    map(() => this.eventForm.invalid
+      || this.trackCoordinates.length < 2
+      || this.venuePoint === null
+      || this.eventForm.get('startDate')?.value[ 1 ] === null)
   )
 
   constructor(private mapboxNetworkService: MapboxNetworkService,
               private userHolderService: UserHolderService,
               private workoutService: WorkoutService,
-              private competitionService: CompetitionService) {
+              private competitionService: CompetitionService,
+              private routeService: RouteService) {
   }
 
   public ngOnInit(): void {
@@ -338,27 +343,47 @@ export class AddEventComponent implements OnInit {
           this.map!.once('idle', () => {
             this.generatePreview()
 
-            const startDateValue: [ TuiDay, TuiTime ] = this.eventForm.get('startDate')?.value
-            const [ startDay, startTime ]: [ TuiDay, TuiTime ] = startDateValue
-            const startDateUtc: Date = startDay.toUtcNativeDate()
-            startDateUtc.setHours(startTime.hours, startTime.minutes)
-
-            const workout: Workout = {
+            const route: RouteDto = {
               id: null,
               userId: currentUser.id,
-              communityId: null,
-              private: false,
-              startDate: startDateUtc.toISOString() as ISO8601,
-              routeId: 0,
-              sportType: this.eventForm.get('sportType')?.value,
-              venue: JSON.stringify(this.venueCoordinates),
-              userIds: [ currentUser.id ],
-              duration: 0,
-              description: this.eventForm.get('description')?.value,
-              createdAd: '' as ISO8601
+              name: '',
+              routeInfo: JSON.stringify(this.routeInfos),
+              routePreview: this.preview,
+              sportType: [],
+              disposable: true,
+              description: '',
+              popularity: 0,
+              createdAt: null
             }
 
-            console.log(workout)
+            this.routeService.create(route).pipe(
+              switchMap((route: Route) => {
+                const startDateValue: [ TuiDay, TuiTime ] = this.eventForm.get('startDate')?.value
+                const [ startDay, startTime ]: [ TuiDay, TuiTime ] = startDateValue
+                const startDateUtc: Date = startDay.toUtcNativeDate()
+                startDateUtc.setHours(startTime.hours, startTime.minutes)
+
+                const workout: WorkoutDto = {
+                  id: null,
+                  userId: currentUser.id,
+                  communityId: null,
+                  private: false,
+                  startDate: startDateUtc.toISOString() as ISO8601,
+                  routeId: route.id,
+                  sportType: this.eventForm.get('sportType')?.value,
+                  venue: JSON.stringify(this.venueCoordinates),
+                  userIds: [ currentUser.id ],
+                  duration: 0,
+                  description: this.eventForm.get('description')?.value,
+                  createdAd: null
+                }
+
+                return this.workoutService.create(workout)
+              }),
+              take(1),
+              tap((data: any) => console.log(data)),
+              finalize(() => console.log('End'))
+            ).subscribe()
           })
         }
       })

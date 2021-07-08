@@ -27,6 +27,7 @@ import { MapboxNetworkService } from '../../global/services/mapbox-network/mapbo
 import { TuiRippleModule } from '@taiga-ui/addon-mobile'
 import { WorkoutService } from '../../global/domain/services/workout/workout.service'
 import { CompetitionService } from '../../global/domain/services/competition/competition.service'
+import { RouteService } from '../../global/domain/services/route/route.service'
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { CompetitionService } from '../../global/domain/services/competition/com
   providers: [
     MapboxNetworkService,
     WorkoutService,
-    CompetitionService
+    CompetitionService,
+    RouteService
   ]
 })
 export class AddEventModule {

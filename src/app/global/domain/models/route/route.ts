@@ -56,7 +56,32 @@ export interface Route {
    * Флаг, что маршрут одноразовый
    */
   disposable: boolean
-  description: string
+  description: string | null
   popularity: number
   createdAt: ISO8601
+}
+
+export interface RouteDto {
+  id: null
+  userId: number
+  name: string
+
+  /**
+   * Строковое представление JSON: MapboxRouteInfo[]
+   */
+  routeInfo: string
+
+  /**
+   * base64 картинки с превью маршрута
+   */
+  routePreview: string
+  sportType: SportType[]
+
+  /**
+   * Флаг, что маршрут одноразовый
+   */
+  disposable: boolean
+  description: string
+  popularity: number
+  createdAt: null
 }
