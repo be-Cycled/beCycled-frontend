@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay } from '@taiga-ui/cdk'
-import { FormControl, FormGroup } from '@angular/forms'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteInfo, SportType } from '../../../../global/domain'
-import { take } from 'rxjs/operators'
+import { map, startWith, take } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import { EventType } from '../../../../global/models'
+import { Observable } from 'rxjs'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -79,20 +80,23 @@ export class AddEventComponent implements OnInit {
   public preview: string = ''
 
   public eventForm: FormGroup = new FormGroup({
-    eventType: new FormControl(EventType.workout),
-    date: new FormControl(),
-    sportType: new FormControl(SportType.bicycle),
-    venue: new FormControl(),
+    eventType: new FormControl(EventType.workout, Validators.required),
+    date: new FormControl(null, Validators.required),
+    sportType: new FormControl(SportType.bicycle, Validators.required),
     description: new FormControl(),
     durationHour: new FormControl(),
     durationMinutes: new FormControl()
   })
 
+  public isPublishButtonDisabled: Observable<boolean> = this.eventForm.valueChanges.pipe(
+    startWith(false),
+    map(() => this.eventForm.invalid || this.trackCoordinates.length < 2 || this.venuePoint === null)
+  )
+
   constructor(private mapboxNetworkService: MapboxNetworkService) {
   }
 
   public ngOnInit(): void {
-    this.eventForm.valueChanges.subscribe((data: any) => console.log(data))
   }
 
   public buildCurrentTuiDay(): TuiDay {
@@ -124,6 +128,19 @@ export class AddEventComponent implements OnInit {
     this.venuePoint = new mapboxgl.Marker({ color: '#FF6639' })
   }
 
+  private getCurrentDirectionType(): DirectionType {
+    switch (this.eventForm.get('sportType')?.value) {
+      case SportType.bicycle:
+        return DirectionType.driving
+      case SportType.rollerblade:
+        return DirectionType.walking
+      case SportType.run:
+        return DirectionType.driving
+      default:
+        return DirectionType.driving
+    }
+  }
+
   private updateDirection(): void {
     if (this.map !== null) {
       this.startPoint?.setLngLat(this.trackCoordinates[ 0 ]).addTo(this.map)
@@ -145,7 +162,7 @@ export class AddEventComponent implements OnInit {
       }
 
       this.mapboxNetworkService
-        .buildDirection(coordinatesForDirectionApi, DirectionType.cycling)
+        .buildDirection(coordinatesForDirectionApi, this.getCurrentDirectionType())
         .pipe(take(1))
         .subscribe((response: MapboxRouteInfo) => {
 
@@ -295,7 +312,8 @@ export class AddEventComponent implements OnInit {
      * Готовим точки для фитинга карты
      */
     let coordinatesFromRouteInfos: number[][] = []
-    this.routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
+    this.routeInfos.forEach((routeInfo: MapboxRouteInfo) =>
+      coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
 
     const bounds: LngLatBoundsLike = generateBounds(coordinatesFromRouteInfos)
 
@@ -321,5 +339,9 @@ export class AddEventComponent implements OnInit {
 
   public onBackButtonClick(): void {
     this.activeTabIndex -= 1
+  }
+
+  public onPublishButtonClick(): void {
+
   }
 }

@@ -180,10 +180,21 @@
       tuiButton
       appearance="primary"
       size="m"
-      class="next"
+      class="next-button"
       (click)="onNextButtonClick()"
     >
       Далее
+    </button>
+    <button
+      *ngIf="activeTabIndex === 4"
+      [disabled]="isPublishButtonDisabled | async"
+      tuiButton
+      appearance="primary"
+      size="m"
+      class="publish-button"
+      (click)="onPublishButtonClick()"
+    >
+      Опубликовать
     </button>
   </div>
 
