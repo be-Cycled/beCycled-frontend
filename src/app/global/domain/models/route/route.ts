@@ -45,7 +45,16 @@ export interface Route {
    * Строковое представление JSON: MapboxRouteInfo[]
    */
   routeInfo: string
+
+  /**
+   * base64 картинки с превью маршрута
+   */
+  routePreview: string
   sportType: SportType[]
+
+  /**
+   * Флаг, что маршрут одноразовый
+   */
   disposable: boolean
   description: string
   popularity: number
