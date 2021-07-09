@@ -3,7 +3,7 @@ import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay, TuiTime } from '@taiga-ui/cdk'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { DirectionType, MapboxRouteInfo, Route, RouteDto, SportType, User, WorkoutDto } from '../../../../global/domain'
+import { DirectionType, MapboxRouteInfo, Route, SportType, User, Workout } from '../../../../global/domain'
 import { finalize, map, startWith, switchMap, take, tap } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
@@ -85,13 +85,10 @@ export class AddEventComponent implements OnInit {
 
   public eventForm: FormGroup = new FormGroup({
     eventType: new FormControl(EventType.workout, Validators.required),
-    /**
-     * TODO: Валидация проходит, даже если не заполнено поле времени
-     */
     startDate: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
     description: new FormControl(),
-    durationHour: new FormControl(),
+    durationHours: new FormControl(),
     durationMinutes: new FormControl()
   })
 
@@ -108,6 +105,76 @@ export class AddEventComponent implements OnInit {
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
               private routeService: RouteService) {
+  }
+
+  private generateStartDateIsoString(): ISO8601 {
+    const startDateValue: [ TuiDay, TuiTime ] = this.eventForm.get('startDate')?.value
+    const [ startDay, startTime ]: [ TuiDay, TuiTime ] = startDateValue
+    const startDateUtc: Date = startDay.toUtcNativeDate()
+    startDateUtc.setHours(startTime.hours, startTime.minutes)
+
+    return startDateUtc.toISOString() as ISO8601
+  }
+
+  private generateDurationMinutes(): number {
+    const durationHours: number = this.eventForm.get('durationHours')?.value
+      ? this.eventForm.get('durationHours')?.value
+      : 0
+
+    const durationMinutes: number = this.eventForm.get('durationMinutes')?.value
+      ? this.eventForm.get('durationMinutes')?.value
+      : 0
+
+    return durationHours * 60 + durationMinutes
+  }
+
+  private createRouteByUserId(userId: number): Observable<Route> {
+    return this.routeService.create({
+      id: null,
+      userId: userId,
+      name: null,
+      routeInfo: JSON.stringify(this.routeInfos),
+      routePreview: this.preview,
+      sportTypes: [ this.eventForm.get('sportType')?.value ],
+      disposable: true,
+      description: '',
+      popularity: 0,
+      createdAt: null
+    })
+  }
+
+  private createWorkoutByRouteAndUserId(route: Route, userId: number): Observable<Workout> {
+    return this.workoutService.create({
+      id: null,
+      userId: userId,
+      communityId: null,
+      private: false,
+      startDate: this.generateStartDateIsoString(),
+      routeId: route.id,
+      sportType: this.eventForm.get('sportType')?.value,
+      venue: JSON.stringify(this.venueCoordinates),
+      userIds: [ userId ],
+      duration: this.generateDurationMinutes(),
+      description: this.eventForm.get('description')?.value,
+      createdAd: null
+    })
+  }
+
+  private createCompetitionByRouteAndUserId(route: Route, userId: number): Observable<Workout> {
+    return this.competitionService.create({
+      id: null,
+      userId: userId,
+      communityId: null,
+      private: false,
+      startDate: this.generateStartDateIsoString(),
+      routeId: route.id,
+      sportType: this.eventForm.get('sportType')?.value,
+      venue: JSON.stringify(this.venueCoordinates),
+      userIds: [ userId ],
+      duration: this.generateDurationMinutes(),
+      description: this.eventForm.get('description')?.value,
+      createdAd: null
+    })
   }
 
   public ngOnInit(): void {
@@ -343,42 +410,16 @@ export class AddEventComponent implements OnInit {
           this.map!.once('idle', () => {
             this.generatePreview()
 
-            const route: RouteDto = {
-              id: null,
-              userId: currentUser.id,
-              name: null,
-              routeInfo: JSON.stringify(this.routeInfos),
-              routePreview: this.preview,
-              sportTypes: [ this.eventForm.get('sportType')?.value ],
-              disposable: true,
-              description: '',
-              popularity: 0,
-              createdAt: null
-            }
-
-            this.routeService.create(route).pipe(
+            this.createRouteByUserId(currentUser.id).pipe(
               switchMap((route: Route) => {
-                const startDateValue: [ TuiDay, TuiTime ] = this.eventForm.get('startDate')?.value
-                const [ startDay, startTime ]: [ TuiDay, TuiTime ] = startDateValue
-                const startDateUtc: Date = startDay.toUtcNativeDate()
-                startDateUtc.setHours(startTime.hours, startTime.minutes)
-
-                const workout: WorkoutDto = {
-                  id: null,
-                  userId: currentUser.id,
-                  communityId: null,
-                  private: false,
-                  startDate: startDateUtc.toISOString() as ISO8601,
-                  routeId: route.id,
-                  sportType: this.eventForm.get('sportType')?.value,
-                  venue: JSON.stringify(this.venueCoordinates),
-                  userIds: [ currentUser.id ],
-                  duration: 0,
-                  description: this.eventForm.get('description')?.value,
-                  createdAd: null
+                switch (this.eventForm.get('eventType')?.value) {
+                  case EventType.workout:
+                    return this.createWorkoutByRouteAndUserId(route, currentUser.id)
+                  case EventType.competition:
+                    return this.createCompetitionByRouteAndUserId(route, currentUser.id)
+                  default:
+                    throw new Error('Не указан тип события')
                 }
-
-                return this.workoutService.create(workout)
               }),
               take(1),
               tap((data: any) => console.log(data)),
