@@ -27,7 +27,7 @@
         Дистанция: {{ generateDistanceString(distance | async) }}
       </span>
     </li>
-    <li>
+    <li *ngIf="workout.duration > 0">
       <span class="material-icons-outlined">
         access_time
       </span>
@@ -35,14 +35,6 @@
         Длительность: {{ generateDurationString(workout.duration) }}
       </span>
     </li>
-    <!--    <li>-->
-    <!--      <span class="material-icons-outlined">-->
-    <!--        place-->
-    <!--      </span>-->
-    <!--      <span>-->
-    <!--        Место сбора: {{ workout.venue }}-->
-    <!--      </span>-->
-    <!--    </li>-->
     <li>
       <span class="material-icons-outlined">
         description
