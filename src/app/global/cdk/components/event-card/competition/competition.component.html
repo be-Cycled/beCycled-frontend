@@ -8,7 +8,7 @@
   <h3 class="tui-island__title">{{ generateStartTime(competition.startDate) }}</h3>
   <p class="tui-island__category">Соревнование</p>
   <div class="preview-container">
-    <img [src]="routePreview | async">
+    <img [src]="routePreview$ | async">
   </div>
   <ul class="icon-list">
     <li>
@@ -24,7 +24,7 @@
         moving
       </span>
       <span>
-        Дистанция: {{ generateDistanceString(distance | async) }}
+        Дистанция: {{ generateDistanceString(distance$ | async) }}
       </span>
     </li>
     <li *ngIf="competition.duration > 0">

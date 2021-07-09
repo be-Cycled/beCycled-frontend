@@ -1,10 +1,10 @@
 <tui-island *tuiLet="competition$ | async as competition">
   <ng-container *ngIf="competition">
     <h3 class="tui-island__title">{{ generateStartTime(competition.startDate) }}</h3>
-    <p class="tui-island__category">Тренировка</p>
+    <p class="tui-island__category">Соревнование</p>
     <mgl-map
       [style]="'mapbox://styles/mapbox/streets-v11'"
-      [fitBounds]="bounds | async"
+      [fitBounds]="bounds$ | async"
       [fitBoundsOptions]="{ padding: 8, linear: true }"
       [attributionControl]="false"
       [doubleClickZoom]="false"
@@ -14,7 +14,7 @@
     >
       <mgl-geojson-source
         id="geojson-route"
-        [data]="geoJson | async"
+        [data]="geoJson$ | async"
       >
       </mgl-geojson-source>
       <mgl-layer
@@ -22,12 +22,13 @@
         type="line"
         source="geojson-route"
         [paint]="{
-      'line-color': '#FC6719',
-      'line-width': 2
-    }"
+          'line-color': '#0093D1',
+          'line-width': 4
+        }"
       >
       </mgl-layer>
       <mgl-control mglNavigation></mgl-control>
+      <mgl-control position="bottom-right" mglFullscreen></mgl-control>
     </mgl-map>
     <ul class="icon-list">
       <li>
@@ -43,7 +44,7 @@
         moving
       </span>
         <span>
-        Дистанция: {{ generateDistanceString(distance | async) }}
+        Дистанция: {{ generateDistanceString(distance$ | async) }}
       </span>
       </li>
       <li>
@@ -54,14 +55,14 @@
         Длительность: {{ generateDurationString(competition.duration) }}
       </span>
       </li>
-      <li>
-      <span class="material-icons-outlined">
-        place
-      </span>
-        <span>
-        Место сбора: {{ competition.venue }}
-      </span>
-      </li>
+      <!--      <li>-->
+      <!--      <span class="material-icons-outlined">-->
+      <!--        place-->
+      <!--      </span>-->
+      <!--        <span>-->
+      <!--        Место сбора: {{ competition.venue }}-->
+      <!--      </span>-->
+      <!--      </li>-->
       <li>
       <span class="material-icons-outlined">
         description

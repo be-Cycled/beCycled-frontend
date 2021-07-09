@@ -4,7 +4,7 @@
     <p class="tui-island__category">Тренировка</p>
     <mgl-map
       [style]="'mapbox://styles/mapbox/streets-v11'"
-      [fitBounds]="bounds | async"
+      [fitBounds]="bounds$ | async"
       [fitBoundsOptions]="{ padding: 8, linear: true }"
       [attributionControl]="false"
       [doubleClickZoom]="false"
@@ -14,7 +14,7 @@
     >
       <mgl-geojson-source
         id="geojson-route"
-        [data]="geoJson | async"
+        [data]="geoJson$ | async"
       >
       </mgl-geojson-source>
       <mgl-layer
@@ -44,7 +44,7 @@
         moving
       </span>
         <span>
-        Дистанция: {{ generateDistanceString(distance | async) }}
+        Дистанция: {{ generateDistanceString(distance$ | async) }}
       </span>
       </li>
       <li>
