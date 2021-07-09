@@ -1,16 +1,18 @@
 :host {
   display: block;
-  padding: 18px 18px 90px;
+  padding: 12px 12px calc(var(--menu-height) + 12px);
 }
 
+// TODO: Вынести стили карточек в общий файл стилей
+
 .tui-island__category {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 mgl-map {
   width: 100%;
   height: 400px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 
   border-radius: var(--tui-radius-l);
 
@@ -19,8 +21,7 @@ mgl-map {
 
 .icon-list li {
   display: flex;
-  align-items: center;
-  padding: 6px 0;
+  padding: 8px 0;
 }
 
 .material-icons-outlined {
