@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteInfo, Route, SportType, User, Workout } from '../../../../global/domain'
-import { finalize, map, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { map, startWith, switchMap, take } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import { EventType, ISO8601 } from '../../../../global/models'
@@ -390,6 +390,7 @@ export class AddEventComponent implements OnInit {
 
   public onPublishButtonClick(): void {
     this.drawTrackPointsOnCanvas()
+
     const currentUser: User | null = this.userHolderService.getUser()
     if (currentUser !== null) {
 
@@ -412,6 +413,7 @@ export class AddEventComponent implements OnInit {
 
             this.createRouteByUserId(currentUser.id).pipe(
               switchMap((route: Route) => {
+
                 switch (this.eventForm.get('eventType')?.value) {
                   case EventType.workout:
                     return this.createWorkoutByRouteAndUserId(route, currentUser.id)
@@ -421,9 +423,7 @@ export class AddEventComponent implements OnInit {
                     throw new Error('Не указан тип события')
                 }
               }),
-              take(1),
-              tap((data: any) => console.log(data)),
-              finalize(() => console.log('End'))
+              take(1)
             ).subscribe()
           })
         }
