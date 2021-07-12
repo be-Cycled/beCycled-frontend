@@ -1,6 +1,6 @@
 :host {
   display: block;
-  padding: 18px 0;
+  padding: 12px 0 var(--menu-height);
 
   & .event-list {
     max-width: none;
@@ -10,12 +10,6 @@
   & .event-item {
     width: 320px;
   }
-}
-
-.filter {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
 .date {
@@ -33,12 +27,6 @@
 
   background-color: rgba(240, 242, 243, 0.8);
   border-radius: 20px;
-}
-
-@media (max-width: 599px) {
-  :host {
-    padding: 12px 0 0;
-  }
 }
 
 @media (min-width: 768px) {
