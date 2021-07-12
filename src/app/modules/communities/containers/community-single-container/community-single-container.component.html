@@ -1,5 +1,5 @@
 <header class="header">
-  <div class="avatar-container">
+  <div class="community-avatar-container">
     <img [attr.src]="avatar | async" [attr.alt]="name | async">
   </div>
   <div class="community-type-container" [ngSwitch]="type | async">
@@ -13,10 +13,13 @@
   <div class="community-links-container">
     <ul class="community-link-list">
       <li class="community-link-list-item">
-        <span class="material-icons">link</span>
+        <span class="material-icons-outlined">link</span>
         <a [attr.href]="url | async | safe: 'url'">{{ url | async }}</a>
       </li>
     </ul>
+  </div>
+  <div class="community-actions-container">
+    <button tuiButton size="s">Присоединиться</button>
   </div>
 </header>
 

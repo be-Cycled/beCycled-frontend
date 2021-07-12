@@ -15,10 +15,9 @@ import { AppComponent } from './app.component'
 import { HeaderModule } from './global/cdk/components/header/header.module'
 import { MenuModule } from './global/cdk/components/menu/menu.module'
 import { DomainModule } from './global/domain/domain.module'
+import { MAPBOX_TOKEN } from './global/models'
 import { APP_VERSION } from './global/tokens'
 import { titleBuilder } from './global/utils'
-import { MAPBOX_TOKEN } from './global/models'
-import { of } from 'rxjs'
 
 @Injectable()
 class BeCycledTitle {
