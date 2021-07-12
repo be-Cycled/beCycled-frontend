@@ -1,6 +1,9 @@
 :host {
+  position: relative;
+
   display: block;
-  padding: 18px 0;
+  height: 100vh;
+  padding: 12px 0 var(--menu-height);
 
   & .event-list {
     max-width: none;
@@ -10,6 +13,30 @@
   & .event-item {
     width: 320px;
   }
+}
+
+.add-button {
+  position: fixed;
+  bottom: calc(var(--menu-height) + 12px);
+  right: 12px;
+
+  z-index: 9999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0 !important;
+
+  color: white;
+  text-decoration: none;
+
+  border: none;
+  border-radius: 50%;
+  background-color: var(--tui-primary);
+
+  box-shadow: 0 0.25rem 1.5rem rgb(0 0 0 / 12%);
 }
 
 .date {
@@ -29,19 +56,26 @@
   border-radius: 20px;
 }
 
-@media (max-width: 599px) {
-  :host {
-    padding: 12px 0 0;
-  }
-}
-
 @media (min-width: 768px) {
   :host {
+    padding: 36px 0;
+
     & .event-list {
       grid-template-columns: repeat(2, 1fr);
       grid-gap: 16px;
       max-width: 672px;
     }
+  }
+
+  .add-button {
+    right: 36px;
+    bottom: 36px;
+  }
+}
+
+::ng-deep {
+  .add-button .wrapper {
+    padding: 0 !important;
   }
 }
 

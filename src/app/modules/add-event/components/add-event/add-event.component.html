@@ -1,0 +1,196 @@
+<tui-island *ngIf="isUserAuthorized$ | async">
+  <p class="tui-island__category">
+    Новое событие
+  </p>
+
+  <tui-tabs
+    class="tui-space_bottom-4"
+    [(activeItemIndex)]="activeTabIndex"
+  >
+    <button
+      *ngFor="let item of tabs"
+      tuiTab
+      tuiRipple="var(--tui-text-01)"
+    >
+      <span class="material-icons-outlined">
+        {{ item.icon }}
+      </span>
+      <span class="tab-label">
+        {{ item.text }}
+      </span>
+
+    </button>
+  </tui-tabs>
+
+  <form
+    class="sport-type-form tui-space_bottom-5"
+    [class.hide]="activeTabIndex !== 0"
+    [formGroup]="eventForm"
+  >
+    <p class="form-label">Тип события</p>
+    <div tuiGroup class="sport-type-inner tui-space_bottom-3" orientation="vertical" [collapsed]="true">
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="eventType"
+        item="WORKOUT"
+        size="m"
+      >
+        Тренировка
+      </tui-radio-block>
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="eventType"
+        item="COMPETITION"
+        size="m"
+      >
+        Соревнование
+      </tui-radio-block>
+    </div>
+
+    <p class="form-label">Вид спорта</p>
+    <div tuiGroup class="sport-type-inner" orientation="vertical" [collapsed]="true">
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="sportType"
+        item="BICYCLE"
+        size="m"
+      >
+        Велосипед
+      </tui-radio-block>
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="sportType"
+        item="RUN"
+        size="m"
+      >
+        Бег
+      </tui-radio-block>
+      <tui-radio-block
+        contentAlign="right"
+        formControlName="sportType"
+        item="ROLLERBLADE"
+        size="m"
+      >
+        Роликовые коньки
+      </tui-radio-block>
+    </div>
+  </form>
+
+  <form
+    class="date-form tui-space_bottom-5"
+    [class.hide]="activeTabIndex !== 1"
+    [formGroup]="eventForm"
+  >
+    <p class="form-label">Дата</p>
+    <tui-input-date-time
+      formControlName="startDate"
+      tuiTextfieldSize="m"
+      timeMode="HH:MM"
+      [min]="buildCurrentTuiDay()"
+    >
+      Выберите дату и время
+    </tui-input-date-time>
+
+    <p class="form-label">Длительность</p>
+    <div class="duration-container">
+      <tui-input-number
+        formControlName="durationHours"
+        tuiTextfieldSize="m"
+      >
+        Часы
+      </tui-input-number>
+
+      <tui-input-number
+        formControlName="durationMinutes"
+        tuiTextfieldSize="m"
+      >
+        Минуты
+      </tui-input-number>
+    </div>
+  </form>
+
+  <form
+    class="description-form tui-space_bottom-5"
+    [class.hide]="activeTabIndex !== 4"
+    [formGroup]="eventForm"
+  >
+    <tui-text-area
+      class="description-text-area"
+      formControlName="description"
+    >
+      Введите описание
+    </tui-text-area>
+  </form>
+
+  <p class="form-label" [class.hide]="activeTabIndex !== 2">Маршрут</p>
+  <p class="form-label" [class.hide]="activeTabIndex !== 3">Место сбора</p>
+
+  <mgl-map
+    class="tui-space_bottom-5 add-event-map"
+    [class.hide]="activeTabIndex !== 2 && activeTabIndex !== 3"
+    [style]="'mapbox://styles/mapbox/streets-v11'"
+    [attributionControl]="false"
+    [doubleClickZoom]="false"
+    [zoom]="15"
+    [preserveDrawingBuffer]="true"
+    [center]="[ 39.949127487394094,43.414052415946685 ]"
+    (mapLoad)="onMapboxLoad($event)"
+    (mapClick)="onMapClick($event)"
+  >
+    <mgl-geojson-source
+      id="geojson-route"
+      [data]="geoJsonFeature"
+    >
+    </mgl-geojson-source>
+
+    <mgl-layer
+      id="route"
+      type="line"
+      source="geojson-route"
+      [paint]="{
+        'line-color': '#0093D1',
+        'line-width': 4
+      }"
+    >
+    </mgl-layer>
+
+    <mgl-control position="top-left" mglGeocoder></mgl-control>
+    <mgl-control position="bottom-right" mglFullscreen></mgl-control>
+  </mgl-map>
+
+  <div class="actions">
+    <button
+      *ngIf="activeTabIndex !== 0"
+      tuiButton
+      appearance="secondary"
+      size="m"
+      class="back"
+      (click)="onBackButtonClick()"
+    >
+      Назад
+    </button>
+
+    <button
+      *ngIf="activeTabIndex !== 4"
+      tuiButton
+      appearance="primary"
+      size="m"
+      class="next-button"
+      (click)="onNextButtonClick()"
+    >
+      Далее
+    </button>
+    <button
+      *ngIf="activeTabIndex === 4"
+      [disabled]="isPublishButtonDisabled | async"
+      tuiButton
+      appearance="primary"
+      size="m"
+      class="publish-button"
+      (click)="onPublishButtonClick()"
+    >
+      Опубликовать
+    </button>
+  </div>
+
+</tui-island>

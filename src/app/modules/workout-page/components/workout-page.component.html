@@ -4,7 +4,7 @@
     <p class="tui-island__category">Тренировка</p>
     <mgl-map
       [style]="'mapbox://styles/mapbox/streets-v11'"
-      [fitBounds]="bounds | async"
+      [fitBounds]="bounds$ | async"
       [fitBoundsOptions]="{ padding: 8, linear: true }"
       [attributionControl]="false"
       [doubleClickZoom]="false"
@@ -14,7 +14,7 @@
     >
       <mgl-geojson-source
         id="geojson-route"
-        [data]="geoJson | async"
+        [data]="geoJson$ | async"
       >
       </mgl-geojson-source>
       <mgl-layer
@@ -22,15 +22,17 @@
         type="line"
         source="geojson-route"
         [paint]="{
-      'line-color': '#FC6719',
-      'line-width': 2
-    }"
+          'line-color': '#0093D1',
+          'line-width': 4
+        }"
       >
       </mgl-layer>
+      <mgl-control mglNavigation></mgl-control>
+      <mgl-control position="bottom-right" mglFullscreen></mgl-control>
     </mgl-map>
     <ul class="icon-list">
       <li>
-      <span class="material-icons">
+      <span class="material-icons-outlined">
         emoji_people
       </span>
         <span>
@@ -38,15 +40,15 @@
       </span>
       </li>
       <li>
-      <span class="material-icons">
+      <span class="material-icons-outlined">
         moving
       </span>
         <span>
-        Дистанция: {{ generateDistanceString(distance | async) }}
+        Дистанция: {{ generateDistanceString(distance$ | async) }}
       </span>
       </li>
-      <li>
-      <span class="material-icons">
+      <li *ngIf="workout.duration > 0">
+      <span class="material-icons-outlined">
         access_time
       </span>
         <span>
@@ -54,15 +56,7 @@
       </span>
       </li>
       <li>
-      <span class="material-icons">
-        place
-      </span>
-        <span>
-        Место сбора: {{ workout.venue }}
-      </span>
-      </li>
-      <li>
-      <span class="material-icons">
+      <span class="material-icons-outlined">
         description
       </span>
         <span>
@@ -70,7 +64,7 @@
       </span>
       </li>
       <li>
-      <span class="material-icons">
+      <span class="material-icons-outlined">
         group
       </span>
         <span>

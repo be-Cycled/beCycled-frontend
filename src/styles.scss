@@ -6,16 +6,25 @@ body {
   background-color: #F0F2F3;
 
   --cy-primary: hsl(21deg 97% 54%);
-  --cy-success: hsl(120, 44%, 55%);
+  --cy-success: #5ABF5A;
+  --cy-alert: #FF6639;
+}
+
+tui-root {
+  flex: none !important;
+  height: 100%;
 }
 
 :root {
   --icon-color: var(--tui-base-06);
-  --tui-primary: #0093D1 !important;
-  --tui-primary-hover: #05B5FF !important;
-  --tui-link: #0093D1 !important;
-  --tui-link-hover: #05B5FF !important;
+  //--tui-primary: #0093D1 !important;
+  //--tui-primary-hover: #05B5FF !important;
+  //--tui-link: #0093D1 !important;
+  //--tui-link-hover: #05B5FF !important;
   --background: #F0F2F3;
+
+  --header-height: 76px;
+  --menu-height: 66px;
 }
 
 .event-list {
@@ -30,6 +39,29 @@ body {
 
 .event-item {
   position: relative;
+}
+
+.start-point,
+.end-point {
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+  border: 2px solid white;
+
+  cursor: pointer;
+}
+
+.start-point {
+  background-color: var(--cy-success);
+}
+
+.end-point {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--cy-alert);
 }
 
 @media (max-width: 599px) {

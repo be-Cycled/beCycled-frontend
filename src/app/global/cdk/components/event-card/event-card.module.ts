@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common'
 import { WorkoutComponent } from './workout/workout.component'
 import { CompetitionComponent } from './competition/competition.component'
 import { TuiIslandModule } from '@taiga-ui/kit'
-import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 import { RouterModule } from '@angular/router'
 
 @NgModule({
@@ -14,7 +13,6 @@ import { RouterModule } from '@angular/router'
   imports: [
     CommonModule,
     TuiIslandModule,
-    NgxMapboxGLModule,
     RouterModule
   ],
   exports: [

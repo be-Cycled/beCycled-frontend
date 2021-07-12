@@ -1,7 +1,7 @@
 :host {
   display: grid;
   gap: 1rem;
-  padding: 1rem 1rem calc(1rem);
+  padding: 12px 12px calc(var(--menu-height) + 12px);
 }
 
 figure.poster {
@@ -14,12 +14,12 @@ figure.poster img {
   border-radius: var(--tui-radius-l) var(--tui-radius-l) 0 0;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   :host {
     max-width: 900px;
     margin: 0 auto;
     grid-template-columns: repeat(3, 300px);
-    padding: 0;
+    padding: 36px 0;
   }
 
   .title {

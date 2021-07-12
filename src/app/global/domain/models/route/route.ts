@@ -29,7 +29,7 @@ export interface MapboxRoute {
   distance: number
 }
 
-export interface MapboxRouteInfo {
+export interface MapboxRouteGeoData {
   routes: MapboxRoute[]
   waypoints: MapboxWaypoint[]
   code: string
@@ -40,10 +40,48 @@ export interface Route {
   id: number
   userId: number
   name: string
-  routeInfo: string
-  sportType: SportType[]
+
+  /**
+   * Строковое представление JSON: MapboxRouteGeoData[]
+   */
+  routeGeoData: string
+
+  /**
+   * base64 картинки с превью маршрута
+   */
+  routePreview: string
+  sportTypes: SportType[]
+
+  /**
+   * Флаг, что маршрут одноразовый
+   */
+  disposable: boolean
+  description: string | null
+  popularity: number
+  createdAt: ISO8601
+}
+
+export interface RouteDto {
+  id: null
+  userId: number
+  name: string | null
+
+  /**
+   * Строковое представление JSON: MapboxRouteGeoData[]
+   */
+  routeGeoData: string
+
+  /**
+   * base64 картинки с превью маршрута
+   */
+  routePreview: string
+  sportTypes: SportType[]
+
+  /**
+   * Флаг, что маршрут одноразовый
+   */
   disposable: boolean
   description: string
   popularity: number
-  createdAt: ISO8601
+  createdAt: null
 }
