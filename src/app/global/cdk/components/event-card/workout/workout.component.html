@@ -7,35 +7,12 @@
 >
   <h3 class="tui-island__title">{{ generateStartTime(workout.startDate) }}</h3>
   <p class="tui-island__category">Тренировка</p>
-  <mgl-map
-    [style]="'mapbox://styles/mapbox/streets-v11'"
-    [fitBounds]="bounds | async"
-    [fitBoundsOptions]="{ padding: 20, linear: true }"
-    [attributionControl]="false"
-    [interactive]="false"
-    [zoom]="15"
-    [center]="[ 39.949127487394094,43.414052415946685 ]"
-    (mapLoad)="onMapboxLoad($event)"
-  >
-    <mgl-geojson-source
-      id="geojson-route"
-      [data]="geoJson | async"
-    >
-    </mgl-geojson-source>
-    <mgl-layer
-      id="route"
-      type="line"
-      source="geojson-route"
-      [paint]="{
-      'line-color': '#FC6719',
-      'line-width': 2
-    }"
-    >
-    </mgl-layer>
-  </mgl-map>
+  <div class="preview-container">
+    <img [src]="routePreview$ | async">
+  </div>
   <ul class="icon-list">
     <li>
-      <span class="material-icons">
+      <span class="material-icons-outlined">
         emoji_people
       </span>
       <span>
@@ -43,15 +20,15 @@
       </span>
     </li>
     <li>
-      <span class="material-icons">
+      <span class="material-icons-outlined">
         moving
       </span>
       <span>
-        Дистанция: {{ generateDistanceString(distance | async) }}
+        Дистанция: {{ generateDistanceString(distance$ | async) }}
       </span>
     </li>
-    <li>
-      <span class="material-icons">
+    <li *ngIf="workout.duration > 0">
+      <span class="material-icons-outlined">
         access_time
       </span>
       <span>
@@ -59,15 +36,7 @@
       </span>
     </li>
     <li>
-      <span class="material-icons">
-        place
-      </span>
-      <span>
-        Место сбора: {{ workout.venue }}
-      </span>
-    </li>
-    <li>
-      <span class="material-icons">
+      <span class="material-icons-outlined">
         description
       </span>
       <span>
@@ -75,7 +44,7 @@
       </span>
     </li>
     <li>
-      <span class="material-icons">
+      <span class="material-icons-outlined">
         group
       </span>
       <span>

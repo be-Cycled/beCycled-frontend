@@ -1,4 +1,4 @@
-import { Workout } from './workout'
+import { Workout, WorkoutDto } from './workout'
 
 export interface UserProtocol {
   position: number
@@ -8,4 +8,8 @@ export interface UserProtocol {
 export interface Competition extends Workout {
   startUserIdList: UserProtocol
   resultUserIdList: UserProtocol
+}
+
+export interface CompetitionDto extends WorkoutDto {
+
 }

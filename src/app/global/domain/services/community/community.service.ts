@@ -31,11 +31,11 @@ export class CommunityService {
   }
 
   public join(community: Community): Observable<Community> {
-    return this.httpClient.get<Community>(`${ this.config.baseApiUrl }/communities/join/${ community.id }`)
+    return this.httpClient.post<Community>(`${ this.config.baseApiUrl }/communities/join/${ community.id }`, {})
   }
 
   public leave(community: Community): Observable<Community> {
-    return this.httpClient.get<Community>(`${ this.config.baseApiUrl }/communities/leave/${ community.id }`)
+    return this.httpClient.post<Community>(`${ this.config.baseApiUrl }/communities/leave/${ community.id }`, {})
   }
 
   public getUsersByCommunity(nickname: string): Observable<User[]> {

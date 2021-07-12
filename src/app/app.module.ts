@@ -17,6 +17,8 @@ import { MenuModule } from './global/cdk/components/menu/menu.module'
 import { DomainModule } from './global/domain/domain.module'
 import { APP_VERSION } from './global/tokens'
 import { titleBuilder } from './global/utils'
+import { MAPBOX_TOKEN } from './global/models'
+import { of } from 'rxjs'
 
 @Injectable()
 class BeCycledTitle {
@@ -42,8 +44,8 @@ class BeCycledTitle {
     BrowserAnimationsModule,
     TuiRootModule,
     NgxMapboxGLModule.withConfig({
-      accessToken: 'pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g',
-      geocoderAccessToken: 'pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g'
+      accessToken: MAPBOX_TOKEN,
+      geocoderAccessToken: MAPBOX_TOKEN
     }),
     HeaderModule,
     MenuModule,

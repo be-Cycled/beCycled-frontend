@@ -2,27 +2,31 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { ConfigService } from '../../../services'
-import { Workout } from '../../models'
+import { Workout, WorkoutDto } from '../../models'
 
 @Injectable()
 export class WorkoutService {
   constructor(private httpClient: HttpClient,
-              private config: ConfigService) {
+              private configService: ConfigService) {
   }
 
-  public getWorkoutsByCommunity(nickname: string): Observable<Workout[]> {
-    return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/community/${ nickname }`)
+  public create(entity: WorkoutDto): Observable<Workout> {
+    return this.httpClient.post<Workout>(`${ this.configService.baseApiUrl }/workouts`, entity)
   }
 
-  public getByUser(login: string): Observable<Workout[]> {
-    return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/user/${ login }`)
+  public readWorkoutsByCommunity(nickname: string): Observable<Workout[]> {
+    return this.httpClient.get<Workout[]>(`${ this.configService.baseApiUrl }/workouts/community/${ nickname }`)
   }
 
-  public getWorkouts(): Observable<Workout[]> {
-    return this.httpClient.get<Workout[]>(`${ this.config.baseApiUrl }/workouts/all`)
+  public readByUser(login: string): Observable<Workout[]> {
+    return this.httpClient.get<Workout[]>(`${ this.configService.baseApiUrl }/workouts/user/${ login }`)
   }
 
-  public getById(id: number): Observable<Workout> {
-    return this.httpClient.get<Workout>(`${ this.config.baseApiUrl }/workouts/${ id }`)
+  public readWorkouts(): Observable<Workout[]> {
+    return this.httpClient.get<Workout[]>(`${ this.configService.baseApiUrl }/workouts/all`)
+  }
+
+  public readById(id: number): Observable<Workout> {
+    return this.httpClient.get<Workout>(`${ this.configService.baseApiUrl }/workouts/${ id }`)
   }
 }

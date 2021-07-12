@@ -5,3 +5,7 @@ export const DEFAULT_AVATAR: string = `data:image/png;base64,iVBORw0KGgoAAAANSUh
 export const PATH_PARAMS: Record<'communityNickname', string> = {
   communityNickname: `nickname`
 }
+
+export const MAPBOX_TOKEN: string = `pk.eyJ1IjoiYXZrb2x0b3ZpY2giLCJhIjoiY2twazRzamx2M2hoODJvbnhjZzB6eHJlayJ9.e5IMZ_ELx1EPzucgUlIH8g`
+
+export const MAPBOX_API_URL: string = `https://api.mapbox.com`

@@ -129,8 +129,8 @@ export class SingleCommunityContainerComponent {
   public communityHolder: BehaviorSubject<Community> = new BehaviorSubject<Community>(this.activatedRoute.snapshot.data.community)
 
   public events: Observable<SomeWrappedEvent[]> = forkJoin([
-    this.workoutService.getWorkoutsByCommunity(this.communityHolder.value.nickname),
-    this.competitionService.getCompetitionsByCommunity(this.communityHolder.value.nickname)
+    this.workoutService.readWorkoutsByCommunity(this.communityHolder.value.nickname),
+    this.competitionService.readCompetitionsByCommunity(this.communityHolder.value.nickname)
   ]).pipe(
     map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
       const result: SomeWrappedEvent[] = []

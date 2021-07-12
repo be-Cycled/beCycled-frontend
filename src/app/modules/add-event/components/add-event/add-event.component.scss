@@ -1,0 +1,128 @@
+:host {
+  display: block;
+  height: 100%;
+  padding: 12px;
+}
+
+tui-island {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  box-sizing: border-box;
+
+  tui-tabs {
+    min-height: 48px;
+  }
+}
+
+.tab-label {
+  display: none;
+}
+
+form {
+  width: 100%;
+  max-width: 320px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.form-label {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.sport-type-inner {
+  width: 100%;
+}
+
+
+tui-input-date-time {
+  margin-bottom: 12px;
+}
+
+.duration-container {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+
+  tui-input-number {
+    flex-grow: 1;
+  }
+}
+
+mgl-map {
+  width: 100%;
+  height: 100%;
+
+  border-radius: var(--tui-radius-l);
+  border: 1px solid var(--tui-base-03);
+
+  overflow: hidden;
+}
+
+.hide {
+  position: absolute;
+  top: -200%;
+  left: -200%;
+  z-index: -1;
+}
+
+.material-icons-outlined {
+  display: inline-block;
+}
+
+.description-form {
+  flex-grow: 1;
+}
+
+.description-text-area {
+  height: 100%;
+}
+
+.actions {
+  display: flex;
+  width: 100%;
+  max-width: 320px;
+  margin-top: auto;
+  margin-right: auto;
+  margin-left: auto;
+
+  .next-button,
+  .publish-button {
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  :host {
+    padding: 36px;
+    height: calc(100% - var(--header-height));
+  }
+
+  .material-icons-outlined {
+    margin-right: 8px;
+  }
+
+  .tab-label {
+    display: inline;
+  }
+}
+
+::ng-deep {
+  .mapboxgl-map.resized {
+    width: 448px;
+    height: 240px;
+  }
+
+  .add-event-map {
+    .mapboxgl-ctrl-top-left {
+      width: 100%;
+    }
+
+    .mapboxgl-ctrl-geocoder.mapboxgl-ctrl {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}

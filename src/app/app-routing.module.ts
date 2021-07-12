@@ -11,6 +11,7 @@ import { ProfileModule } from './modules/profile/profile.module'
 import { RoutesModule } from './modules/routes/routes.module'
 import { WorkoutPageModule } from './modules/workout-page/workout-page.module'
 import { CompetitionPageModule } from './modules/competition-page/competition-page.module'
+import { AddEventModule } from './modules/add-event/add-event.module'
 
 const routes: Routes = [
   {
@@ -61,11 +62,24 @@ const routes: Routes = [
   },
   {
     path: 'workouts',
-    loadChildren: () => import('./modules/workout-page/workout-page.module').then((module: { WorkoutPageModule: WorkoutPageModule }) => module.WorkoutPageModule)
+    loadChildren: () => import('./modules/workout-page/workout-page.module').then((module: { WorkoutPageModule: WorkoutPageModule }) => module.WorkoutPageModule),
+    resolve: {
+      user: UserByTokenResolver
+    }
   },
   {
     path: 'competitions',
-    loadChildren: () => import('./modules/competition-page/competition-page.module').then((module: { CompetitionPageModule: CompetitionPageModule }) => module.CompetitionPageModule)
+    loadChildren: () => import('./modules/competition-page/competition-page.module').then((module: { CompetitionPageModule: CompetitionPageModule }) => module.CompetitionPageModule),
+    resolve: {
+      user: UserByTokenResolver
+    }
+  },
+  {
+    path: 'add-event',
+    loadChildren: () => import('./modules/add-event/add-event.module').then((module: { AddEventModule: AddEventModule }) => module.AddEventModule),
+    resolve: {
+      user: UserByTokenResolver
+    }
   }
 ]
 

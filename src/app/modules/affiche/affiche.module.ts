@@ -9,6 +9,7 @@ import { RouteService } from '../../global/domain/services/route/route.service'
 
 import { AfficheRoutingModule } from './affiche-routing.module'
 import { AfficheContainerComponent } from './containers/affiche-container/affiche-container.component'
+import { TuiButtonModule } from '@taiga-ui/core'
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { AfficheContainerComponent } from './containers/affiche-container/affich
     HttpClientModule,
     TuiFilterModule,
     ReactiveFormsModule,
-    EventFilterModule
+    EventFilterModule,
+    TuiButtonModule
   ],
   providers: [
     RouteService

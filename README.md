@@ -30,7 +30,7 @@ npm run build:prod
 ### Сборка Docker образа
 
 ```bash
-$ docker build -t becycled-frontend .
+docker build -t becycled-frontend .
 ```
 
 ## Тестирование
