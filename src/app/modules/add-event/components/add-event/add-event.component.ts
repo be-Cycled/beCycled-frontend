@@ -44,6 +44,8 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   ]
 })
 export class AddEventComponent implements OnInit {
+  public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+
   public readonly tabs: any = [
     {
       text: 'Вид спорта',

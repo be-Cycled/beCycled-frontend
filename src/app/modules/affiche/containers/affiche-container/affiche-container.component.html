@@ -1,6 +1,6 @@
-<cy-event-filter [formControl]="filters" [events]="events | async"></cy-event-filter>
+<cy-event-filter [formControl]="filters" [events]="events$ | async"></cy-event-filter>
 
-<section class="events-wrapper" *ngFor="let day of calendar | async">
+<section class="events-wrapper" *ngFor="let day of calendar$ | async">
   <h2 class="date">
     {{ getWorkoutListDate(day.date) }}
   </h2>
@@ -22,6 +22,7 @@
 </section>
 
 <a
+  *ngIf="isUserAuthorized$ | async"
   tuiButton
   routerLink="add-event"
   class="add-button shadow"

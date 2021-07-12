@@ -8,6 +8,7 @@ import { Competition, SportType, Workout } from '../../../../global/domain'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
+import { UserHolderService } from '../../../../global/services'
 
 interface EventListByDay {
   date: ISO8601
@@ -27,9 +28,11 @@ interface FilterTag {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AfficheContainerComponent implements OnInit {
+  public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+
   public filters: FormControl = new FormControl()
 
-  public events: Observable<[ Workout[], Competition[] ]> = combineLatest([
+  public events$: Observable<[ Workout[], Competition[] ]> = combineLatest([
     this.workoutService.readWorkouts().pipe(
       map((workouts: Workout[]) => {
         const currentTime: number = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()
@@ -51,8 +54,8 @@ export class AfficheContainerComponent implements OnInit {
   /**
    * TODO: Решить вопрос с дублированием этого кода в афише и ленте
    */
-  public calendar: Observable<EventListByDay[]> = combineLatest([
-    this.events,
+  public calendar$: Observable<EventListByDay[]> = combineLatest([
+    this.events$,
     this.filters.valueChanges.pipe(
       startWith([])
     )
@@ -136,7 +139,8 @@ export class AfficheContainerComponent implements OnInit {
 
   constructor(private workoutService: WorkoutService,
               private competitionService: CompetitionService,
-              private title: Title) {
+              private title: Title,
+              private userHolderService: UserHolderService) {
     this.title.setTitle(`Афиша`)
   }
 
