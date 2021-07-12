@@ -1,5 +1,8 @@
 :host {
+  position: relative;
+
   display: block;
+  height: 100vh;
   padding: 12px 0 var(--menu-height);
 
   & .event-list {
@@ -10,6 +13,30 @@
   & .event-item {
     width: 320px;
   }
+}
+
+.add-button {
+  position: fixed;
+  bottom: calc(var(--menu-height) + 12px);
+  right: 12px;
+
+  z-index: 9999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+
+  color: white;
+  text-decoration: none;
+
+  border: none;
+  border-radius: 50%;
+  background-color: var(--tui-primary);
+
+  box-shadow: 0 0.25rem 1.5rem rgb(0 0 0 / 12%);
 }
 
 .date {
