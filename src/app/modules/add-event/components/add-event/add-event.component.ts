@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core'
 import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay, TuiTime } from '@taiga-ui/cdk'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { DirectionType, MapboxRouteGeoData, Route, SportType, User, Workout } from '../../../../global/domain'
-import { map, startWith, switchMap, take } from 'rxjs/operators'
+import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import { EventType, ISO8601 } from '../../../../global/models'
@@ -13,6 +13,8 @@ import { UserHolderService } from '../../../../global/services'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
+import { Router } from '@angular/router'
+import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -106,7 +108,10 @@ export class AddEventComponent implements OnInit {
               private userHolderService: UserHolderService,
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
-              private routeService: RouteService) {
+              private routeService: RouteService,
+              private routerService: Router,
+              @Inject(TuiNotificationsService)
+              private readonly notificationsService: TuiNotificationsService) {
   }
 
   private generateStartDateIsoString(): ISO8601 {
@@ -424,6 +429,14 @@ export class AddEventComponent implements OnInit {
                   default:
                     throw new Error('Не указан тип события')
                 }
+              }),
+              tap(() => {
+                this.notificationsService
+                  .show('Событие успешно добавлено', {
+                    status: TuiNotification.Success
+                  }).subscribe()
+
+                this.routerService.navigate([ '' ])
               }),
               take(1)
             ).subscribe()
