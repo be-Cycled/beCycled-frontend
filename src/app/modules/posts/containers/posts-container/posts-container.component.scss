@@ -1,7 +1,7 @@
 :host {
   display: grid;
   gap: 1rem;
-  padding: 1rem 1rem calc(1rem);
+  padding: 12px 12px calc(var(--menu-height) + 12px);
 }
 
 figure.poster {

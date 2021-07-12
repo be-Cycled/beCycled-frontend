@@ -1,6 +1,7 @@
 :host {
   display: block;
-  padding: 1rem 1rem calc(72px + 1rem) 1rem;
+  height: 100%;
+  padding: 12px 12px var(--menu-height);
 }
 
 section.header {
@@ -79,7 +80,7 @@ section.header {
   margin: 1rem 1rem 0 0;
 }
 
-@media screen and (min-width: 599px) {
+@media screen and (min-width: 600px) {
   :host {
     max-width: 900px;
     margin: 0 auto;

@@ -1,7 +1,7 @@
 :host {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 12px 12px var(--menu-height);
 }
 
 .avatar-container img {
@@ -112,7 +112,7 @@
   border-radius: var(--tui-radius-l);
 }
 
-@media screen and (min-width: 599px) {
+@media screen and (min-width: 600px) {
   :host {
     flex-direction: row;
     max-width: 900px;
