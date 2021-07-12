@@ -1,6 +1,7 @@
 :host {
   display: block;
-  padding: 12px 0 var(--menu-height);
+  height: 100%;
+  padding: 12px 0;
 
   & .event-list {
     max-width: none;
@@ -10,6 +11,10 @@
   & .event-item {
     width: 320px;
   }
+}
+
+.events-wrapper {
+  padding-bottom: calc(var(--menu-height) + 12px);
 }
 
 .date {
