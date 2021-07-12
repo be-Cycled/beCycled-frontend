@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { TuiMapperPipeModule } from '@taiga-ui/cdk'
 import { TuiButtonModule, TuiDataListModule, TuiLinkModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
 import { TuiFilterModule, TuiInputModule, TuiSelectModule } from '@taiga-ui/kit'
+import { SafePipeModule } from '../../global/cdk/pipes/safe/safe-pipe.module'
 
 import { CommunitiesRoutingModule } from './communities-routing.module'
 import { CommunitySingleMainComponent, CommunitySingleSettingsComponent, CommunitySingleUsersComponent } from './components'
@@ -32,7 +33,8 @@ import { CommunityStoreService } from './services'
     TuiFilterModule,
     TuiLinkModule,
     TuiMapperPipeModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    SafePipeModule
   ],
   providers: [
     CommunitySettingsGuard,

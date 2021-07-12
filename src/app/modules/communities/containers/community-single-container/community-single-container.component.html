@@ -1,2 +1,27 @@
-<p>community-single-container works!</p>
+<header class="header">
+  <div class="avatar-container">
+    <img [attr.src]="avatar | async" [attr.alt]="name | async">
+  </div>
+  <div class="community-type-container" [ngSwitch]="type | async">
+    <span *ngSwitchCase="communityType.club">Клуб</span>
+    <span *ngSwitchCase="communityType.organization">Организация</span>
+  </div>
+  <div class="community-name-container">
+    <h1 class="community-name">{{ name | async }}</h1>
+  </div>
+  <div class="community-description-container" [innerHTML]="description | async | safe: 'html'"></div>
+  <div class="community-links-container">
+    <ul class="community-link-list">
+      <li class="community-link-list-item">
+        <span class="material-icons">link</span>
+        <a [attr.href]="url | async | safe: 'url'">{{ url | async }}</a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<section class="community-view">
+
+</section>
+
 <router-outlet></router-outlet>
