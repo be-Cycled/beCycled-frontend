@@ -58,11 +58,18 @@
 
 @media (min-width: 768px) {
   :host {
+    padding: 36px 0;
+
     & .event-list {
       grid-template-columns: repeat(2, 1fr);
       grid-gap: 16px;
       max-width: 672px;
     }
+  }
+
+  .add-button {
+    right: 36px;
+    bottom: 36px;
   }
 }
 
