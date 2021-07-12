@@ -29,7 +29,7 @@ export interface MapboxRoute {
   distance: number
 }
 
-export interface MapboxRouteInfo {
+export interface MapboxRouteGeoData {
   routes: MapboxRoute[]
   waypoints: MapboxWaypoint[]
   code: string
@@ -42,9 +42,9 @@ export interface Route {
   name: string
 
   /**
-   * Строковое представление JSON: MapboxRouteInfo[]
+   * Строковое представление JSON: MapboxRouteGeoData[]
    */
-  routeInfo: string
+  routeGeoData: string
 
   /**
    * base64 картинки с превью маршрута
@@ -67,9 +67,9 @@ export interface RouteDto {
   name: string | null
 
   /**
-   * Строковое представление JSON: MapboxRouteInfo[]
+   * Строковое представление JSON: MapboxRouteGeoData[]
    */
-  routeInfo: string
+  routeGeoData: string
 
   /**
    * base64 картинки с превью маршрута

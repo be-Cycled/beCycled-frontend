@@ -2,7 +2,7 @@ import { Directive } from '@angular/core'
 import { AbstractEventCard } from './event-card/abstract-event-card'
 import mapboxgl, { AnyLayer, LngLat } from 'mapbox-gl'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
-import { MapboxRouteInfo, Route } from '../../domain'
+import { MapboxRouteGeoData, Route } from '../../domain'
 import { filter, map, tap } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../utils'
 
@@ -18,15 +18,15 @@ export abstract class AbstractEventPage extends AbstractEventCard {
 
   public route$: Observable<null | Route> = of(null)
 
-  public routeInfos$: Observable<MapboxRouteInfo[]> = defer(() => this.route$.pipe(
+  public routeInfos$: Observable<MapboxRouteGeoData[]> = defer(() => this.route$.pipe(
     filter((route: Route | null) => route !== null),
-    map((route: Route | null) => (JSON.parse(route!.routeInfo) as MapboxRouteInfo[]))
+    map((route: Route | null) => (JSON.parse(route!.routeGeoData) as MapboxRouteGeoData[]))
   ))
 
   public distance$: Observable<number> = this.routeInfos$.pipe(
-    map((routeInfos: MapboxRouteInfo[]) => {
+    map((routeInfos: MapboxRouteGeoData[]) => {
       let distance: number = 0
-      routeInfos.forEach((routeInfo: MapboxRouteInfo) => distance += routeInfo.routes[ 0 ].distance)
+      routeInfos.forEach((routeInfo: MapboxRouteGeoData) => distance += routeInfo.routes[ 0 ].distance)
 
       return distance
     })
@@ -36,9 +36,9 @@ export abstract class AbstractEventPage extends AbstractEventCard {
     this.mapIsReady$,
     this.routeInfos$
   ]).pipe(
-    map(([ , routeInfos ]: [ void, MapboxRouteInfo[] ]) => {
+    map(([ , routeInfos ]: [ void, MapboxRouteGeoData[] ]) => {
       let coordinatesFromRouteInfos: number[][] = []
-      routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
+      routeInfos.forEach((routeInfo: MapboxRouteGeoData) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
 
       return coordinatesFromRouteInfos
     }),

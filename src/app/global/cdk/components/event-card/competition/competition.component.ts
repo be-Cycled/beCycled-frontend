@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
-import { Competition, MapboxRouteInfo, Route } from '../../../../domain'
+import { Competition, MapboxRouteGeoData, Route } from '../../../../domain'
 import { defer, Observable } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 import { RouteService } from '../../../../domain/services/route/route.service'
@@ -23,14 +23,14 @@ export class CompetitionComponent extends AbstractEventCard {
     map((route: Route) => route.routePreview)
   ))
 
-  public routeInfos$: Observable<MapboxRouteInfo[]> = this.route$.pipe(
-    map((route: Route) => (JSON.parse(route.routeInfo) as MapboxRouteInfo[]))
+  public routeInfos$: Observable<MapboxRouteGeoData[]> = this.route$.pipe(
+    map((route: Route) => (JSON.parse(route.routeGeoData) as MapboxRouteGeoData[]))
   )
 
   public distance$: Observable<number> = this.routeInfos$.pipe(
-    map((routeInfos: MapboxRouteInfo[]) => {
+    map((routeInfos: MapboxRouteGeoData[]) => {
       let distance: number = 0
-      routeInfos.forEach((routeInfo: MapboxRouteInfo) => distance += routeInfo.routes[ 0 ].distance)
+      routeInfos.forEach((routeInfo: MapboxRouteGeoData) => distance += routeInfo.routes[ 0 ].distance)
 
       return distance
     })

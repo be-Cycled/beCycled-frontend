@@ -22,7 +22,7 @@ export class CompetitionPageComponent extends AbstractEventPage {
     shareReplay(1),
     tap((competition: Competition) => {
       this.title.setTitle(`Соревнование ${ getWorkoutListDate(competition.startDate) } ${ generateStartTime(competition.startDate) }`)
-      this.venueCoordinates = JSON.parse(competition.venue)
+      this.venueCoordinates = JSON.parse(competition.venueGeoData)
     })
   )
 

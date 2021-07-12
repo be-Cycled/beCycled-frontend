@@ -3,7 +3,7 @@ import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay, TuiTime } from '@taiga-ui/cdk'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { DirectionType, MapboxRouteInfo, Route, SportType, User, Workout } from '../../../../global/domain'
+import { DirectionType, MapboxRouteGeoData, Route, SportType, User, Workout } from '../../../../global/domain'
 import { map, startWith, switchMap, take } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
@@ -72,13 +72,13 @@ export class AddEventComponent implements OnInit {
   public map: mapboxgl.Map | null = null
 
   public venueCoordinates: LngLat | null = null
-  public venuePoint: mapboxgl.Marker | null = null
+  public venueMarker: mapboxgl.Marker | null = null
 
   public trackCoordinates: LngLat[] = []
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
 
-  public routeInfos: MapboxRouteInfo[] = []
+  public routeGeoData: MapboxRouteGeoData[] = []
   public geoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = blankGeoJsonFeature
 
   public preview: string = ''
@@ -96,7 +96,7 @@ export class AddEventComponent implements OnInit {
     startWith(false),
     map(() => this.eventForm.invalid
       || this.trackCoordinates.length < 2
-      || this.venuePoint === null
+      || this.venueMarker === null
       || this.eventForm.get('startDate')?.value[ 1 ] === null)
   )
 
@@ -133,7 +133,7 @@ export class AddEventComponent implements OnInit {
       id: null,
       userId: userId,
       name: null,
-      routeInfo: JSON.stringify(this.routeInfos),
+      routeGeoData: JSON.stringify(this.routeGeoData),
       routePreview: this.preview,
       sportTypes: [ this.eventForm.get('sportType')?.value ],
       disposable: true,
@@ -152,7 +152,7 @@ export class AddEventComponent implements OnInit {
       startDate: this.generateStartDateIsoString(),
       routeId: route.id,
       sportType: this.eventForm.get('sportType')?.value,
-      venue: JSON.stringify(this.venueCoordinates),
+      venueGeoData: JSON.stringify(this.venueCoordinates),
       userIds: [ userId ],
       duration: this.generateDurationMinutes(),
       description: this.eventForm.get('description')?.value,
@@ -169,7 +169,7 @@ export class AddEventComponent implements OnInit {
       startDate: this.generateStartDateIsoString(),
       routeId: route.id,
       sportType: this.eventForm.get('sportType')?.value,
-      venue: JSON.stringify(this.venueCoordinates),
+      venueGeoData: JSON.stringify(this.venueCoordinates),
       userIds: [ userId ],
       duration: this.generateDurationMinutes(),
       description: this.eventForm.get('description')?.value,
@@ -206,7 +206,7 @@ export class AddEventComponent implements OnInit {
 
     this.startPoint = new mapboxgl.Marker(startPoint)
     this.endPoint = new mapboxgl.Marker(endPoint)
-    this.venuePoint = new mapboxgl.Marker({ color: '#FF6639' })
+    this.venueMarker = new mapboxgl.Marker({ color: '#FF6639' })
   }
 
   private getCurrentDirectionType(): DirectionType {
@@ -245,19 +245,19 @@ export class AddEventComponent implements OnInit {
       this.mapboxNetworkService
         .buildDirection(coordinatesForDirectionApi, this.getCurrentDirectionType())
         .pipe(take(1))
-        .subscribe((response: MapboxRouteInfo) => {
+        .subscribe((response: MapboxRouteGeoData) => {
 
           /**
            * Это нужно для очистки элементов, когда идет удаление точек.
            */
-          if (this.routeInfos.length > currentRouteInfoIndex + 1) {
-            this.routeInfos = this.routeInfos.slice(0, currentRouteInfoIndex + 1)
+          if (this.routeGeoData.length > currentRouteInfoIndex + 1) {
+            this.routeGeoData = this.routeGeoData.slice(0, currentRouteInfoIndex + 1)
           }
 
-          this.routeInfos[ currentRouteInfoIndex ] = response
+          this.routeGeoData[ currentRouteInfoIndex ] = response
 
           let coordinatesFromRouteInfos: number[][] = []
-          this.routeInfos.forEach((routeInfo: MapboxRouteInfo) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
+          this.routeGeoData.forEach((routeInfo: MapboxRouteGeoData) => coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
 
           this.geoJsonFeature = generateGeoJsonFeature(coordinatesFromRouteInfos)
 
@@ -285,7 +285,7 @@ export class AddEventComponent implements OnInit {
       if (this.activeTabIndex === 3) {
 
         this.venueCoordinates = coordinates
-        this.venuePoint?.setLngLat(coordinates).addTo(this.map)
+        this.venueMarker?.setLngLat(coordinates).addTo(this.map)
       } else {
 
         /**
@@ -398,7 +398,7 @@ export class AddEventComponent implements OnInit {
        * Готовим точки для фитинга карты
        */
       let coordinatesFromRouteInfos: number[][] = []
-      this.routeInfos.forEach((routeInfo: MapboxRouteInfo) =>
+      this.routeGeoData.forEach((routeInfo: MapboxRouteGeoData) =>
         coordinatesFromRouteInfos = [ ...coordinatesFromRouteInfos, ...routeInfo.routes[ 0 ].geometry.coordinates ])
 
       const bounds: LngLatBoundsLike = generateBounds(coordinatesFromRouteInfos)

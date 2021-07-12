@@ -13,7 +13,7 @@ export interface Workout {
   /**
    * Строковое представление JSON: { lng: number, lat: number }
    */
-  venue: string
+  venueGeoData: string
   userIds: number[]
   duration: number
   description: string
@@ -32,7 +32,7 @@ export interface WorkoutDto {
   /**
    * Строковое представление JSON: { lng: number, lat: number }
    */
-  venue: string
+  venueGeoData: string
   userIds: number[]
   duration: number
   description: string
