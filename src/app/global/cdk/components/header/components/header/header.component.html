@@ -12,8 +12,7 @@
         appearance="flat"
         size="m"
         routerLink="/"
-        routerLinkActive="active-router-link"
-        [routerLinkActiveOptions]="{ exact: true }"
+        [class.active-router-link]="isActiveRoute('/')"
       >Афиша</a>
     </li>
     <li class="main-navigation-list-item">
@@ -22,7 +21,7 @@
         appearance="flat"
         size="m"
         routerLink="/feed"
-        routerLinkActive="active-router-link"
+        [class.active-router-link]="isActiveRoute('/feed')"
       >Лента</a>
     </li>
     <li class="main-navigation-list-item">
@@ -31,7 +30,7 @@
         appearance="flat"
         size="m"
         routerLink="/communities"
-        routerLinkActive="active-router-link"
+        [class.active-router-link]="isActiveRoute('/communities')"
       >Сообщества</a>
     </li>
     <li class="main-navigation-list-item">
@@ -40,7 +39,7 @@
         appearance="flat"
         size="m"
         routerLink="/posts"
-        routerLinkActive="active-router-link"
+        [class.active-router-link]="isActiveRoute('/posts')"
       >Статьи</a>
     </li>
   </ul>

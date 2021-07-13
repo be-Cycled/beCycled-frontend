@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators'
 import { User } from '../../../../../domain'
 import { BrowserStorage, DEFAULT_AVATAR, takeBrowserStorageKey } from '../../../../../models'
 import { UserHolderService } from '../../../../../services'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'cy-header',
@@ -37,11 +38,25 @@ export class HeaderComponent {
 
   constructor(private userHolderService: UserHolderService,
               @Inject(LOCAL_STORAGE)
-              private localStorage: Storage) {
+              private localStorage: Storage,
+              private router: Router) {
   }
 
   public onClickLogoutButton(): void {
     this.localStorage.removeItem(takeBrowserStorageKey(BrowserStorage.accessToken))
     this.userHolderService.updateUser(null)
+  }
+
+  /**
+   * Метод для определения активного роута
+   */
+  public isActiveRoute(url: string): boolean {
+    if (this.router.url.includes(url + '?')) {
+      const index: number = this.router.url.indexOf('?')
+
+      return url === this.router.url.slice(0, index)
+    }
+
+    return this.router.url === url
   }
 }
