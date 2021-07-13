@@ -1,4 +1,7 @@
-<cy-event-filter [formControl]="filters" [events]="events$ | async"></cy-event-filter>
+<cy-event-filter
+  [formControl]="filters"
+  [events]="events$ | async"
+></cy-event-filter>
 
 <section class="events-wrapper" *ngFor="let day of calendar$ | async">
   <h2 class="date">

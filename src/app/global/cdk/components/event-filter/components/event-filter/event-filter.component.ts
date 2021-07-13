@@ -11,15 +11,18 @@ import {
 import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
 import { EventType } from '../../../../../models'
 import { Competition, SportType, Workout } from '../../../../../domain'
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms'
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { takeUntil, tap } from 'rxjs/operators'
 import { Observable, Subject } from 'rxjs'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 
 interface FilterTag {
   title: string
   value: EventType | SportType
   count: number
 }
+
+export type FilterType = 'event' | 'sport' | 'all'
 
 @Component({
   selector: 'cy-event-filter',
@@ -37,10 +40,9 @@ interface FilterTag {
 export class EventFilterComponent implements ControlValueAccessor, OnChanges, OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject()
 
-  /**
-   * TODO: Рассмотреть возможность разделения на две разных группы фильтров
-   */
-  public items: FilterTag[] = [
+  public queryParams: Params | null = null
+
+  private eventTypeItems: FilterTag[] = [
     {
       title: 'Тренировки',
       value: EventType.workout,
@@ -50,7 +52,10 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
       title: 'Соревнования',
       value: EventType.competition,
       count: 0
-    },
+    }
+  ]
+
+  private sportTypeItems: FilterTag[] = [
     {
       title: 'Велосипед',
       value: SportType.bicycle,
@@ -73,16 +78,16 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     }
   ]
 
-  public form: FormGroup = new FormGroup({
-    filters: new FormControl()
-  })
+  public items: FilterTag[] = []
+
+  public filters: FormControl = new FormControl()
 
   /**
    * Поток, который следит за изменением выбранных фильтров и актуализирует счетчик в тегах
    */
-  private badgeSportTypeCountChanges$: Observable<{ filters: FilterTag[] }> = this.form.valueChanges.pipe(
+  private badgeSportTypeCountChanges$: Observable<FilterTag[]> = this.filters.valueChanges.pipe(
     takeUntil(this.destroy$),
-    tap(({ filters }: { filters: FilterTag[] }) => {
+    tap((filters: FilterTag[]) => {
       const selectedValues: string[] = filters.map((item: FilterTag) => item.value)
 
       if (selectedValues.includes(EventType.workout) && !selectedValues.includes(EventType.competition)) {
@@ -107,8 +112,39 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
   @Input()
   public events: [ Workout[], Competition[] ] = [ [], [] ]
 
+  @Input()
+  public filterType: FilterType = 'all'
+
+  constructor(private activatedRoute: ActivatedRoute,
+              private router: Router) {
+    this.activatedRoute.queryParams.pipe(
+      takeUntil(this.destroy$),
+      tap((params: Params) => {
+        if (Object.keys(params).length > 0) {
+          this.queryParams = params
+
+          this.applyFilterFromQueryParams()
+        } else {
+          this.filters.reset([])
+        }
+      })
+    ).subscribe()
+  }
+
   public ngOnInit(): void {
     this.badgeSportTypeCountChanges$.subscribe()
+
+    switch (this.filterType) {
+      case 'event':
+        this.items = this.eventTypeItems
+        break
+      case 'sport':
+        this.items = this.sportTypeItems
+        break
+      case 'all':
+      default:
+        this.items = [ ...this.eventTypeItems, ...this.sportTypeItems ]
+    }
   }
 
   public ngOnDestroy(): void {
@@ -116,17 +152,7 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     this.destroy$.complete()
   }
 
-  public resetSportTypeBadgeCount(): void {
-    const badges: string[] = Object.values(SportType)
-
-    this.items.forEach((item: FilterTag) => {
-      if (badges.includes(item.value)) {
-        item.count = 0
-      }
-    })
-  }
-
-  public updateSportTypeBadgesCount(events: Workout[] | Competition[]): void {
+  private updateSportTypeBadgesCount(events: Workout[] | Competition[]): void {
     events.forEach((event: Workout | Competition) => {
       const currentBadge: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.sportType === filterTag.value)
 
@@ -136,7 +162,7 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     })
   }
 
-  public updateAllBadgesCount([ workouts, competitions ]: [ Workout[], Competition[] ]): void {
+  private updateAllBadgesCount([ workouts, competitions ]: [ Workout[], Competition[] ]): void {
     this.items.find((filterTag: FilterTag) => filterTag.value === EventType.workout)!.count = workouts.length
     this.items.find((filterTag: FilterTag) => filterTag.value === EventType.competition)!.count = competitions.length;
 
@@ -149,11 +175,107 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     })
   }
 
+  private resetSportTypeBadgeCount(): void {
+    const badges: string[] = Object.values(SportType)
+
+    this.items.forEach((item: FilterTag) => {
+      if (badges.includes(item.value)) {
+        item.count = 0
+      }
+    })
+  }
+
+  private applyFilterFromQueryParams(): void {
+    /**
+     * Логика установки предварительно выбранных значений фильтра
+     */
+    if (this.queryParams !== null) {
+      let selectedFilters: (SportType | EventType)[] = []
+
+      /**
+       * В квери параметрах могут быть как просто значения, так и массив значений
+       */
+      if (typeof this.queryParams[ 'sport-type' ] !== 'undefined') {
+        if (typeof this.queryParams[ 'sport-type' ] === 'string') {
+          selectedFilters.push(this.queryParams[ 'sport-type' ] as SportType)
+        } else {
+          selectedFilters = [ ...selectedFilters, ...this.queryParams[ 'sport-type' ] ]
+        }
+      }
+
+      if (typeof this.queryParams[ 'event-type' ] !== 'undefined') {
+        if (typeof this.queryParams[ 'event-type' ] === 'string') {
+          selectedFilters.push(this.queryParams[ 'event-type' ] as SportType)
+        } else {
+          selectedFilters = [ ...selectedFilters, ...this.queryParams[ 'event-type' ] ]
+        }
+      }
+
+      const selectedItems: FilterTag[] = this.items.filter((item: FilterTag) => selectedFilters.includes(item.value))
+
+      this.filters.setValue(selectedItems)
+    } else {
+      this.filters.reset([])
+    }
+  }
+
+  private valueAccessorCallBack(value: any): void {
+
+  }
+
   public onChanges(value: any): void {
+    const filters: FilterTag[] = this.filters.value
+
+    /**
+     * Логика обновления квери параметров при активации фильтра
+     */
+    const selectedFilters: (EventType | SportType)[] = filters.map((item: FilterTag) => item.value)
+
+    if (selectedFilters.length > 0) {
+      const selectedEventFilters: (EventType | SportType)[] = selectedFilters.filter((item: EventType | SportType) =>
+        Object.values(EventType).includes(item as EventType))
+
+      const selectedSportFilters: (EventType | SportType)[] = selectedFilters.filter((item: EventType | SportType) =>
+        Object.values(SportType).includes(item as SportType))
+
+      let queryParams: Params = {}
+
+      if (selectedEventFilters.length > 0) {
+        queryParams = {
+          ...queryParams,
+          'event-type': selectedEventFilters
+        }
+      }
+
+      if (selectedSportFilters.length > 0) {
+        queryParams = {
+          ...queryParams,
+          'sport-type': selectedSportFilters
+        }
+      }
+
+      this.router.navigate(
+        [],
+        {
+          relativeTo: this.activatedRoute,
+          queryParams: queryParams,
+          queryParamsHandling: 'merge'
+        })
+    } else {
+      this.queryParams = null
+
+      this.router.navigate(
+        [],
+        {
+          relativeTo: this.activatedRoute
+        })
+    }
+
+    this.valueAccessorCallBack(value)
   }
 
   public registerOnChange(fn: any): void {
-    this.onChanges = fn
+    this.valueAccessorCallBack = fn
   }
 
   public registerOnTouched(fn: any): void {
@@ -166,7 +288,7 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     if (events.currentValue !== null) {
       this.updateAllBadgesCount(events.currentValue)
 
-      this.form.get('filters')?.reset([])
+      this.applyFilterFromQueryParams()
     }
   }
 
