@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core'
-import { WINDOW } from '@ng-web-apis/common'
-import { defer, fromEvent, Observable } from 'rxjs'
-import { map, shareReplay, startWith } from 'rxjs/operators'
+import { defer, Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { IS_MOBILE } from './global/tokens'
 
 @Component({
   selector: 'cy-root',
@@ -10,18 +10,13 @@ import { map, shareReplay, startWith } from 'rxjs/operators'
 })
 export class AppComponent {
 
-  public isMobile: Observable<boolean> = defer(() => fromEvent(this.window, 'resize').pipe(
-    startWith(null),
-    map(() => this.window.innerWidth),
-    map((windowWidth: number) => windowWidth <= 599),
-    shareReplay(1)
-  ))
+  public isMobileChanges: Observable<boolean> = this.isMobile
 
-  public isDesktop: Observable<boolean> = defer(() => this.isMobile.pipe(
+  public isDesktop: Observable<boolean> = defer(() => this.isMobileChanges.pipe(
     map((isMobile: boolean) => !isMobile)
   ))
 
-  constructor(@Inject(WINDOW)
-              private window: Window) {
+  constructor(@Inject(IS_MOBILE)
+              private isMobile: Observable<boolean>) {
   }
 }
