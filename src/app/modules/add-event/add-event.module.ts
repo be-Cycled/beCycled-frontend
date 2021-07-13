@@ -14,13 +14,16 @@ import {
 import { ReactiveFormsModule } from '@angular/forms'
 import {
   TuiDataListWrapperModule,
+  TuiInputDateModule,
   TuiInputDateTimeModule,
   TuiInputNumberModule,
+  TuiInputTimeModule,
   TuiIslandModule,
   TuiRadioBlockModule,
   TuiSelectModule,
   TuiTabsModule,
-  TuiTextAreaModule
+  TuiTextAreaModule,
+  TuiUnfinishedValidatorModule
 } from '@taiga-ui/kit'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 import { MapboxNetworkService } from '../../global/services/mapbox-network/mapbox-network.service'
@@ -52,7 +55,10 @@ import { RouteService } from '../../global/domain/services/route/route.service'
     TuiSelectModule,
     TuiTextfieldControllerModule,
     TuiDataListWrapperModule,
-    TuiDataListModule
+    TuiDataListModule,
+    TuiInputDateModule,
+    TuiInputTimeModule,
+    TuiUnfinishedValidatorModule
   ],
   providers: [
     MapboxNetworkService,

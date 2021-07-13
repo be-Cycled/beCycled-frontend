@@ -89,7 +89,8 @@ export class AddEventComponent implements OnInit {
 
   public eventForm: FormGroup = new FormGroup({
     eventType: new FormControl(EventType.workout, Validators.required),
-    startDate: new FormControl(null, Validators.required),
+    startDay: new FormControl(null, Validators.required),
+    startTime: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
     description: new FormControl(),
     durationHours: new FormControl(),
@@ -100,8 +101,7 @@ export class AddEventComponent implements OnInit {
     startWith(false),
     map(() => this.eventForm.invalid
       || this.trackCoordinates.length < 2
-      || this.venueMarker === null
-      || this.eventForm.get('startDate')?.value[ 1 ] === null)
+      || this.venueMarker === null)
   )
 
   constructor(private mapboxNetworkService: MapboxNetworkService,
@@ -115,8 +115,8 @@ export class AddEventComponent implements OnInit {
   }
 
   private generateStartDateIsoString(): ISO8601 {
-    const startDateValue: [ TuiDay, TuiTime ] = this.eventForm.get('startDate')?.value
-    const [ startDay, startTime ]: [ TuiDay, TuiTime ] = startDateValue
+    const startDay: TuiDay = this.eventForm.get('startDay')?.value
+    const startTime: TuiTime = this.eventForm.get('startTime')?.value
     const startDateUtc: Date = startDay.toUtcNativeDate()
     startDateUtc.setHours(startTime.hours, startTime.minutes)
 
