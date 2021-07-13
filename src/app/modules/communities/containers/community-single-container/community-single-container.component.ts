@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
-import { BehaviorSubject, combineLatest, defer, iif, merge, Observable, Subject } from 'rxjs'
-import { catchError, map, pluck, shareReplay, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { BehaviorSubject, combineLatest, EMPTY, iif, Observable, Subject } from 'rxjs'
+import { catchError, map, pluck, startWith, switchMap, take, tap } from 'rxjs/operators'
 import { Community, CommunityType, User } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { PATH_PARAMS } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
+import { CommunityStoreService } from '../../services'
 
 @Component({
   selector: 'cy-community-single-container',
@@ -21,27 +22,7 @@ export class CommunitySingleContainerComponent {
 
   public communityShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
-  public communityChanges: Observable<Community> = this.activatedRoute.paramMap.pipe(
-    switchMap((params: ParamMap) => {
-      const nickname: string | null = params.get(PATH_PARAMS.communityNickname)
-
-      if (nickname === null) {
-        throw new Error(`Parameter "nickname" does not exist`)
-      }
-
-      return merge(
-        defer(() => {
-          this.communityShowLoader.next(true)
-
-          return this.communityService.getByNickname(nickname).pipe(
-            tap(() => this.communityShowLoader.next(false))
-          )
-        }),
-        this.community
-      )
-    }),
-    shareReplay(1)
-  )
+  public communityChanges: Observable<Community> = this.communityStoreService.communityChanges
 
   public avatar: Observable<string> = this.communityChanges.pipe(
     pluck('avatar')
@@ -96,7 +77,29 @@ export class CommunitySingleContainerComponent {
   constructor(public readonly activatedRoute: ActivatedRoute,
               private communityService: CommunityService,
               private userHolderService: UserHolderService,
-              private notificationService: TuiNotificationsService) {
+              private notificationService: TuiNotificationsService,
+              private communityStoreService: CommunityStoreService) {
+    this.activatedRoute.paramMap.pipe(
+      switchMap((params: ParamMap) => {
+        if (this.communityStoreService.takeCommunity() !== null) {
+          return EMPTY
+        }
+
+        const nickname: string | null = params.get(PATH_PARAMS.communityNickname)
+
+        if (nickname === null) {
+          throw new Error(`Parameter "nickname" does not exist`)
+        }
+
+        this.communityShowLoader.next(true)
+        return this.communityService.getByNickname(nickname).pipe(
+          tap((community: Community) => {
+            this.communityStoreService.setCommunity(community)
+            this.communityShowLoader.next(false)
+          })
+        )
+      })
+    ).subscribe()
   }
 
   public onClickJoinButton(isUserJoined: boolean): void {

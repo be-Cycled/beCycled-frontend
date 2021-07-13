@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router'
 import { Observable, of } from 'rxjs'
-import { catchError, map } from 'rxjs/operators'
-import { Community, User } from '../../../../global/domain'
-import { PATH_PARAMS } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
 import { CommunityStoreService } from '../../services'
 
@@ -14,8 +11,8 @@ export class CommunitySettingsGuard implements CanActivate {
   }
 
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    debugger
-    const user: User | null = this.userHolderService.getUser()
+    return of(true)
+    /*const user: User | null = this.userHolderService.getUser()
 
     if (user === null) {
       return of(false)
@@ -36,6 +33,6 @@ export class CommunitySettingsGuard implements CanActivate {
     return this.communityStoreService.takeCommunity(communityNickname).pipe(
       map((community: Community) => community.ownerUserId === user.id),
       catchError(() => of(false))
-    )
+    )*/
   }
 }
