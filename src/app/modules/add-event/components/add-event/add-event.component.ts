@@ -48,6 +48,8 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
 export class AddEventComponent implements OnInit {
   public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
 
+  public isLoading: boolean = false
+
   public readonly tabs: any = [
     {
       text: 'Вид спорта',
@@ -89,7 +91,8 @@ export class AddEventComponent implements OnInit {
 
   public eventForm: FormGroup = new FormGroup({
     eventType: new FormControl(EventType.workout, Validators.required),
-    startDate: new FormControl(null, Validators.required),
+    startDay: new FormControl(null, Validators.required),
+    startTime: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
     description: new FormControl(),
     durationHours: new FormControl(),
@@ -100,8 +103,7 @@ export class AddEventComponent implements OnInit {
     startWith(false),
     map(() => this.eventForm.invalid
       || this.trackCoordinates.length < 2
-      || this.venueMarker === null
-      || this.eventForm.get('startDate')?.value[ 1 ] === null)
+      || this.venueMarker === null)
   )
 
   constructor(private mapboxNetworkService: MapboxNetworkService,
@@ -115,8 +117,8 @@ export class AddEventComponent implements OnInit {
   }
 
   private generateStartDateIsoString(): ISO8601 {
-    const startDateValue: [ TuiDay, TuiTime ] = this.eventForm.get('startDate')?.value
-    const [ startDay, startTime ]: [ TuiDay, TuiTime ] = startDateValue
+    const startDay: TuiDay = this.eventForm.get('startDay')?.value
+    const startTime: TuiTime = this.eventForm.get('startTime')?.value
     const startDateUtc: Date = startDay.toUtcNativeDate()
     startDateUtc.setHours(startTime.hours, startTime.minutes)
 
@@ -400,6 +402,7 @@ export class AddEventComponent implements OnInit {
 
     const currentUser: User | null = this.userHolderService.getUser()
     if (currentUser !== null) {
+      this.isLoading = true
 
       /**
        * Готовим точки для фитинга карты
@@ -423,20 +426,34 @@ export class AddEventComponent implements OnInit {
 
                 switch (this.eventForm.get('eventType')?.value) {
                   case EventType.workout:
-                    return this.createWorkoutByRouteAndUserId(route, currentUser.id)
+                    return this.createWorkoutByRouteAndUserId(route, currentUser.id).pipe(
+                      tap(() => {
+                        this.isLoading = false
+
+                        this.notificationsService
+                          .show('Тренировка успешно добавлена', {
+                            status: TuiNotification.Success
+                          }).subscribe()
+
+                        this.routerService.navigate([ '' ])
+                      })
+                    )
                   case EventType.competition:
-                    return this.createCompetitionByRouteAndUserId(route, currentUser.id)
+                    return this.createCompetitionByRouteAndUserId(route, currentUser.id).pipe(
+                      tap(() => {
+                        this.isLoading = false
+
+                        this.notificationsService
+                          .show('Соревнование успешно добавлено', {
+                            status: TuiNotification.Success
+                          }).subscribe()
+
+                        this.routerService.navigate([ '' ])
+                      })
+                    )
                   default:
                     throw new Error('Не указан тип события')
                 }
-              }),
-              tap(() => {
-                this.notificationsService
-                  .show('Событие успешно добавлено', {
-                    status: TuiNotification.Success
-                  }).subscribe()
-
-                this.routerService.navigate([ '' ])
               }),
               take(1)
             ).subscribe()
