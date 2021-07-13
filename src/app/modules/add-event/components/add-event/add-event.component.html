@@ -92,6 +92,7 @@
         tuiUnfinishedValidator="Выберите дату события"
         formControlName="startDay"
         tuiTextfieldSize="m"
+        [min]="buildCurrentTuiDay()"
       >
         Выберите дату
       </tui-input-date>
