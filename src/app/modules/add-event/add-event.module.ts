@@ -8,6 +8,7 @@ import {
   TuiCalendarModule,
   TuiDataListModule,
   TuiGroupModule,
+  TuiLoaderModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core'
@@ -58,7 +59,8 @@ import { RouteService } from '../../global/domain/services/route/route.service'
     TuiDataListModule,
     TuiInputDateModule,
     TuiInputTimeModule,
-    TuiUnfinishedValidatorModule
+    TuiUnfinishedValidatorModule,
+    TuiLoaderModule
   ],
   providers: [
     MapboxNetworkService,

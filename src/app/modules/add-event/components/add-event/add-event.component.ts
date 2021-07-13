@@ -48,6 +48,8 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
 export class AddEventComponent implements OnInit {
   public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
 
+  public isLoading: boolean = false
+
   public readonly tabs: any = [
     {
       text: 'Вид спорта',
@@ -400,6 +402,7 @@ export class AddEventComponent implements OnInit {
 
     const currentUser: User | null = this.userHolderService.getUser()
     if (currentUser !== null) {
+      this.isLoading = true
 
       /**
        * Готовим точки для фитинга карты
@@ -423,20 +426,34 @@ export class AddEventComponent implements OnInit {
 
                 switch (this.eventForm.get('eventType')?.value) {
                   case EventType.workout:
-                    return this.createWorkoutByRouteAndUserId(route, currentUser.id)
+                    return this.createWorkoutByRouteAndUserId(route, currentUser.id).pipe(
+                      tap(() => {
+                        this.isLoading = false
+
+                        this.notificationsService
+                          .show('Тренировка успешно добавлена', {
+                            status: TuiNotification.Success
+                          }).subscribe()
+
+                        this.routerService.navigate([ '' ])
+                      })
+                    )
                   case EventType.competition:
-                    return this.createCompetitionByRouteAndUserId(route, currentUser.id)
+                    return this.createCompetitionByRouteAndUserId(route, currentUser.id).pipe(
+                      tap(() => {
+                        this.isLoading = false
+
+                        this.notificationsService
+                          .show('Соревнование успешно добавлено', {
+                            status: TuiNotification.Success
+                          }).subscribe()
+
+                        this.routerService.navigate([ '' ])
+                      })
+                    )
                   default:
                     throw new Error('Не указан тип события')
                 }
-              }),
-              tap(() => {
-                this.notificationsService
-                  .show('Событие успешно добавлено', {
-                    status: TuiNotification.Success
-                  }).subscribe()
-
-                this.routerService.navigate([ '' ])
               }),
               take(1)
             ).subscribe()
