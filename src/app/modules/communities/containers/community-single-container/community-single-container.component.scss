@@ -5,9 +5,10 @@
 
 .header {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr) auto;
+  grid-template-rows: 32px repeat(3, 1fr);
   grid-auto-flow: row;
+  gap: 0.5rem;
   grid-template-areas:
     "avatar type . . actions"
     "avatar name name name name"
@@ -17,6 +18,7 @@
 
 .community-type-container {
   grid-area: type;
+  text-transform: uppercase;
 }
 
 .community-avatar-container {
@@ -29,6 +31,10 @@
 
 .community-name-container {
   grid-area: name;
+}
+
+.community-name {
+  margin: 0;
 }
 
 .community-links-container {
@@ -44,4 +50,17 @@
   height: 100px;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.community-link-list-item {
+  display: flex;
+  align-items: center;
+}
+
+.join-button {
+  --tui-primary: var(--cy-primary);
+}
+
+.join-button.is-user-joined {
+  --tui-primary: var(--cy-success);
 }
