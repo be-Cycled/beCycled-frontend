@@ -4,6 +4,10 @@
   padding: 12px;
 }
 
+tui-loader {
+  height: 100%;
+}
+
 tui-island {
   display: flex;
   flex-direction: column;
@@ -37,7 +41,8 @@ form {
 }
 
 
-tui-input-date-time {
+.date-input,
+.time-input {
   margin-bottom: 12px;
 }
 
