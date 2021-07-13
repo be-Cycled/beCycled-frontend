@@ -24,8 +24,8 @@
         <button
           *tuiLet="isCurrentUserCommunityMember | async as isUserJoined"
           tuiButton
-          size="s"
           class="join-button"
+          [size]="joinButtonSize | async"
           [showLoader]="joinButtonShowLoader | async"
           [disabled]="joinButtonIsDisabled | async"
           [iconRight]="joinButtonIconRight | async"

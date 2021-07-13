@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
-import { BehaviorSubject, combineLatest, EMPTY, iif, Observable, Subject } from 'rxjs'
+import { BehaviorSubject, combineLatest, EMPTY, iif, Observable } from 'rxjs'
 import { catchError, map, pluck, startWith, switchMap, take, tap } from 'rxjs/operators'
 import { Community, CommunityType, User } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { PATH_PARAMS } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
+import { IS_MOBILE } from '../../../../global/tokens'
 import { CommunityStoreService } from '../../services'
 
 @Component({
@@ -17,8 +18,6 @@ import { CommunityStoreService } from '../../services'
 })
 export class CommunitySingleContainerComponent {
   public readonly communityType: typeof CommunityType = CommunityType
-
-  public community: Subject<Community> = new Subject<Community>()
 
   public communityShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
@@ -74,11 +73,17 @@ export class CommunitySingleContainerComponent {
 
   public joinButtonIsDisabled: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
+  public joinButtonSize: Observable<string> = this.isMobile.pipe(
+    map((isMobile: boolean) => isMobile ? 'm' : 's')
+  )
+
   constructor(public readonly activatedRoute: ActivatedRoute,
               private communityService: CommunityService,
               private userHolderService: UserHolderService,
               private notificationService: TuiNotificationsService,
-              private communityStoreService: CommunityStoreService) {
+              private communityStoreService: CommunityStoreService,
+              @Inject(IS_MOBILE)
+              private isMobile: Observable<boolean>) {
     this.activatedRoute.paramMap.pipe(
       switchMap((params: ParamMap) => {
         if (this.communityStoreService.takeCommunity() !== null) {
@@ -116,7 +121,7 @@ export class CommunitySingleContainerComponent {
         tap((community: Community) => {
           this.joinButtonShowLoader.next(false)
           this.joinButtonIsDisabled.next(false)
-          this.community.next(community)
+          this.communityStoreService.setCommunity(community)
         }),
         catchError(() => {
           return this.notificationService.show(

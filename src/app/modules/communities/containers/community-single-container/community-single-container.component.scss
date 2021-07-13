@@ -1,19 +1,22 @@
 :host {
   display: block;
   padding: 12px 12px calc(var(--menu-height) + 12px);
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .header {
   display: grid;
-  grid-template-columns: repeat(4, 1fr) auto;
-  grid-template-rows: 32px repeat(3, 1fr);
+  grid-template-columns: 100px repeat(4, 1fr);
+  grid-template-rows: 32px repeat(5, auto);
   grid-auto-flow: row;
   gap: 0.5rem;
   grid-template-areas:
-    "avatar type . . actions"
+    "avatar type . . ."
     "avatar name name name name"
     "avatar links links links links"
-    "avatar description description description description";
+    "avatar description description description description"
+    "actions actions actions actions actions";
 }
 
 .community-type-container {
@@ -59,6 +62,11 @@
 
 .join-button {
   --tui-primary: var(--cy-primary);
+  width: 100%;
+
+  @media screen and (min-width: 600px) {
+    width: initial;
+  }
 }
 
 .join-button.is-user-joined {
