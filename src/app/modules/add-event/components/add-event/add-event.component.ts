@@ -15,6 +15,7 @@ import { CompetitionService } from '../../../../global/domain/services/competiti
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { Router } from '@angular/router'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
+import { Title } from '@angular/platform-browser'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -112,8 +113,10 @@ export class AddEventComponent implements OnInit {
               private competitionService: CompetitionService,
               private routeService: RouteService,
               private routerService: Router,
+              private title: Title,
               @Inject(TuiNotificationsService)
               private readonly notificationsService: TuiNotificationsService) {
+    this.title.setTitle(`Новое событие`)
   }
 
   private generateStartDateIsoString(): ISO8601 {
