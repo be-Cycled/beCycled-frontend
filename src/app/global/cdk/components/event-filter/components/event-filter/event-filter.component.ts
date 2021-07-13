@@ -190,25 +190,18 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
      * Логика установки предварительно выбранных значений фильтра
      */
     if (this.queryParams !== null) {
-      let selectedFilters: (SportType | EventType)[] = []
+      let selectedFilters: string[] = []
 
       /**
-       * В квери параметрах могут быть как просто значения, так и массив значений
+       * При установке квери параметров, массив собираю в строку при помощи join(),
+       * следовательно, здесь я его разбираю на массив при помощи split()
        */
       if (typeof this.queryParams[ 'sport-type' ] !== 'undefined') {
-        if (typeof this.queryParams[ 'sport-type' ] === 'string') {
-          selectedFilters.push(this.queryParams[ 'sport-type' ] as SportType)
-        } else {
-          selectedFilters = [ ...selectedFilters, ...this.queryParams[ 'sport-type' ] ]
-        }
+        selectedFilters = [ ...selectedFilters, ...this.queryParams[ 'sport-type' ].split(',') ]
       }
 
       if (typeof this.queryParams[ 'event-type' ] !== 'undefined') {
-        if (typeof this.queryParams[ 'event-type' ] === 'string') {
-          selectedFilters.push(this.queryParams[ 'event-type' ] as SportType)
-        } else {
-          selectedFilters = [ ...selectedFilters, ...this.queryParams[ 'event-type' ] ]
-        }
+        selectedFilters = [ ...selectedFilters, ...this.queryParams[ 'event-type' ].split(',') ]
       }
 
       const selectedItems: FilterTag[] = this.items.filter((item: FilterTag) => selectedFilters.includes(item.value))
@@ -242,15 +235,14 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
 
       if (selectedEventFilters.length > 0) {
         queryParams = {
-          ...queryParams,
-          'event-type': selectedEventFilters
+          'event-type': selectedEventFilters.join(',')
         }
       }
 
       if (selectedSportFilters.length > 0) {
         queryParams = {
           ...queryParams,
-          'sport-type': selectedSportFilters
+          'sport-type': selectedSportFilters.join(',')
         }
       }
 
