@@ -24,14 +24,15 @@
     </ul>
   </tui-island>
 
-<!--  <tui-island class="sidebar-section users">
+  <tui-island class="sidebar-section users">
     <h3 class="tui-island__title section-title">
       <a routerLink="../users" [relativeTo]="activatedRoute">
         <span class="title">Участники</span>
         <span class="user-count">{{ userCount | async }} <tui-svg src="tuiIconChevronRight"></tui-svg></span>
       </a>
     </h3>
-    <ul class="user-list">
+    <tui-loader [showLoader]="isUsersShowLoader | async"></tui-loader>
+    <ul class="user-list" *ngIf="!(isUsersShowLoader | async)">
       <li
         class="user-list-item"
         *ngFor="let user of firstUsers | async"
@@ -42,5 +43,5 @@
         </a>
       </li>
     </ul>
-  </tui-island>-->
+  </tui-island>
 </aside>

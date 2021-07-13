@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiLetModule, TuiMapperPipeModule } from '@taiga-ui/cdk'
-import { TuiButtonModule, TuiDataListModule, TuiLinkModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
-import { TuiFilterModule, TuiInputModule, TuiIslandModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit'
+import { TuiButtonModule, TuiDataListModule, TuiHintModule, TuiLinkModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
+import { TuiAvatarModule, TuiFilterModule, TuiInputModule, TuiIslandModule, TuiSelectModule, TuiTabsModule } from '@taiga-ui/kit'
 import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 import { SafePipeModule } from '../../global/cdk/pipes/safe/safe-pipe.module'
 
@@ -39,7 +39,10 @@ import { CommunityStoreService } from './services'
     TuiTabsModule,
     TuiLetModule,
     EventCardModule,
-    TuiIslandModule
+    TuiIslandModule,
+    TuiSvgModule,
+    TuiHintModule,
+    TuiAvatarModule
   ],
   providers: [
     CommunitySettingsGuard,
