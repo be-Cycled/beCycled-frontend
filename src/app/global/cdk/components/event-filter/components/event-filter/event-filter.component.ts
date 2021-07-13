@@ -258,8 +258,7 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
         [],
         {
           relativeTo: this.activatedRoute,
-          queryParams: queryParams,
-          queryParamsHandling: 'merge'
+          queryParams: queryParams
         })
     } else {
       this.queryParams = null
