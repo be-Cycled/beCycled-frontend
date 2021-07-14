@@ -1,21 +1,21 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core'
-import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay, TuiTime } from '@taiga-ui/cdk'
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
-import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
-import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { DirectionType, MapboxRouteGeoData, Route, SportType, User, Workout } from '../../../../global/domain'
-import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
-import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
+import { Title } from '@angular/platform-browser'
+import { Router } from '@angular/router'
+import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay, TuiTime } from '@taiga-ui/cdk'
+import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
-import { EventType, ISO8601 } from '../../../../global/models'
+import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { Observable } from 'rxjs'
-import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
-import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
+import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { DirectionType, MapboxRouteGeoData, Route, SportType, User, Workout } from '../../../../global/domain'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
-import { Router } from '@angular/router'
-import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
-import { Title } from '@angular/platform-browser'
+import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
+import { EventType, ISO8601 } from '../../../../global/models'
+import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
+import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
+import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -114,8 +114,7 @@ export class AddEventComponent implements OnInit {
               private routeService: RouteService,
               private routerService: Router,
               private title: Title,
-              @Inject(TuiNotificationsService)
-              private readonly notificationsService: TuiNotificationsService,
+              private notificationsService: TuiNotificationsService,
               private imageNetworkService: ImageNetworkService,
               private configService: ConfigService) {
     this.title.setTitle(`Новое событие`)

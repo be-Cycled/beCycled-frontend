@@ -3,20 +3,9 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
+import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
-import {
-  catchError,
-  filter,
-  finalize,
-  map,
-  pluck,
-  shareReplay,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-  tap
-} from 'rxjs/operators'
+import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import { Community, Competition, User, UserService, Workout } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
@@ -36,8 +25,6 @@ import { ConfigService, ImageNetworkService, UserHolderService } from '../../../
   providers: [ TuiDestroyService ]
 })
 export class ProfileContainerComponent {
-  private avatarFile: File | null = null
-
   // 1Mb
   public maxFileSize: number = 1_000_000
 
@@ -148,8 +135,6 @@ export class ProfileContainerComponent {
         return
       }
 
-      this.avatarFile = file
-
       const fileReader: FileReader = new FileReader()
 
       fromEvent(fileReader, 'load').pipe(
@@ -227,7 +212,8 @@ export class ProfileContainerComponent {
               private title: Title,
               private destroyService: TuiDestroyService,
               private imageNetworkService: ImageNetworkService,
-              private configService: ConfigService) {
+              private configService: ConfigService,
+              private notificationService: TuiNotificationsService) {
     this.previewAvatarCalc.subscribe()
     this.titleSetter.subscribe()
   }
@@ -265,28 +251,25 @@ export class ProfileContainerComponent {
   }
 
   public onClickSaveButton(): void {
-    if (this.avatarFile !== null) {
-      const fileReader: FileReader = new FileReader()
+    const avatarFile: File | null = this.avatarFileReader.value
 
-      fromEvent(fileReader, 'load').pipe(
-        switchMap((event: Event) => {
-          const uploadImageData: FormData = new FormData()
-
-          uploadImageData.append('imageFile', this.avatarFile as Blob, 'route.png')
-
-          return this.imageNetworkService.uploadImage(uploadImageData)
-        }),
-        tap((imageName: string) => {
-          this.editForm.get('avatar')!.patchValue(`${ this.configService.apiImageUrl }/${ imageName }`)
-
-          this.updateUser()
-        }),
-        take(1)
-      ).subscribe()
-
-      fileReader.readAsBinaryString(this.avatarFile)
-    } else {
+    if (avatarFile === null) {
       this.updateUser()
+      return
     }
+
+    const uploadImageData: FormData = new FormData()
+
+    uploadImageData.append('imageFile', avatarFile, avatarFile.name)
+
+    this.imageNetworkService.uploadImage(uploadImageData).pipe(
+      tap((imageName: string) => {
+        this.editForm.get('avatar')!.patchValue(`${ this.configService.apiImageUrl }/${ imageName }`)
+
+        this.updateUser()
+      }),
+      catchError(() => this.notificationService.show('Не удалось сохранить данные пользователя', { status: TuiNotification.Error })),
+      take(1)
+    ).subscribe()
   }
 }
