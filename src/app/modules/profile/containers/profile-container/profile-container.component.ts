@@ -26,7 +26,7 @@ import { TelemetryService } from '../../../../global/domain/services/telemetry/t
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { UserHolderService } from '../../../../global/services'
+import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 
 @Component({
   selector: 'cy-profile-container',
@@ -36,6 +36,7 @@ import { UserHolderService } from '../../../../global/services'
   providers: [ TuiDestroyService ]
 })
 export class ProfileContainerComponent {
+  private avatarFile: File | null = null
 
   // 1Mb
   public maxFileSize: number = 1_000_000
@@ -147,6 +148,8 @@ export class ProfileContainerComponent {
         return
       }
 
+      this.avatarFile = file
+
       const fileReader: FileReader = new FileReader()
 
       fromEvent(fileReader, 'load').pipe(
@@ -222,9 +225,27 @@ export class ProfileContainerComponent {
               private trackerService: TrackerService,
               private telemetryService: TelemetryService,
               private title: Title,
-              private destroyService: TuiDestroyService) {
+              private destroyService: TuiDestroyService,
+              private imageNetworkService: ImageNetworkService,
+              private configService: ConfigService) {
     this.previewAvatarCalc.subscribe()
     this.titleSetter.subscribe()
+  }
+
+  public updateUser(): void {
+    const result: User = {
+      ...this.userHolderService.getUser()!,
+      ...this.editForm.value
+    }
+
+    this.userService.updateUser(result.id, result).pipe(
+      finalize(() => this.onClickCancelButton()),
+      tap((user: User) => {
+        this.user.next(user)
+        this.userHolderService.updateUser(user)
+      }),
+      catchError(() => EMPTY)
+    ).subscribe()
   }
 
   public onClickEditButton(): void {
@@ -244,19 +265,28 @@ export class ProfileContainerComponent {
   }
 
   public onClickSaveButton(): void {
-    const result: User = {
-      ...this.userHolderService.getUser()!,
-      ...this.editForm.value
+    if (this.avatarFile !== null) {
+      const fileReader: FileReader = new FileReader()
+
+      fromEvent(fileReader, 'load').pipe(
+        switchMap((event: Event) => {
+          const uploadImageData: FormData = new FormData()
+
+          uploadImageData.append('imageFile', this.avatarFile as Blob, 'route.png')
+
+          return this.imageNetworkService.uploadImage(uploadImageData)
+        }),
+        tap((imageName: string) => {
+          this.editForm.get('avatar')!.patchValue(`${ this.configService.apiImageUrl }/${ imageName }`)
+
+          this.updateUser()
+        }),
+        take(1)
+      ).subscribe()
+
+      fileReader.readAsBinaryString(this.avatarFile)
+    } else {
+      this.updateUser()
     }
-
-    this.userService.updateUser(result.id, result).pipe(
-      finalize(() => this.onClickCancelButton()),
-      tap((user: User) => {
-        this.user.next(user)
-        this.userHolderService.updateUser(user)
-      }),
-      catchError(() => EMPTY)
-    ).subscribe()
   }
-
 }
