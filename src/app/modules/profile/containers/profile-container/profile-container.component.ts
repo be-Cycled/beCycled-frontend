@@ -3,20 +3,9 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
+import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
-import {
-  catchError,
-  filter,
-  finalize,
-  map,
-  pluck,
-  shareReplay,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-  tap
-} from 'rxjs/operators'
+import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import { Community, Competition, User, UserService, Workout } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
@@ -26,7 +15,7 @@ import { TelemetryService } from '../../../../global/domain/services/telemetry/t
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { UserHolderService } from '../../../../global/services'
+import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 
 @Component({
   selector: 'cy-profile-container',
@@ -36,7 +25,6 @@ import { UserHolderService } from '../../../../global/services'
   providers: [ TuiDestroyService ]
 })
 export class ProfileContainerComponent {
-
   // 1Mb
   public maxFileSize: number = 1_000_000
 
@@ -222,9 +210,28 @@ export class ProfileContainerComponent {
               private trackerService: TrackerService,
               private telemetryService: TelemetryService,
               private title: Title,
-              private destroyService: TuiDestroyService) {
+              private destroyService: TuiDestroyService,
+              private imageNetworkService: ImageNetworkService,
+              private configService: ConfigService,
+              private notificationService: TuiNotificationsService) {
     this.previewAvatarCalc.subscribe()
     this.titleSetter.subscribe()
+  }
+
+  public updateUser(): void {
+    const result: User = {
+      ...this.userHolderService.getUser()!,
+      ...this.editForm.value
+    }
+
+    this.userService.updateUser(result.id, result).pipe(
+      finalize(() => this.onClickCancelButton()),
+      tap((user: User) => {
+        this.user.next(user)
+        this.userHolderService.updateUser(user)
+      }),
+      catchError(() => EMPTY)
+    ).subscribe()
   }
 
   public onClickEditButton(): void {
@@ -244,19 +251,25 @@ export class ProfileContainerComponent {
   }
 
   public onClickSaveButton(): void {
-    const result: User = {
-      ...this.userHolderService.getUser()!,
-      ...this.editForm.value
+    const avatarFile: File | null = this.avatarFileReader.value
+
+    if (avatarFile === null) {
+      this.updateUser()
+      return
     }
 
-    this.userService.updateUser(result.id, result).pipe(
-      finalize(() => this.onClickCancelButton()),
-      tap((user: User) => {
-        this.user.next(user)
-        this.userHolderService.updateUser(user)
+    const uploadImageData: FormData = new FormData()
+
+    uploadImageData.append('imageFile', avatarFile, avatarFile.name)
+
+    this.imageNetworkService.uploadImage(uploadImageData).pipe(
+      tap((imageName: string) => {
+        this.editForm.get('avatar')!.patchValue(`${ this.configService.apiImageUrl }/${ imageName }`)
+
+        this.updateUser()
       }),
-      catchError(() => EMPTY)
+      catchError(() => this.notificationService.show('Не удалось сохранить данные пользователя', { status: TuiNotification.Error })),
+      take(1)
     ).subscribe()
   }
-
 }
