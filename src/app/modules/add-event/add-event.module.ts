@@ -32,6 +32,7 @@ import { TuiRippleModule } from '@taiga-ui/addon-mobile'
 import { WorkoutService } from '../../global/domain/services/workout/workout.service'
 import { CompetitionService } from '../../global/domain/services/competition/competition.service'
 import { RouteService } from '../../global/domain/services/route/route.service'
+import { ImageNetworkService } from '../../global/services'
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { RouteService } from '../../global/domain/services/route/route.service'
     MapboxNetworkService,
     WorkoutService,
     CompetitionService,
-    RouteService
+    RouteService,
+    ImageNetworkService
   ]
 })
 export class AddEventModule {
