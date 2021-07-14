@@ -17,9 +17,20 @@ export abstract class AbstractEventCard {
 
   public map: mapboxgl.Map | null = null
 
-  public generateStartTime(date: ISO8601): string {
+  public generateStartTime(date: ISO8601, isOnlyTimeShow: boolean = true): string {
     const parsedDate: Date = new Date(date)
-    return new Intl.DateTimeFormat('ru-RU', { hour: 'numeric', minute: 'numeric' }).format(parsedDate)
+
+    if (isOnlyTimeShow) {
+      return new Intl.DateTimeFormat('ru-RU', { hour: 'numeric', minute: 'numeric' }).format(parsedDate)
+    }
+
+    return new Intl.DateTimeFormat('ru-RU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric'
+    }).format(parsedDate)
   }
 
   public generateDistanceString(distance: number): string {
