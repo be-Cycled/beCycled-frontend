@@ -1,5 +1,27 @@
-<table class="tui-table">
-  <tr class="tui-table__tr" *ngFor="let user of users | async">
+<tui-loader [showLoader]="userShowLoader | async"></tui-loader>
+<ng-container *tuiLet="community | async as activeCommunity">
+  <table *ngIf="!(userShowLoader | async)" class="tui-table" >
+    <tr class="tui-table__tr" *ngFor="let user of users | async">
+      <td class="tui-table__td">
+        <div class="user-main-info">
+          <div class="user-avatar">
+            <img [attr.src]="user.avatar" [attr.alt]="user.login">
+          </div>
+          <div class="user-info">
+            <div class="user-name" *ngIf="user.firstName !== null || user.lastName !== null">
+              {{ user.firstName }} {{ user.lastName }}
+            </div>
+            <div class="user-login">{{ user.login }}</div>
+          </div>
+        </div>
+      </td>
+      <td class="tui-table__td user-role">
+        <span *ngIf="user.id === activeCommunity.ownerUserId; else memberRef">Создатель</span>
+        <ng-template #memberRef>
+          <span>Участиник</span>
+        </ng-template>
+      </td>
+    </tr>
+  </table>
+</ng-container>
 
-  </tr>
-</table>
