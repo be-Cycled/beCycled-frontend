@@ -424,63 +424,66 @@ export class AddEventComponent implements OnInit {
              * Создаем Blob, чтобы загрузить его на наш сервер
              */
             this.map!.getCanvas().toBlob((blob: Blob | null) => {
-              if (blob !== null) {
-                const uploadImageData: FormData = new FormData()
-
-                uploadImageData.append('imageFile', blob, 'route.png')
-
-                /**
-                 * Загружаем сгенерированное preview на сервер
-                 */
-                this.imageNetworkService.uploadImage(uploadImageData).pipe(
-                  switchMap((imageName: string) => {
-                    this.preview = `${ this.configService.apiImageUrl }/${ imageName }`
-
-                    /**
-                     * Создаем маршрут с указанием в preview имени файла с картинкой
-                     */
-                    return this.createRouteByUserId(currentUser.id).pipe(
-                      switchMap((route: Route) => {
-
-                        /**
-                         * Создаем событие в зависимости от выбранного типа
-                         */
-                        switch (this.eventForm.get('eventType')?.value) {
-                          case EventType.workout:
-                            return this.createWorkoutByRouteAndUserId(route, currentUser.id).pipe(
-                              tap(() => {
-                                this.isLoading = false
-
-                                this.notificationsService
-                                  .show('Тренировка успешно добавлена', {
-                                    status: TuiNotification.Success
-                                  }).subscribe()
-
-                                this.routerService.navigate([ '' ])
-                              })
-                            )
-                          case EventType.competition:
-                            return this.createCompetitionByRouteAndUserId(route, currentUser.id).pipe(
-                              tap(() => {
-                                this.isLoading = false
-
-                                this.notificationsService
-                                  .show('Соревнование успешно добавлено', {
-                                    status: TuiNotification.Success
-                                  }).subscribe()
-
-                                this.routerService.navigate([ '' ])
-                              })
-                            )
-                          default:
-                            throw new Error('Не указан тип события')
-                        }
-                      })
-                    )
-                  }),
-                  take(1)
-                ).subscribe()
+              if (blob === null) {
+                return
               }
+
+              const uploadImageData: FormData = new FormData()
+
+              uploadImageData.append('imageFile', blob, 'route.png')
+
+              /**
+               * Загружаем сгенерированное preview на сервер
+               */
+              this.imageNetworkService.uploadImage(uploadImageData).pipe(
+                switchMap((imageName: string) => {
+                  this.preview = `${ this.configService.apiImageUrl }/${ imageName }`
+
+                  /**
+                   * Создаем маршрут с указанием в preview имени файла с картинкой
+                   */
+                  return this.createRouteByUserId(currentUser.id).pipe(
+                    switchMap((route: Route) => {
+
+                      /**
+                       * Создаем событие в зависимости от выбранного типа
+                       */
+                      switch (this.eventForm.get('eventType')?.value) {
+                        case EventType.workout:
+                          return this.createWorkoutByRouteAndUserId(route, currentUser.id).pipe(
+                            tap(() => {
+                              this.isLoading = false
+
+                              this.notificationsService
+                                .show('Тренировка успешно добавлена', {
+                                  status: TuiNotification.Success
+                                }).subscribe()
+
+                              this.routerService.navigate([ '' ])
+                            })
+                          )
+                        case EventType.competition:
+                          return this.createCompetitionByRouteAndUserId(route, currentUser.id).pipe(
+                            tap(() => {
+                              this.isLoading = false
+
+                              this.notificationsService
+                                .show('Соревнование успешно добавлено', {
+                                  status: TuiNotification.Success
+                                }).subscribe()
+
+                              this.routerService.navigate([ '' ])
+                            })
+                          )
+                        default:
+                          throw new Error('Не указан тип события')
+                      }
+                    })
+                  )
+                }),
+                take(1)
+              ).subscribe()
+
             })
           })
         }
