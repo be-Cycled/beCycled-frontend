@@ -5,9 +5,11 @@
       <tui-input-file
         *ngIf="isEdit"
         [formControl]="avatarFileReader"
+        accept="image/png,image/jpg,image/jpeg"
         [maxFileSize]="maxAvatarFileSize"
         [multiple]="false"
-        accept="image/*"
+        link="Выберите файл"
+        label="или перетащите его (макс. 1Мб)"
       ></tui-input-file>
     </div>
     <div class="name-container">
