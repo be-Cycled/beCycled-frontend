@@ -24,7 +24,7 @@ export class CommunitySingleUsersComponent implements OnInit {
         catchError(() => of([]))
       )
     }),
-    shareReplay({ refCount: true, bufferSize: 1 })
+    shareReplay(1)
   ))
 
   public community: Observable<Community> = this.communityStoreService.communityChanges.pipe()
