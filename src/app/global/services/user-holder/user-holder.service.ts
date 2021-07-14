@@ -19,6 +19,8 @@ export class UserHolderService {
     filter((user: User | null): user is User => user !== null)
   )
 
+  public userClearChanges: Observable<User | null> = this.user.pipe()
+
   public isUserAuthorizedChanges: Observable<boolean> = this.user.pipe(
     map((user: User | null) => user !== null)
   )
