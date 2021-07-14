@@ -15,9 +15,8 @@ import { TelemetryService } from '../../../../global/domain/services/telemetry/t
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { UserHolderService } from '../../../../global/services'
-import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens/max-avatar-size'
 import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
+import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens'
 
 @Component({
   selector: 'cy-profile-container',
