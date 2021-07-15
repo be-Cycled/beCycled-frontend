@@ -1,6 +1,5 @@
 import { ISO8601 } from '../../../models'
-import { SportType } from '../event-card'
-import { EventType } from './enums'
+import { EventType, SportType } from './enums'
 
 export interface BaseEvent {
   /**

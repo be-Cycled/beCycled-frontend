@@ -4,11 +4,11 @@ import { ActivatedRoute } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { BehaviorSubject, defer, forkJoin, Observable, of } from 'rxjs'
 import { catchError, map, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators'
-import { Community, CommunityType, Competition, SportType, User, Workout } from '../../../../global/domain'
+import { Community, CommunityType, Competition, EventType, SportType, User, Workout } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
+import { SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
 
 @Component({

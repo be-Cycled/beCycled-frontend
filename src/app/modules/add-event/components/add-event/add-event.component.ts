@@ -8,11 +8,19 @@ import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { Observable } from 'rxjs'
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
-import { DirectionType, MapboxRouteGeoData, Route, SportType, User, Workout } from '../../../../global/domain'
+import {
+  DirectionType,
+  EventType,
+  MapboxRouteGeoData,
+  Route,
+  SportType,
+  User,
+  Workout
+} from '../../../../global/domain'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { EventType, ISO8601 } from '../../../../global/models'
+import { ISO8601 } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
@@ -133,7 +141,7 @@ export class AddEventComponent implements OnInit {
     return startDateUtc.toISOString() as ISO8601
   }
 
-  private generateDurationMinutes(): number {
+  private generateDurationInSeconds(): number {
     const durationHours: number = this.eventForm.get('durationHours')?.value
       ? this.eventForm.get('durationHours')?.value
       : 0
@@ -142,7 +150,7 @@ export class AddEventComponent implements OnInit {
       ? this.eventForm.get('durationMinutes')?.value
       : 0
 
-    return durationHours * 60 + durationMinutes
+    return (durationHours * 60 + durationMinutes) * 60
   }
 
   private createRouteByUserId(userId: number): Observable<Route> {
@@ -163,15 +171,16 @@ export class AddEventComponent implements OnInit {
   private createWorkoutByRouteAndUserId(route: Route, userId: number): Observable<Workout> {
     return this.workoutService.create({
       id: null,
-      userId: userId,
+      eventType: EventType.workout,
+      ownerUserId: userId,
       communityId: null,
-      private: false,
+      isPrivate: false,
       startDate: this.generateStartDateIsoString(),
       routeId: route.id,
       sportType: this.eventForm.get('sportType')?.value,
       venueGeoData: JSON.stringify(this.venueCoordinates),
       userIds: [ userId ],
-      duration: this.generateDurationMinutes(),
+      duration: this.generateDurationInSeconds(),
       description: this.eventForm.get('description')?.value,
       createdAd: null
     })
@@ -180,15 +189,16 @@ export class AddEventComponent implements OnInit {
   private createCompetitionByRouteAndUserId(route: Route, userId: number): Observable<Workout> {
     return this.competitionService.create({
       id: null,
-      userId: userId,
+      eventType: EventType.competition,
+      ownerUserId: userId,
       communityId: null,
-      private: false,
+      isPrivate: false,
       startDate: this.generateStartDateIsoString(),
       routeId: route.id,
       sportType: this.eventForm.get('sportType')?.value,
       venueGeoData: JSON.stringify(this.venueCoordinates),
       userIds: [ userId ],
-      duration: this.generateDurationMinutes(),
+      duration: this.generateDurationInSeconds(),
       description: this.eventForm.get('description')?.value,
       createdAd: null
     })

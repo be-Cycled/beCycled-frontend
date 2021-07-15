@@ -9,8 +9,7 @@ import {
   SimpleChanges
 } from '@angular/core'
 import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
-import { EventType } from '../../../../../models'
-import { Competition, SportType, Workout } from '../../../../../domain'
+import { Competition, EventType, SportType, Workout } from '../../../../../domain'
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { takeUntil, tap } from 'rxjs/operators'
 import { Observable, Subject } from 'rxjs'

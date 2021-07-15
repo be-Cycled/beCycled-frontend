@@ -1,5 +1,5 @@
-import { SportType } from '../event-card'
 import { ISO8601 } from '../../../models'
+import { SportType } from '../event'
 
 export interface MapboxGeometry {
   coordinates: number[][]
@@ -59,29 +59,4 @@ export interface Route {
   description: string | null
   popularity: number
   createdAt: ISO8601
-}
-
-export interface RouteDto {
-  id: null
-  userId: number
-  name: string | null
-
-  /**
-   * Строковое представление JSON: MapboxRouteGeoData[]
-   */
-  routeGeoData: string
-
-  /**
-   * base64 картинки с превью маршрута
-   */
-  routePreview: string
-  sportTypes: SportType[]
-
-  /**
-   * Флаг, что маршрут одноразовый
-   */
-  disposable: boolean
-  description: string
-  popularity: number
-  createdAt: null
 }

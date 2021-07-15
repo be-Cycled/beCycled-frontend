@@ -1,5 +1,5 @@
-import { EventType, SportType } from '../domain'
-import { ISO8601 } from '../models'
+import { EventType, SportType } from '../../domain'
+import { ISO8601 } from '../../models'
 
 /**
  * @see Competition

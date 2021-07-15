@@ -1,6 +1,5 @@
 export * from './user'
 export * from './community'
-export * from './event-card'
 export * from './route'
 export * from './mapbox'
 export * from './event'

@@ -4,10 +4,10 @@ import { Title } from '@angular/platform-browser'
 import { TuiHandler } from '@taiga-ui/cdk'
 import { combineLatest, Observable } from 'rxjs'
 import { map, shareReplay, startWith } from 'rxjs/operators'
-import { Competition, SportType, Workout } from '../../../../global/domain'
+import { Competition, EventType, SportType, Workout } from '../../../../global/domain'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
+import { ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
 
 interface EventListByDay {

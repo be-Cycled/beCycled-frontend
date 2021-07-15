@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { ConfigService } from '../../../services'
-import { Competition, CompetitionDto } from '../../models'
+import { Competition } from '../../models'
+import { CompetitionDto } from '../../../dto'
 
 @Injectable()
 export class CompetitionService {

@@ -1,2 +1,2 @@
-export * from './workout-dto'
-export * from './competition-dto'
+export * from './event'
+export * from './route'

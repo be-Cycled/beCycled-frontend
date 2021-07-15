@@ -5,8 +5,20 @@ import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
-import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
-import { Community, Competition, User, UserService, Workout } from '../../../../global/domain'
+import {
+  catchError,
+  filter,
+  finalize,
+  map,
+  pluck,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators'
+import { Community, Competition, EventType, User, UserService, Workout } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
@@ -14,7 +26,7 @@ import { CompetitionService } from '../../../../global/domain/services/competiti
 import { TelemetryService } from '../../../../global/domain/services/telemetry/telemetry.service'
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
+import { SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 
 @Component({
