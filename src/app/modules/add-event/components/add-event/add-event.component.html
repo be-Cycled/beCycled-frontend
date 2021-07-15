@@ -2,7 +2,7 @@
   [showLoader]="isLoading"
   [overlay]="true"
 >
-  <tui-island *ngIf="isUserAuthorized$ | async">
+  <tui-island class="add-event-island" *ngIf="isUserAuthorized$ | async">
     <p class="tui-island__category">
       Новое событие
     </p>
@@ -84,12 +84,12 @@
       class="date-form tui-space_bottom-5"
       [class.hide]="activeTabIndex !== 1"
       [formGroup]="eventForm"
+      [tuiTextfieldCleaner]="true"
     >
 
       <p class="form-label">Дата</p>
       <tui-input-date
         class="date-input"
-        tuiUnfinishedValidator="Выберите дату события"
         formControlName="startDay"
         tuiTextfieldSize="m"
         [min]="buildCurrentTuiDay()"
@@ -100,7 +100,6 @@
       <p class="form-label">Время начала</p>
       <tui-input-time
         class="time-input"
-        tuiUnfinishedValidator="Выберите время начала события"
         formControlName="startTime"
         tuiTextfieldSize="m"
       >

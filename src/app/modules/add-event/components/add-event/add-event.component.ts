@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { Router } from '@angular/router'
-import { TUI_IS_ANDROID, TUI_IS_IOS, TuiDay, TuiTime } from '@taiga-ui/cdk'
+import { TUI_IS_ANDROID, TUI_IS_IOS, TUI_IS_MOBILE, TuiDay, TuiTime } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
@@ -43,6 +43,10 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
     {
       provide: TUI_IS_ANDROID,
       useValue: true
+    },
+    {
+      provide: TUI_IS_MOBILE,
+      useValue: false
     }
   ]
 })
