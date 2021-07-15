@@ -13,7 +13,11 @@ tui-island {
   flex-direction: column;
   height: 100%;
 
+  border: 1px solid var(--tui-base-03);
+
   box-sizing: border-box;
+
+  overflow-y: scroll;
 
   tui-tabs {
     min-height: 48px;
@@ -52,7 +56,7 @@ form {
   gap: 12px;
 
   tui-input-number {
-    flex-grow: 1;
+    width: 50%;
   }
 }
 
@@ -102,7 +106,7 @@ mgl-map {
 @media (min-width: 768px) {
   :host {
     padding: 36px;
-    height: calc(100% - var(--header-height));
+    //height: calc(100% - var(--header-height));
   }
 
   .material-icons-outlined {
@@ -115,6 +119,10 @@ mgl-map {
 }
 
 ::ng-deep {
+  .add-event-island.tui-island:not(.tui-island_hoverable):before {
+    display: none;
+  }
+
   .mapboxgl-map.resized {
     width: 448px;
     height: 240px;
