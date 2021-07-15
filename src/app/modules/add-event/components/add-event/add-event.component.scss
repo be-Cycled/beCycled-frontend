@@ -106,7 +106,6 @@ mgl-map {
 @media (min-width: 768px) {
   :host {
     padding: 36px;
-    //height: calc(100% - var(--header-height));
   }
 
   .material-icons-outlined {
@@ -132,8 +131,10 @@ mgl-map {
     .mapboxgl-ctrl-top-left {
       width: 100%;
     }
+  }
 
-    .mapboxgl-ctrl-geocoder.mapboxgl-ctrl {
+  @media (max-width: 767px) {
+    .add-event-map .mapboxgl-ctrl-geocoder.mapboxgl-ctrl {
       width: 100%;
       margin: 0;
     }
