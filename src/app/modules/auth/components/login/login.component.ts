@@ -8,6 +8,7 @@ import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject } from 'rxjs'
 import { catchError, finalize, switchMap, take } from 'rxjs/operators'
 import { BrowserStorage, takeBrowserStorageKey } from '../../../../global/models'
+import { UserHolderService } from '../../../../global/services'
 import { AuthError, AuthorizationResult, isAuthError } from '../../models'
 import { AuthorizationService } from '../../services/authorization/authorization.service'
 
@@ -34,7 +35,8 @@ export class LoginComponent {
               @Inject(LOCAL_STORAGE)
               private localStorage: Storage,
               private router: Router,
-              private title: Title) {
+              private title: Title,
+              private userHolderService: UserHolderService) {
     this.title.setTitle(`Авторизация`)
   }
 
@@ -54,7 +56,13 @@ export class LoginComponent {
       finalize(() => this.isButtonLoaderShow.next(false)),
       switchMap((authorizationResult: AuthorizationResult) => {
         this.localStorage.setItem(takeBrowserStorageKey(BrowserStorage.accessToken), authorizationResult.access_token)
-        setTimeout(() => this.router.navigate([ '/' ]), 1000)
+        setTimeout(
+          () => {
+            this.userHolderService.updateCurrentUser()
+            this.router.navigateByUrl(this.authorizationService.redirectAfterAuthUrl)
+          },
+          1000
+        )
         return this.notificationService.show(`Авторизация прошла успешно`, { status: TuiNotification.Success })
       }),
       catchError((httpErrorResponse: HttpErrorResponse) => {

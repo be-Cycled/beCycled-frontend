@@ -2,16 +2,17 @@ import { Inject, Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 import { LOCAL_STORAGE, WINDOW } from '@ng-web-apis/common'
 import { BehaviorSubject, Observable } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
-import { Community, User } from '../../domain'
+import { filter, map, switchMap, tap } from 'rxjs/operators'
+import { Community, User, UserService } from '../../domain'
 import { BrowserStorage, takeBrowserStorageKey } from '../../models'
+import { ComponentStore } from '../component-store'
 
 @Injectable({ providedIn: 'root' })
 /**
  * @deprecated
  * @todo Переписать на {@link ComponentStore}
  */
-export class UserHolderService {
+export class UserHolderService extends ComponentStore<User> {
 
   private user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null)
 
@@ -29,7 +30,25 @@ export class UserHolderService {
               private localStorage: Storage,
               @Inject(WINDOW)
               private window: Window,
-              private router: Router) {
+              private router: Router,
+              private userService: UserService) {
+    super()
+  }
+
+  public updateCurrentUser(): void {
+    const token: string | null = this.localStorage.getItem(takeBrowserStorageKey(BrowserStorage.accessToken))
+
+    if (token === null) {
+      return
+    }
+
+    this.createEffect((token: Observable<string>) => {
+      return token.pipe(
+        switchMap((token: string) => this.userService.getMe(token).pipe(
+          tap((user: User) => this.updateUser(user))
+        ))
+      )
+    })(token)
   }
 
   public updateUser(user: User | null): void {

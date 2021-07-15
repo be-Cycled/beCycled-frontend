@@ -9,7 +9,6 @@ import { AuthRoutingModule } from './auth-routing.module'
 import { LoginComponent } from './components/login/login.component'
 import { RegistrationComponent } from './components/registration/registration.component'
 import { AuthContainerComponent } from './containers/auth-container/auth-container.component'
-import { AuthorizationService } from './services/authorization/authorization.service'
 
 @NgModule({
   declarations: [
@@ -28,9 +27,6 @@ import { AuthorizationService } from './services/authorization/authorization.ser
     TuiButtonModule,
     HttpClientModule,
     TuiErrorModule
-  ],
-  providers: [
-    AuthorizationService
   ]
 })
 export class AuthModule { }

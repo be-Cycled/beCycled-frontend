@@ -5,8 +5,13 @@ import { UserRegistrationDto } from '../../../../global/domain'
 import { ConfigService } from '../../../../global/services'
 import { AuthorizationResult } from '../../models'
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthorizationService {
+
+  public redirectAfterAuthUrl: string = '/'
+
   constructor(private httpClient: HttpClient,
               private configService: ConfigService) {
   }

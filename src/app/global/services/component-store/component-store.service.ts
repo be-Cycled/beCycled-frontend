@@ -3,7 +3,7 @@ import { isObservable, Observable, of, ReplaySubject, Subject, Subscription, thr
 import { concatMap, take, takeUntil, withLatestFrom } from 'rxjs/operators'
 import { INITIAL_STATE_TOKEN } from './initial-state-token'
 
-export type StateDispatcher<T> = (observableOrValue: T | Observable<T>) => Subscription
+export type StateDispatcher<T> = (observableOrValue?: T | Observable<T>) => Subscription
 
 /**
  * Хранитель данных
@@ -93,21 +93,17 @@ export class ComponentStore<T> implements OnDestroy {
     const origin: Subject<T> = new Subject<T>()
 
     generate(origin)
-      .pipe(
-        takeUntil(this.destroySubj)
-      )
+      .pipe(takeUntil(this.destroySubj))
       .subscribe()
 
-    return (observableOrValue: T | Observable<T>): Subscription => {
+    return (observableOrValue: T | Observable<T> = of()): Subscription => {
       const  value: Observable<T> = isObservable(observableOrValue)
         ? observableOrValue
         : of(observableOrValue)
 
       return value
         .pipe(takeUntil(this.destroySubj))
-        .subscribe((value: T) => {
-          origin.next(value)
-        })
+        .subscribe((value: T) => origin.next(value))
     }
   }
 

@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
+import { Router } from '@angular/router'
 import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { AuthorizationService } from '../../../../../../modules/auth/services/authorization/authorization.service'
 import { User } from '../../../../../domain'
 import { BrowserStorage, DEFAULT_AVATAR, takeBrowserStorageKey } from '../../../../../models'
 import { UserHolderService } from '../../../../../services'
-import { Router } from '@angular/router'
 
 @Component({
   selector: 'cy-header',
@@ -39,7 +40,8 @@ export class HeaderComponent {
   constructor(private userHolderService: UserHolderService,
               @Inject(LOCAL_STORAGE)
               private localStorage: Storage,
-              private router: Router) {
+              private router: Router,
+              private authorizationService: AuthorizationService) {
   }
 
   public onClickLogoutButton(): void {
@@ -58,5 +60,9 @@ export class HeaderComponent {
     }
 
     return this.router.url === url
+  }
+
+  public captureRedirectUrl(): void {
+    this.authorizationService.redirectAfterAuthUrl = this.router.url
   }
 }
