@@ -2,7 +2,7 @@
   [showLoader]="isLoading"
   [overlay]="true"
 >
-  <tui-island *ngIf="isUserAuthorized$ | async">
+  <tui-island class="add-event-island" *ngIf="isUserAuthorized$ | async">
     <p class="tui-island__category">
       Новое событие
     </p>
