@@ -1,9 +1,4 @@
-import { Competition, Workout } from '../domain'
-
-export enum EventType {
-  workout = 'WORKOUT',
-  competition = 'COMPETITION'
-}
+import { Competition, EventType, Workout } from '../domain'
 
 export interface WrappedEvent<T, U> {
   type: T,
