@@ -10,6 +10,7 @@ import { RouteService } from '../../global/domain/services/route/route.service'
 import { AfficheRoutingModule } from './affiche-routing.module'
 import { AfficheContainerComponent } from './containers/affiche-container/affiche-container.component'
 import { TuiButtonModule } from '@taiga-ui/core'
+import { AfficheService } from '../../global/domain/services/affiche/affiche.service'
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { TuiButtonModule } from '@taiga-ui/core'
     TuiButtonModule
   ],
   providers: [
-    RouteService
+    RouteService,
+    AfficheService
   ]
 })
 export class AfficheModule {
