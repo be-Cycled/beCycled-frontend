@@ -1,6 +1,8 @@
 :host {
   display: block;
-  padding: 12px 12px calc(var(--menu-height) + 12px);
+  padding: 12px;
+  height: 100%;
+  overflow-y: auto;
   max-width: 900px;
   margin: 0 auto;
 }
