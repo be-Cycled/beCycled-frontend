@@ -14,14 +14,7 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
 import { takeUntil, tap } from 'rxjs/operators'
 import { Observable, Subject } from 'rxjs'
 import { ActivatedRoute, Params, Router } from '@angular/router'
-
-interface FilterTag {
-  title: string
-  value: EventType | SportType
-  count: number
-}
-
-export type FilterType = 'event' | 'sport' | 'all'
+import { FilterTag, FilterType } from '../../models'
 
 @Component({
   selector: 'cy-event-filter',
@@ -92,11 +85,11 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
       if (selectedValues.includes(EventType.workout) && !selectedValues.includes(EventType.competition)) {
         this.resetSportTypeBadgeCount()
 
-        this.updateSportTypeBadgesCount(this.events[ 0 ])
+        this.updateSportTypeBadgesCount(this.events.filter((event: Workout | Competition) => event.eventType === EventType.workout))
       } else if (selectedValues.includes(EventType.competition) && !selectedValues.includes(EventType.workout)) {
         this.resetSportTypeBadgeCount()
 
-        this.updateSportTypeBadgesCount(this.events[ 1 ])
+        this.updateSportTypeBadgesCount(this.events.filter((event: Workout | Competition) => event.eventType === EventType.competition))
       } else {
         this.resetSportTypeBadgeCount()
 
@@ -109,7 +102,7 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
    * Ивенты нужны только для актуализации данных счетчиков в тегах
    */
   @Input()
-  public events: [ Workout[], Competition[] ] = [ [], [] ]
+  public events: (Workout | Competition)[] = []
 
   @Input()
   public filterType: FilterType = 'all'
@@ -161,15 +154,17 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     })
   }
 
-  private updateAllBadgesCount([ workouts, competitions ]: [ Workout[], Competition[] ]): void {
-    this.items.find((filterTag: FilterTag) => filterTag.value === EventType.workout)!.count = workouts.length
-    this.items.find((filterTag: FilterTag) => filterTag.value === EventType.competition)!.count = competitions.length;
+  private updateAllBadgesCount(events: Workout[] | Competition[]): void {
+    events.forEach((event: Workout | Competition) => {
+      const currentSportTypeTag: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.sportType === filterTag.value)
+      const currentEventTypeTag: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.eventType === filterTag.value)
 
-    [ ...workouts, ...competitions ].forEach((event: Workout | Competition) => {
-      const currentBadge: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.sportType === filterTag.value)
+      if (typeof currentSportTypeTag !== 'undefined') {
+        currentSportTypeTag.count += 1
+      }
 
-      if (typeof currentBadge !== 'undefined') {
-        currentBadge.count += 1
+      if (typeof currentEventTypeTag !== 'undefined') {
+        currentEventTypeTag.count += 1
       }
     })
   }
