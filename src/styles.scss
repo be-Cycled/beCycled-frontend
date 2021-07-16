@@ -10,6 +10,10 @@ body {
   --cy-alert: #FF6639;
 }
 
+.meta-h1 {
+  display: none;
+}
+
 tui-root {
   flex: none !important;
   height: 100%;
