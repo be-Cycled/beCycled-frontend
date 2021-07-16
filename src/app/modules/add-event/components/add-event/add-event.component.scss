@@ -1,6 +1,6 @@
 :host {
   display: block;
-  height: 100%;
+  height: calc(100% - var(--menu-height));
   padding: 12px;
 }
 
@@ -17,7 +17,7 @@ tui-island {
 
   box-sizing: border-box;
 
-  overflow-y: scroll;
+  overflow-y: auto;
 
   tui-tabs {
     min-height: 48px;
@@ -105,6 +105,7 @@ mgl-map {
 
 @media (min-width: 768px) {
   :host {
+    height: calc(100% - var(--header-height));
     padding: 36px;
   }
 
