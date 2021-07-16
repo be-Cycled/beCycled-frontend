@@ -62,11 +62,6 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
       title: 'Бег',
       value: SportType.run,
       count: 0
-    },
-    {
-      title: 'Лыжи',
-      value: SportType.ski,
-      count: 0
     }
   ]
 

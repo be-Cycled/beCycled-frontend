@@ -6,6 +6,5 @@ export enum EventType {
 export enum SportType {
   bicycle = 'BICYCLE',
   rollerblade = 'ROLLERBLADE',
-  run = 'RUN',
-  ski = 'SKI'
+  run = 'RUN'
 }

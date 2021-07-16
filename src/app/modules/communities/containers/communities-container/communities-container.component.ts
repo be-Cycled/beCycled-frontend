@@ -38,8 +38,7 @@ export class CommunitiesContainerComponent {
   public sportTypesMap: Record<SportType, string> = {
     [ SportType.bicycle ]: `Велосипед`,
     [ SportType.rollerblade ]: `Роликовые коньки`,
-    [ SportType.run ]: `Бег`,
-    [ SportType.ski ]: `Лыжи`
+    [ SportType.run ]: `Бег`
   }
 
   public sportTypeKeys: SportType[] = Object.keys(this.sportTypesMap) as SportType[]

@@ -11,8 +11,7 @@ export abstract class AbstractEventCard {
   public sportTypeMap: Record<SportType, string> = {
     [ SportType.bicycle ]: 'Велосипед',
     [ SportType.rollerblade ]: 'Роликовые коньки',
-    [ SportType.run ]: 'Бег',
-    [ SportType.ski ]: 'Лыжи'
+    [ SportType.run ]: 'Бег'
   }
 
   public map: mapboxgl.Map | null = null
