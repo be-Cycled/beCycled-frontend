@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router'
 import { Observable, of } from 'rxjs'
-import { catchError, map, skip, switchMap, tap } from 'rxjs/operators'
+import { catchError, map, switchMap, tap } from 'rxjs/operators'
 import { Community, User } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { PATH_PARAMS } from '../../../../global/models'
-import { UserHolderService } from '../../../../global/services'
+import { UserStoreService } from '../../../../global/services'
 import { CommunityStoreService } from '../../services'
 
 @Injectable()
 export class CommunitySettingsGuard implements CanActivate {
   constructor(private communityStoreService: CommunityStoreService,
               private communityService: CommunityService,
-              private userHolderService: UserHolderService) {
+              private userStoreService: UserStoreService) {
   }
 
   public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    return this.userHolderService.userClearChanges.pipe(
-      skip(1),
+    return this.userStoreService.userChanges.pipe(
       switchMap((user: User | null) => {
         if (user === null) {
           return of(false)

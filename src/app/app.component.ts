@@ -4,7 +4,7 @@ import { defer, Observable, of } from 'rxjs'
 import { catchError, map, take, tap } from 'rxjs/operators'
 import { User, UserService } from './global/domain'
 import { BrowserStorage, takeBrowserStorageKey } from './global/models'
-import { UserHolderService } from './global/services'
+import { UserStoreService } from './global/services'
 import { IS_MOBILE } from './global/tokens'
 
 @Component({
@@ -23,7 +23,7 @@ export class AppComponent {
   constructor(@Inject(IS_MOBILE)
               private isMobile: Observable<boolean>,
               private userService: UserService,
-              private userHolderService: UserHolderService,
+              private userStoreService: UserStoreService,
               @Inject(LOCAL_STORAGE)
               private localStorage: Storage) {
     const token: string | null = this.localStorage.getItem(takeBrowserStorageKey(BrowserStorage.accessToken))
@@ -31,11 +31,9 @@ export class AppComponent {
     if (token !== null) {
       this.userService.getMe(token).pipe(
         take(1),
-        tap((user: User) => this.userHolderService.updateUser(user)),
+        tap((user: User) => this.userStoreService.setUser(user)),
         catchError(() => of(null))
       ).subscribe()
-    } else {
-      this.userHolderService.updateUser(null)
     }
   }
 }

@@ -1,16 +1,23 @@
-<tui-loader [overlay]="true" [showLoader]="communityShowLoader | async">
-  <header class="header">
+<tui-loader *ngIf="communityShowLoader | async" [overlay]="true" [showLoader]="true"></tui-loader>
+
+<ng-container *ngIf="!(communityShowLoader | async)">
+  <header class="header"
+          *tuiLet="isSettingsTabActive | async as isSettingsActive"
+          [class.is-settings-tab-active]="isSettingsActive">
     <div class="community-avatar-container">
       <img [attr.src]="avatar | async" [attr.alt]="name | async">
     </div>
+
     <div class="community-type-container" [ngSwitch]="type | async">
       <span *ngSwitchCase="communityType.club">Клуб</span>
       <span *ngSwitchCase="communityType.organization">Организация</span>
     </div>
+
     <div class="community-name-container">
       <h1 class="community-name">{{ name | async }}</h1>
     </div>
-    <div class="community-links-container">
+
+    <div *ngIf="!isSettingsActive" class="community-links-container">
       <ul class="community-link-list">
         <li class="community-link-list-item">
           <span class="material-icons-outlined">link</span>
@@ -18,8 +25,10 @@
         </li>
       </ul>
     </div>
-    <div class="community-description-container" [innerHTML]="description | async | safe: 'html'"></div>
-    <div class="community-actions-container">
+
+    <div *ngIf="!isSettingsActive" class="community-description-container" [innerHTML]="description | async | safe: 'html'"></div>
+
+    <div *ngIf="!isSettingsActive" class="community-actions-container">
       <ng-container *ngIf="isUserExist | async">
         <button
           *tuiLet="isCurrentUserCommunityMember | async as isUserJoined"
@@ -35,10 +44,10 @@
       </ng-container>
     </div>
   </header>
-</tui-loader>
+</ng-container>
 
 <section class="community-view-control">
-  <tui-tabs>
+  <tui-tabs [activeItemIndex]="activeTabChanges | async" (activeItemIndexChange)="onActiveItemIndexChange($event)">
     <a
       tuiTab
       routerLink="."

@@ -7,7 +7,7 @@ import { EMPTY, fromEvent, Observable } from 'rxjs'
 import { catchError, pluck, startWith, take, takeUntil, tap } from 'rxjs/operators'
 import { Community, CommunityType, SportType, User } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
-import { UserHolderService } from '../../../../global/services'
+import { UserStoreService } from '../../../../global/services'
 import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens/max-avatar-size'
 
 @Component({
@@ -77,7 +77,7 @@ export class CommunityCreateContainerComponent {
               public readonly maxAvatarFileSize: number,
               private communityService: CommunityService,
               private notificationService: TuiNotificationsService,
-              private userHolder: UserHolderService) {
+              private userStoreService: UserStoreService) {
     this.avatarInputFileChanges.subscribe()
   }
 
@@ -89,7 +89,7 @@ export class CommunityCreateContainerComponent {
       return
     }
 
-    const user: User | null = this.userHolder.getUser()
+    const user: User | null = this.userStoreService.user
 
     if (user === null) {
       throw new Error('User does not exist')

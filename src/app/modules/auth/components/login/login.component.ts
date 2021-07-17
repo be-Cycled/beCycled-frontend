@@ -6,9 +6,10 @@ import { Router } from '@angular/router'
 import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject } from 'rxjs'
-import { catchError, finalize, switchMap, take } from 'rxjs/operators'
+import { catchError, finalize, switchMap, take, tap } from 'rxjs/operators'
+import { User, UserService } from '../../../../global/domain'
 import { BrowserStorage, takeBrowserStorageKey } from '../../../../global/models'
-import { UserHolderService } from '../../../../global/services'
+import { UserStoreService } from '../../../../global/services/user-store/user-store.service'
 import { AuthError, AuthorizationResult, isAuthError } from '../../models'
 import { AuthorizationService } from '../../services/authorization/authorization.service'
 
@@ -36,7 +37,8 @@ export class LoginComponent {
               private localStorage: Storage,
               private router: Router,
               private title: Title,
-              private userHolderService: UserHolderService) {
+              private userService: UserService,
+              private userStoreService: UserStoreService) {
     this.title.setTitle(`Авторизация`)
   }
 
@@ -56,14 +58,15 @@ export class LoginComponent {
       finalize(() => this.isButtonLoaderShow.next(false)),
       switchMap((authorizationResult: AuthorizationResult) => {
         this.localStorage.setItem(takeBrowserStorageKey(BrowserStorage.accessToken), authorizationResult.access_token)
-        setTimeout(
-          () => {
-            this.userHolderService.updateCurrentUser()
+
+        return this.userService.getMe(authorizationResult.access_token).pipe(
+          tap((user: User) => {
+            this.userStoreService.setUser(user)
             this.router.navigateByUrl(this.authorizationService.redirectAfterAuthUrl)
-          },
-          1000
+
+            this.notificationService.show(`Авторизация прошла успешно`, { status: TuiNotification.Success }).subscribe()
+          })
         )
-        return this.notificationService.show(`Авторизация прошла успешно`, { status: TuiNotification.Success })
       }),
       catchError((httpErrorResponse: HttpErrorResponse) => {
         const originalError: AuthError = httpErrorResponse.error

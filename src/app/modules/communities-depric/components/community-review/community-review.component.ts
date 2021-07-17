@@ -7,7 +7,7 @@ import { CommunityService } from '../../../../global/domain/services/community/c
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { UserHolderService } from '../../../../global/services'
+import { UserStoreService } from '../../../../global/services'
 import { CommunityStore } from '../../services/community-store/community-store.service'
 
 @Component({
@@ -54,7 +54,7 @@ export class CommunityReviewComponent {
 
   public isUserJoined: Observable<boolean> = this.communityChanges.pipe(
     map((community: Community) => {
-      const user: User | null = this.userHolderService.getUser()
+      const user: User | null = this.userStoreService.user
 
       if (user === null) {
         throw new Error(`User does not exist`)
@@ -98,7 +98,7 @@ export class CommunityReviewComponent {
   constructor(public readonly activatedRoute: ActivatedRoute,
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
-              private userHolderService: UserHolderService,
+              private userStoreService: UserStoreService,
               private communityService: CommunityService,
               private communityStore: CommunityStore) {
 

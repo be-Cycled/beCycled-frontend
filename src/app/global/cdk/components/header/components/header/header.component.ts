@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators'
 import { AuthorizationService } from '../../../../../../modules/auth/services/authorization/authorization.service'
 import { User } from '../../../../../domain'
 import { BrowserStorage, DEFAULT_AVATAR, takeBrowserStorageKey } from '../../../../../models'
-import { UserHolderService } from '../../../../../services'
+import { UserStoreService } from '../../../../../services'
 
 @Component({
   selector: 'cy-header',
@@ -16,13 +16,13 @@ import { UserHolderService } from '../../../../../services'
 })
 export class HeaderComponent {
 
-  public isUserAuthorized: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+  public isUserAuthorized: Observable<boolean> = this.userStoreService.isAuthChanges
 
   public isUserUnauthorized: Observable<boolean> = this.isUserAuthorized.pipe(
     map((isUserAuthorized: boolean) => !isUserAuthorized)
   )
 
-  public userAvatar: Observable<string> = this.userHolderService.userChanges.pipe(
+  public userAvatar: Observable<string> = this.userStoreService.validUserChanges.pipe(
     map((user: User) => {
       if (user.avatar !== null) {
         return `${ user.avatar }`
@@ -32,12 +32,12 @@ export class HeaderComponent {
     })
   )
 
-  public profileRouterLink: Observable<string> = this.userHolderService.userChanges.pipe(
+  public profileRouterLink: Observable<string> = this.userStoreService.validUserChanges.pipe(
     map((user: User) => user.login),
     map((userLogin: string) => `/users/${ userLogin }`)
   )
 
-  constructor(private userHolderService: UserHolderService,
+  constructor(private userStoreService: UserStoreService,
               @Inject(LOCAL_STORAGE)
               private localStorage: Storage,
               private router: Router,
@@ -46,7 +46,7 @@ export class HeaderComponent {
 
   public onClickLogoutButton(): void {
     this.localStorage.removeItem(takeBrowserStorageKey(BrowserStorage.accessToken))
-    this.userHolderService.updateUser(null)
+    this.userStoreService.reset()
   }
 
   /**

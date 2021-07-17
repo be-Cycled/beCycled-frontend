@@ -8,7 +8,7 @@ import { Competition, SportType, Workout } from '../../../../global/domain'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, ISO8601, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { UserHolderService } from '../../../../global/services'
+import { UserStoreService } from '../../../../global/services'
 
 interface EventListByDay {
   date: ISO8601
@@ -28,7 +28,7 @@ interface FilterTag {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AfficheContainerComponent implements OnInit {
-  public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+  public isUserAuthorized$: Observable<boolean> = this.userStoreService.isAuthChanges
 
   public filters: FormControl = new FormControl()
 
@@ -140,7 +140,7 @@ export class AfficheContainerComponent implements OnInit {
   constructor(private workoutService: WorkoutService,
               private competitionService: CompetitionService,
               private title: Title,
-              private userHolderService: UserHolderService) {
+              private userStoreService: UserStoreService) {
     this.title.setTitle(`Афиша`)
   }
 

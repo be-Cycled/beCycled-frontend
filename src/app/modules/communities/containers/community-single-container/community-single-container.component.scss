@@ -8,8 +8,10 @@
 }
 
 .header {
+  --avatar-size: 100px;
+
   display: grid;
-  grid-template-columns: 100px repeat(4, 1fr);
+  grid-template-columns: var(--avatar-size) repeat(4, 1fr);
   grid-template-rows: 32px repeat(5, auto);
   grid-auto-flow: row;
   gap: 0.5rem;
@@ -19,6 +21,16 @@
     "avatar links links links links"
     "avatar description description description description"
     "actions actions actions actions actions";
+}
+
+.header.is-settings-tab-active {
+  --avatar-size: 50px;
+
+  grid-template-columns: var(--avatar-size) 1fr;
+  grid-template-rows: 18px 1fr;
+  grid-template-areas:
+    "avatar type"
+    "avatar name"
 }
 
 .community-type-container {
@@ -51,8 +63,8 @@
 }
 
 .community-avatar-container img {
-  width: 100px;
-  height: 100px;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
   object-fit: cover;
   border-radius: 50%;
 }
@@ -73,4 +85,8 @@
 
 .join-button.is-user-joined {
   --tui-primary: var(--cy-success);
+}
+
+.community-view-control {
+  margin-bottom: 12px;
 }

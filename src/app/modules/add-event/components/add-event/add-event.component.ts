@@ -13,7 +13,7 @@ import { CompetitionService } from '../../../../global/domain/services/competiti
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { EventType, ISO8601 } from '../../../../global/models'
-import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
+import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 
@@ -47,7 +47,7 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   ]
 })
 export class AddEventComponent implements OnInit {
-  public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+  public isUserAuthorized$: Observable<boolean> = this.userStoreService.isAuthChanges
 
   public isLoading: boolean = false
 
@@ -108,7 +108,7 @@ export class AddEventComponent implements OnInit {
   )
 
   constructor(private mapboxNetworkService: MapboxNetworkService,
-              private userHolderService: UserHolderService,
+              private userStoreService: UserStoreService,
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
               private routeService: RouteService,
@@ -400,7 +400,7 @@ export class AddEventComponent implements OnInit {
   public onPublishButtonClick(): void {
     this.drawTrackPointsOnCanvas()
 
-    const currentUser: User | null = this.userHolderService.getUser()
+    const currentUser: User | null = this.userStoreService.user
     if (currentUser !== null) {
       this.isLoading = true
 

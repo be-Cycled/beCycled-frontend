@@ -1,14 +1,20 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
-import { ActivatedRoute, ParamMap } from '@angular/router'
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core'
+import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, iif, Observable } from 'rxjs'
-import { catchError, map, pluck, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { catchError, distinctUntilChanged, filter, map, pluck, startWith, switchMap, take, tap } from 'rxjs/operators'
 import { Community, CommunityType, User } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { PATH_PARAMS } from '../../../../global/models'
-import { UserHolderService } from '../../../../global/services'
+import { UserStoreService } from '../../../../global/services'
 import { IS_MOBILE } from '../../../../global/tokens'
 import { CommunityStoreService } from '../../services'
+
+const enum CommunitySingleTab {
+  review,
+  users,
+  settings
+}
 
 @Component({
   selector: 'cy-community-single-container',
@@ -16,12 +22,18 @@ import { CommunityStoreService } from '../../services'
   styleUrls: [ './community-single-container.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CommunitySingleContainerComponent {
+export class CommunitySingleContainerComponent implements OnDestroy {
   public readonly communityType: typeof CommunityType = CommunityType
 
   public communityShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
   public communityChanges: Observable<Community> = this.communityStoreService.communityChanges
+
+  public activeTab: BehaviorSubject<CommunitySingleTab> = new BehaviorSubject<CommunitySingleTab>(CommunitySingleTab.review)
+
+  public activeTabChanges: Observable<CommunitySingleTab> = this.activeTab.pipe(
+    distinctUntilChanged()
+  )
 
   public avatar: Observable<string> = this.communityChanges.pipe(
     pluck('avatar')
@@ -43,20 +55,18 @@ export class CommunitySingleContainerComponent {
     pluck('url')
   )
 
-  public isUserExist: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+  public isUserExist: Observable<boolean> = this.userStoreService.isAuthChanges
 
-  public isCurrentUserOwnerCommunity: Observable<boolean> = combineLatest([
-    this.userHolderService.userChanges,
-    this.communityChanges
-  ]).pipe(
+  private userChanges: Observable<User> = this.userStoreService.userChanges.pipe(
+    filter((user: User | null): user is User => user !== null)
+  )
+
+  public isCurrentUserOwnerCommunity: Observable<boolean> = combineLatest([ this.userChanges, this.communityChanges ]).pipe(
     map(([ user, community ]: [ User, Community ]) => community.ownerUserId === user.id),
     startWith(false)
   )
 
-  public isCurrentUserCommunityMember: Observable<boolean> = combineLatest([
-    this.userHolderService.userChanges,
-    this.communityChanges
-  ]).pipe(
+  public isCurrentUserCommunityMember: Observable<boolean> = combineLatest([ this.userChanges, this.communityChanges ]).pipe(
     map(([ user, community ]: [ User, Community ]) => community.userIds.includes(user.id)),
     startWith(false)
   )
@@ -77,9 +87,14 @@ export class CommunitySingleContainerComponent {
     map((isMobile: boolean) => isMobile ? 'm' : 's')
   )
 
+  public isSettingsTabActive: Observable<boolean> = this.activeTabChanges.pipe(
+    map((activeTab: CommunitySingleTab) => activeTab === CommunitySingleTab.settings)
+  )
+
   constructor(public readonly activatedRoute: ActivatedRoute,
+              private router: Router,
               private communityService: CommunityService,
-              private userHolderService: UserHolderService,
+              private userStoreService: UserStoreService,
               private notificationService: TuiNotificationsService,
               private communityStoreService: CommunityStoreService,
               @Inject(IS_MOBILE)
@@ -105,6 +120,10 @@ export class CommunitySingleContainerComponent {
         )
       })
     ).subscribe()
+  }
+
+  public ngOnDestroy(): void {
+    this.communityStoreService.reset()
   }
 
   public onClickJoinButton(isUserJoined: boolean): void {
@@ -140,5 +159,9 @@ export class CommunitySingleContainerComponent {
         })
       ))
     ).subscribe()
+  }
+
+  public onActiveItemIndexChange(event: CommunitySingleTab): void {
+    this.activeTab.next(event)
   }
 }
