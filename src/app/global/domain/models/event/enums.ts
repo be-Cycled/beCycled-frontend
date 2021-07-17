@@ -8,3 +8,10 @@ export enum SportType {
   rollerblade = 'ROLLERBLADE',
   run = 'RUN'
 }
+
+export enum BicycleType {
+  any = 'ANY',
+  road = 'Road',
+  mountain = 'MOUNTAIN',
+  gravel = 'GRAVEL'
+}

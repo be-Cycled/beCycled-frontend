@@ -2,13 +2,23 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { Router } from '@angular/router'
-import { TUI_IS_ANDROID, TUI_IS_IOS, TUI_IS_MOBILE, TuiDay, TuiTime } from '@taiga-ui/cdk'
+import {
+  TUI_IS_ANDROID,
+  TUI_IS_IOS,
+  TUI_IS_MOBILE,
+  TuiContextWithImplicit,
+  TuiDay,
+  tuiPure,
+  TuiStringHandler,
+  TuiTime
+} from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { Observable } from 'rxjs'
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
 import {
+  BicycleType,
   DirectionType,
   EventType,
   MapboxRouteGeoData,
@@ -32,6 +42,11 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
     type: 'LineString',
     coordinates: []
   }
+}
+
+interface EnumValueWithLabel<T> {
+  value: T
+  label: string
 }
 
 @Component({
@@ -86,6 +101,51 @@ export class AddEventComponent implements OnInit {
     }
   ]
 
+  public readonly eventTypesWithLabels: EnumValueWithLabel<EventType>[] = [
+    {
+      value: EventType.workout,
+      label: 'Тренировка'
+    },
+    {
+      value: EventType.competition,
+      label: 'Соревнование'
+    }
+  ]
+
+  public readonly sportTypesWithLabels: EnumValueWithLabel<SportType>[] = [
+    {
+      value: SportType.bicycle,
+      label: 'Велосипед'
+    },
+    {
+      value: SportType.run,
+      label: 'Бег'
+    },
+    {
+      value: SportType.rollerblade,
+      label: 'Роликовые коньки'
+    }
+  ]
+
+  public readonly bicycleTypesWithLabels: EnumValueWithLabel<BicycleType>[] = [
+    {
+      value: BicycleType.any,
+      label: 'Любой'
+    },
+    {
+      value: BicycleType.road,
+      label: 'Шоссейный'
+    },
+    {
+      value: BicycleType.mountain,
+      label: 'Горный'
+    },
+    {
+      value: BicycleType.gravel,
+      label: 'Гревел'
+    }
+  ]
+
   public activeTabIndex: number = 0
 
   public map: mapboxgl.Map | null = null
@@ -107,6 +167,7 @@ export class AddEventComponent implements OnInit {
     startDay: new FormControl(null, Validators.required),
     startTime: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
+    bicycleType: new FormControl(BicycleType.any),
     description: new FormControl(),
     durationHours: new FormControl(),
     durationMinutes: new FormControl()
@@ -130,6 +191,13 @@ export class AddEventComponent implements OnInit {
               private imageNetworkService: ImageNetworkService,
               private configService: ConfigService) {
     this.title.setTitle(`Новое событие`)
+  }
+
+  @tuiPure
+  public stringify<T>(items: ReadonlyArray<EnumValueWithLabel<T>>): TuiStringHandler<TuiContextWithImplicit<T>> {
+    const map: Map<T, string> = new Map(items.map((item: EnumValueWithLabel<T>) => [ item.value, item.label ]))
+
+    return ({ $implicit }: TuiContextWithImplicit<T>) => map.get($implicit) || ''
   }
 
   private generateStartDateIsoString(): ISO8601 {

@@ -31,53 +31,50 @@
       [class.hide]="activeTabIndex !== 0"
       [formGroup]="eventForm"
     >
-      <p class="form-label">Тип события</p>
-      <div tuiGroup class="sport-type-inner tui-space_bottom-3" orientation="vertical" [collapsed]="true">
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="eventType"
-          item="WORKOUT"
-          size="m"
-        >
-          Тренировка
-        </tui-radio-block>
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="eventType"
-          item="COMPETITION"
-          size="m"
-        >
-          Соревнование
-        </tui-radio-block>
-      </div>
+      <tui-select
+        class="sport-type-inner tui-space_bottom-3"
+        formControlName="eventType"
+        [valueContent]="stringify(eventTypesWithLabels)"
+      >
+        Тип события
+        <ng-template tuiDataList>
+          <tui-data-list>
+            <button *ngFor="let eventType of eventTypesWithLabels" tuiOption [value]="eventType.value">
+              {{ eventType.label }}
+            </button>
+          </tui-data-list>
+        </ng-template>
+      </tui-select>
 
-      <p class="form-label">Вид спорта</p>
-      <div tuiGroup class="sport-type-inner" orientation="vertical" [collapsed]="true">
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="sportType"
-          item="BICYCLE"
-          size="m"
-        >
-          Велосипед
-        </tui-radio-block>
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="sportType"
-          item="RUN"
-          size="m"
-        >
-          Бег
-        </tui-radio-block>
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="sportType"
-          item="ROLLERBLADE"
-          size="m"
-        >
-          Роликовые коньки
-        </tui-radio-block>
-      </div>
+      <tui-select
+        class="sport-type-inner tui-space_bottom-3"
+        formControlName="sportType"
+        [valueContent]="stringify(sportTypesWithLabels)"
+      >
+        Вид спорта
+        <ng-template tuiDataList>
+          <tui-data-list>
+            <button *ngFor="let sportTypes of sportTypesWithLabels" tuiOption [value]="sportTypes.value">
+              {{ sportTypes.label }}
+            </button>
+          </tui-data-list>
+        </ng-template>
+      </tui-select>
+
+      <tui-select
+        class="sport-type-inner tui-space_bottom-3"
+        formControlName="bicycleType"
+        [valueContent]="stringify(bicycleTypesWithLabels)"
+      >
+        Тип велосипеда
+        <ng-template tuiDataList>
+          <tui-data-list>
+            <button *ngFor="let bicycleTypes of bicycleTypesWithLabels" tuiOption [value]="bicycleTypes.value">
+              {{ bicycleTypes.label }}
+            </button>
+          </tui-data-list>
+        </ng-template>
+      </tui-select>
     </form>
 
     <form
