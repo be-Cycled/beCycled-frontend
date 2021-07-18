@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { ConfigService } from '../../../services'
 import { BaseCompetition } from '../../models'
-import { CompetitionDto } from '../../../dto'
+import { BaseCompetitionDto } from '../../../dto'
 
 @Injectable()
 export class CompetitionService {
@@ -11,7 +11,7 @@ export class CompetitionService {
               private configService: ConfigService) {
   }
 
-  public create(entity: CompetitionDto): Observable<BaseCompetition> {
+  public create(entity: BaseCompetitionDto): Observable<BaseCompetition> {
     return this.httpClient.post<BaseCompetition>(`${ this.configService.baseApiUrl }/competitions`, entity)
   }
 

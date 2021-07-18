@@ -1,10 +1,7 @@
 import { EventType, SportType } from '../../domain'
 import { ISO8601 } from '../../models'
 
-/**
- * @see Competition
- */
-export interface CompetitionDto {
+export interface BaseEventDto {
   id: null
   ownerUserId: number
   communityId: number | null

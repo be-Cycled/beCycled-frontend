@@ -20,6 +20,7 @@ import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
 import {
   BaseEventType,
   BaseWorkout,
+  BicycleCompetitionType,
   BicycleType,
   DirectionType,
   EventType,
@@ -35,6 +36,7 @@ import { ISO8601 } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
+import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -128,6 +130,17 @@ export class AddEventComponent implements OnInit {
     }
   ]
 
+  public readonly bicycleCompetitionTypesWithLabels: EnumValueWithLabel<BicycleCompetitionType>[] = [
+    {
+      value: BicycleCompetitionType.individual,
+      label: 'ITT'
+    },
+    {
+      value: BicycleCompetitionType.group,
+      label: 'Групповая'
+    }
+  ]
+
   public readonly bicycleTypesWithLabels: EnumValueWithLabel<BicycleType>[] = [
     {
       value: BicycleType.any,
@@ -165,6 +178,7 @@ export class AddEventComponent implements OnInit {
 
   public eventForm: FormGroup = new FormGroup({
     eventType: new FormControl(BaseEventType.workout, Validators.required),
+    bicycleCompetitionType: new FormControl(BicycleCompetitionType.individual),
     startDay: new FormControl(null, Validators.required),
     startTime: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
@@ -194,13 +208,6 @@ export class AddEventComponent implements OnInit {
     this.title.setTitle(`Новое событие`)
   }
 
-  @tuiPure
-  public stringify<T>(items: ReadonlyArray<EnumValueWithLabel<T>>): TuiStringHandler<TuiContextWithImplicit<T>> {
-    const map: Map<T, string> = new Map(items.map((item: EnumValueWithLabel<T>) => [ item.value, item.label ]))
-
-    return ({ $implicit }: TuiContextWithImplicit<T>) => map.get($implicit) || ''
-  }
-
   private generateStartDateIsoString(): ISO8601 {
     const startDay: TuiDay = this.eventForm.get('startDay')?.value
     const startTime: TuiTime = this.eventForm.get('startTime')?.value
@@ -222,6 +229,48 @@ export class AddEventComponent implements OnInit {
     return (durationHours * 60 + durationMinutes) * 60
   }
 
+  private generateEventBodyByRouteAndUserId(route: Route, userId: number): BaseEventDto | BicycleCompetitionDto {
+    const eventType: EventType | null = detectEventTypeBySportType(BaseEventType.workout, this.eventForm.get('sportType')?.value)
+
+    if (eventType !== null) {
+      const baseEventProperties: BaseEventDto = {
+        id: null,
+        ownerUserId: userId,
+        communityId: null,
+        isPrivate: false,
+        startDate: this.generateStartDateIsoString(),
+        routeId: route.id,
+        sportType: this.eventForm.get('sportType')?.value,
+        venueGeoData: JSON.stringify(this.venueCoordinates),
+        userIds: [ userId ],
+        duration: this.generateDurationInSeconds(),
+        description: this.eventForm.get('description')?.value,
+        createdAd: null,
+        eventType
+      }
+
+      /**
+       * Если выбрано соревнование и велосипед.
+       * @see BicycleCompetitionDto
+       */
+      if (this.eventForm.get('eventType')?.value === BaseEventType.competition
+        && this.eventForm.get('sportType')?.value === SportType.bicycle) {
+        return {
+          ...baseEventProperties,
+          bicycleCompetitionType: this.eventForm.get('bicycleCompetitionType')?.value
+        }
+      }
+
+      /**
+       * Базовое тело события.
+       * @see BaseEventDto
+       */
+      return baseEventProperties
+    }
+
+    throw new Error('Не удалось определить тип события')
+  }
+
   private createRouteByUserId(userId: number): Observable<Route> {
     return this.routeService.create({
       id: null,
@@ -238,54 +287,21 @@ export class AddEventComponent implements OnInit {
   }
 
   private createWorkoutByRouteAndUserId(route: Route, userId: number): Observable<BaseWorkout> {
-    const eventType: EventType | null = detectEventTypeBySportType(BaseEventType.workout, this.eventForm.get('sportType')?.value)
-
-    if (eventType !== null) {
-      return this.workoutService.create({
-        id: null,
-        ownerUserId: userId,
-        communityId: null,
-        isPrivate: false,
-        startDate: this.generateStartDateIsoString(),
-        routeId: route.id,
-        sportType: this.eventForm.get('sportType')?.value,
-        venueGeoData: JSON.stringify(this.venueCoordinates),
-        userIds: [ userId ],
-        duration: this.generateDurationInSeconds(),
-        description: this.eventForm.get('description')?.value,
-        createdAd: null,
-        eventType
-      })
-    }
-
-    throw new Error('Не удалось определить тип тренировки')
+    return this.workoutService.create(this.generateEventBodyByRouteAndUserId(route, userId))
   }
 
   private createCompetitionByRouteAndUserId(route: Route, userId: number): Observable<BaseWorkout> {
-    const eventType: EventType | null = detectEventTypeBySportType(BaseEventType.workout, this.eventForm.get('sportType')?.value)
-
-    if (eventType !== null) {
-      return this.competitionService.create({
-        id: null,
-        ownerUserId: userId,
-        communityId: null,
-        isPrivate: false,
-        startDate: this.generateStartDateIsoString(),
-        routeId: route.id,
-        sportType: this.eventForm.get('sportType')?.value,
-        venueGeoData: JSON.stringify(this.venueCoordinates),
-        userIds: [ userId ],
-        duration: this.generateDurationInSeconds(),
-        description: this.eventForm.get('description')?.value,
-        createdAd: null,
-        eventType
-      })
-    }
-
-    throw new Error('Не удалось определить тип соревнования')
+    return this.competitionService.create(this.generateEventBodyByRouteAndUserId(route, userId))
   }
 
   public ngOnInit(): void {
+  }
+
+  @tuiPure
+  public stringify<T>(items: ReadonlyArray<EnumValueWithLabel<T>>): TuiStringHandler<TuiContextWithImplicit<T>> {
+    const map: Map<T, string> = new Map(items.map((item: EnumValueWithLabel<T>) => [ item.value, item.label ]))
+
+    return ({ $implicit }: TuiContextWithImplicit<T>) => map.get($implicit) || ''
   }
 
   public buildCurrentTuiDay(): TuiDay {

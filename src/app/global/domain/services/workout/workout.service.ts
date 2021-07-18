@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { ConfigService } from '../../../services'
 import { BaseWorkout } from '../../models'
-import { WorkoutDto } from '../../../dto'
+import { BaseWorkoutDto } from '../../../dto'
 
 @Injectable()
 export class WorkoutService {
@@ -11,7 +11,7 @@ export class WorkoutService {
               private configService: ConfigService) {
   }
 
-  public create(entity: WorkoutDto): Observable<BaseWorkout> {
+  public create(entity: BaseWorkoutDto): Observable<BaseWorkout> {
     return this.httpClient.post<BaseWorkout>(`${ this.configService.baseApiUrl }/workouts`, entity)
   }
 

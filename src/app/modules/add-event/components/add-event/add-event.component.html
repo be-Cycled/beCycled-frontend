@@ -58,12 +58,34 @@
       >
         <ng-template tuiDataList>
           <tui-data-list>
-            <button *ngFor="let sportTypes of sportTypesWithLabels" tuiOption [value]="sportTypes.value">
-              {{ sportTypes.label }}
+            <button *ngFor="let sportType of sportTypesWithLabels" tuiOption [value]="sportType.value">
+              {{ sportType.label }}
             </button>
           </tui-data-list>
         </ng-template>
       </tui-select>
+
+      <ng-container
+        *ngIf="eventForm.controls[ 'eventType' ].value === 'COMPETITION' && eventForm.controls[ 'sportType' ].value === 'BICYCLE'">
+        <p class="form-label">Тип велосипедного соревнования</p>
+        <tui-select
+          class="sport-type-inner tui-space_bottom-3"
+          formControlName="bicycleCompetitionType"
+          tuiTextfieldSize="m"
+          [tuiTextfieldLabelOutside]="true"
+          [valueContent]="stringify(bicycleCompetitionTypesWithLabels)"
+        >
+          <ng-template tuiDataList>
+            <tui-data-list>
+              <button *ngFor="let bicycleCompetitionType of bicycleCompetitionTypesWithLabels" tuiOption
+                      [value]="bicycleCompetitionType.value">
+                {{ bicycleCompetitionType.label }}
+              </button>
+            </tui-data-list>
+          </ng-template>
+        </tui-select>
+      </ng-container>
+
 
       <p class="form-label">Тип велосипеда</p>
       <tui-select
