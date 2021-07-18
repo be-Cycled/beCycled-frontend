@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
-import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
+import { BehaviorSubject, combineLatest, EMPTY, fromEvent, iif, Observable, of } from 'rxjs'
 import {
   catchError,
   filter,
@@ -18,16 +18,15 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators'
-import { BaseCompetition, BaseEventType, BaseWorkout, Community, User, UserService } from '../../../../global/domain'
+import { BaseEvent, BaseEventType, Community, EventType, User, UserService } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
-import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { TelemetryService } from '../../../../global/domain/services/telemetry/telemetry.service'
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
-import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
+import { EventService } from '../../../../global/domain/services/event/event.service'
+import { detectBaseEventTypeByEventType } from 'src/app/global/utils'
 
 @Component({
   selector: 'cy-profile-container',
@@ -80,31 +79,8 @@ export class ProfileContainerComponent {
     switchMap((user: User) => this.communityService.getCommunitiesByUser(user.login))
   )
 
-  public events: Observable<SomeWrappedEvent[]> = this.user.pipe(
-    switchMap((user: User) => forkJoin([
-      this.workoutService.readByUser(user.login),
-      this.competitionService.readByUser(user.login)
-    ]).pipe(
-      map(([ workouts, competitions ]: [ BaseWorkout[], BaseCompetition[] ]) => {
-        const result: SomeWrappedEvent[] = []
-
-        const workoutEvents: WrappedEvent<BaseEventType.workout, BaseWorkout>[] = workouts.map((workout: BaseWorkout) => ({
-          type: BaseEventType.workout,
-          value: workout
-        }))
-        const competitionEvents: WrappedEvent<BaseEventType.competition, BaseCompetition>[] = competitions.map((competition: BaseCompetition) => ({
-          type: BaseEventType.competition,
-          value: competition
-        }))
-
-        result.push(...workoutEvents)
-        result.push(...competitionEvents)
-
-        return result.sort((a: SomeWrappedEvent, b: SomeWrappedEvent) => {
-          return new Date(a.value.createdAd).getTime() - new Date(b.value.startDate).getTime()
-        })
-      })
-    ))
+  public events: Observable<BaseEvent[]> = this.user.pipe(
+    switchMap((user: User) => this.eventService.readEventByUser(user.login))
   )
 
   public isActiveProfileYours: Observable<boolean> = combineLatest([
@@ -218,8 +194,7 @@ export class ProfileContainerComponent {
   constructor(private fb: FormBuilder,
               private activatedRoute: ActivatedRoute,
               private communityService: CommunityService,
-              private workoutService: WorkoutService,
-              private competitionService: CompetitionService,
+              private eventService: EventService,
               private userHolderService: UserHolderService,
               private userService: UserService,
               private trackerService: TrackerService,
@@ -286,5 +261,9 @@ export class ProfileContainerComponent {
       catchError(() => this.notificationService.show('Не удалось сохранить данные пользователя', { status: TuiNotification.Error })),
       take(1)
     ).subscribe()
+  }
+
+  public detectBaseEventTypeByEventType(eventType: EventType): BaseEventType {
+    return detectBaseEventTypeByEventType(eventType)
   }
 }
