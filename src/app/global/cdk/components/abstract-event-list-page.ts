@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core'
-import { combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, defer, Observable, of } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
 import { BaseCompetition, BaseEventType, BaseWorkout, SportType } from '../../domain'
 import { ISO8601 } from '../../models'
@@ -17,12 +17,12 @@ interface EventsByDay {
  * Общая логика для афиши и ленты
  */
 @Directive()
-export class AbstractEventListPage {
+export abstract class AbstractEventListPage {
   public filters: FormControl = new FormControl()
 
   public events$: Observable<(BaseWorkout | BaseCompetition)[]> = of([])
 
-  public calendar$: Observable<EventsByDay[]> = combineLatest([
+  public calendar$: Observable<EventsByDay[]> = defer(() => combineLatest([
     this.events$,
     this.filters.valueChanges.pipe(
       startWith([])
@@ -42,11 +42,13 @@ export class AbstractEventListPage {
       let sortedEvents: (BaseWorkout | BaseCompetition)[] = events
 
       if (isWorkoutFilterActivated && !isCompetitionFilterActivated) {
-        sortedEvents = events.filter((event: BaseWorkout | BaseCompetition) => detectBaseEventTypeByEventType(event.eventType) === BaseEventType.workout)
+        sortedEvents = events.filter((event: BaseWorkout | BaseCompetition) =>
+          detectBaseEventTypeByEventType(event.eventType) === BaseEventType.workout)
       }
 
       if (isCompetitionFilterActivated && !isWorkoutFilterActivated) {
-        sortedEvents = events.filter((event: BaseWorkout | BaseCompetition) => detectBaseEventTypeByEventType(event.eventType) === BaseEventType.competition)
+        sortedEvents = events.filter((event: BaseWorkout | BaseCompetition) =>
+          detectBaseEventTypeByEventType(event.eventType) === BaseEventType.competition)
       }
 
       if (activatedSportTypeFilters.length !== 0) {
@@ -83,7 +85,7 @@ export class AbstractEventListPage {
 
       return eventsCalendar
     })
-  )
+  ))
 
   protected checkEqualDates(a: ISO8601, b: ISO8601): boolean {
     const firstDate: Date = new Date(a)

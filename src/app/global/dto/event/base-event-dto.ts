@@ -11,7 +11,7 @@ export interface BaseEventDto {
   routeId: number
   sportType: SportType
   venueGeoData: string
-  userIds: number[]
+  memberUserIds: number[]
   duration: number
   description: string
   createdAd: null

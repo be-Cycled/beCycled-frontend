@@ -5,9 +5,9 @@ import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../../global/cdk/components/abstract-event-page'
 import { BaseCompetition, BaseWorkout, Route } from '../../../../global/domain'
-import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { generateStartTime, getWorkoutListDate } from '../../../../global/utils'
+import { EventService } from '../../../../global/domain/services/event/event.service'
 
 @Component({
   selector: 'cy-competition-page',
@@ -18,7 +18,7 @@ import { generateStartTime, getWorkoutListDate } from '../../../../global/utils'
 export class CompetitionPageComponent extends AbstractEventPage {
   public competition$: Observable<BaseCompetition> = this.activatedRoute.paramMap.pipe(
     map((paramMap: ParamMap) => paramMap.get('id')),
-    switchMap((id: string | null) => this.competitionService.readById(Number.parseInt(id!, 10))),
+    switchMap((id: string | null) => this.eventService.readEventById(Number.parseInt(id!, 10))),
     shareReplay(1),
     tap((competition: BaseCompetition) => {
       this.title.setTitle(`Соревнование ${ getWorkoutListDate(competition.startDate) } ${ generateStartTime(competition.startDate) }`)
@@ -33,7 +33,7 @@ export class CompetitionPageComponent extends AbstractEventPage {
 
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
-              private competitionService: CompetitionService,
+              private eventService: EventService,
               private title: Title) {
     super()
   }

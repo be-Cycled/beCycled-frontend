@@ -6,7 +6,7 @@
   </h2>
   <ul class="event-list">
     <li class="event-item" *ngFor="let event of day.events">
-      <ng-container [ngSwitch]="event.eventType">
+      <ng-container [ngSwitch]="detectBaseEventTypeByEventType(event.eventType)">
 
         <ng-template [ngSwitchCase]="'WORKOUT'">
           <cy-workout [workout]="event"></cy-workout>

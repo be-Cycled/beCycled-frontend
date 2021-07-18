@@ -6,8 +6,8 @@ import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../global/cdk/components/abstract-event-page'
 import { BaseWorkout, Route } from '../../../global/domain'
 import { RouteService } from '../../../global/domain/services/route/route.service'
-import { WorkoutService } from '../../../global/domain/services/workout/workout.service'
 import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
+import { EventService } from '../../../global/domain/services/event/event.service'
 
 @Component({
   selector: 'cy-workout-page',
@@ -18,7 +18,7 @@ import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
 export class WorkoutPageComponent extends AbstractEventPage {
   public workout$: Observable<BaseWorkout> = this.activatedRoute.paramMap.pipe(
     map((paramMap: ParamMap) => paramMap.get('id')),
-    switchMap((id: string | null) => this.workoutService.readById(Number.parseInt(id!, 10))),
+    switchMap((id: string | null) => this.eventService.readEventById(Number.parseInt(id!, 10))),
     shareReplay(1),
     tap((workout: BaseWorkout) => {
       this.title.setTitle(`Тренировка ${ getWorkoutListDate(workout.startDate) } ${ generateStartTime(workout.startDate) }`)
@@ -33,7 +33,7 @@ export class WorkoutPageComponent extends AbstractEventPage {
 
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
-              private workoutService: WorkoutService,
+              private eventService: EventService,
               private title: Title) {
     super()
   }

@@ -50,7 +50,7 @@ export interface BaseEvent {
   /**
    * Список идентификаторов пользователей, участвующих в событии
    */
-  userIds: number[]
+  memberUserIds: number[]
 
   /**
    * Длительность события, секунды

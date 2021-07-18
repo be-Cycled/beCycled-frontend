@@ -242,7 +242,7 @@ export class AddEventComponent implements OnInit {
         routeId: route.id,
         sportType: this.eventForm.get('sportType')?.value,
         venueGeoData: JSON.stringify(this.venueCoordinates),
-        userIds: [ userId ],
+        memberUserIds: [ userId ],
         duration: this.generateDurationInSeconds(),
         description: this.eventForm.get('description')?.value,
         createdAd: null,

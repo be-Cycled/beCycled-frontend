@@ -3,9 +3,10 @@ import { FormControl } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
-import { BaseCompetition, BaseWorkout } from '../../../../global/domain'
+import { BaseCompetition, BaseEventType, BaseWorkout, EventType } from '../../../../global/domain'
 import { AbstractEventListPage } from '../../../../global/cdk/components/abstract-event-list-page'
 import { FeedService } from '../../../../global/domain/services/feed/feed.service'
+import { detectBaseEventTypeByEventType } from '../../../../global/utils'
 
 @Component({
   selector: 'cy-feed-container',
@@ -27,5 +28,9 @@ export class FeedContainerComponent extends AbstractEventListPage implements OnI
   }
 
   public ngOnInit(): void {
+  }
+
+  public detectBaseEventTypeByEventType(eventType: EventType): BaseEventType {
+    return detectBaseEventTypeByEventType(eventType)
   }
 }
