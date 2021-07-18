@@ -5,19 +5,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
-import {
-  catchError,
-  filter,
-  finalize,
-  map,
-  pluck,
-  shareReplay,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-  tap
-} from 'rxjs/operators'
+import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import { BaseCompetition, BaseEventType, BaseWorkout, Community, User, UserService } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
@@ -27,7 +15,7 @@ import { TelemetryService } from '../../../../global/domain/services/telemetry/t
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
+import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
 
 @Component({
   selector: 'cy-profile-container',
@@ -112,7 +100,7 @@ export class ProfileContainerComponent {
       startWith((this.activatedRoute.snapshot.paramMap)),
       map((paramMap: ParamMap) => paramMap.get('login'))
     ),
-    this.userHolderService.userChanges.pipe()
+    this.userStoreService.validUserChanges
   ]).pipe(
     map(([ userLogin, user ]: [ string | null, User ]) => userLogin === user.login),
     shareReplay(1)
@@ -146,7 +134,7 @@ export class ProfileContainerComponent {
   private previewAvatarCalc: Observable<any> = this.avatarFileReader.valueChanges.pipe(
     tap((file: File | null) => {
       if (file === null) {
-        this.editForm.patchValue({ avatar: this.userHolderService.getUser()!.avatar })
+        this.editForm.patchValue({ avatar: this.userStoreService.user!.avatar })
         return
       }
 
@@ -161,7 +149,7 @@ export class ProfileContainerComponent {
     })
   )
 
-  public userTracker: Observable<Tracker | null> = this.userHolderService.userChanges.pipe(
+  public userTracker: Observable<Tracker | null> = this.userStoreService.validUserChanges.pipe(
     switchMap((user: User) => {
       return this.trackerService.getByUser(user.login).pipe(
         catchError(() => of(null))
@@ -220,7 +208,7 @@ export class ProfileContainerComponent {
               private communityService: CommunityService,
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
-              private userHolderService: UserHolderService,
+              private userStoreService: UserStoreService,
               private userService: UserService,
               private trackerService: TrackerService,
               private telemetryService: TelemetryService,
@@ -235,7 +223,7 @@ export class ProfileContainerComponent {
 
   public updateUser(): void {
     const result: User = {
-      ...this.userHolderService.getUser()!,
+      ...this.userStoreService.user!,
       ...this.editForm.value
     }
 
@@ -243,7 +231,7 @@ export class ProfileContainerComponent {
       finalize(() => this.onClickCancelButton()),
       tap((user: User) => {
         this.user.next(user)
-        this.userHolderService.updateUser(user)
+        this.userStoreService.setUser(user)
       }),
       catchError(() => EMPTY)
     ).subscribe()
@@ -252,7 +240,7 @@ export class ProfileContainerComponent {
   public onClickEditButton(): void {
     this.isEditMode.next(true)
 
-    const user: User | null = this.userHolderService.getUser()
+    const user: User | null = this.userStoreService.user
 
     if (user === null) {
       throw new Error(`User not found`)

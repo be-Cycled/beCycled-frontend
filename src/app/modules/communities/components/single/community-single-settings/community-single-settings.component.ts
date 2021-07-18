@@ -105,6 +105,7 @@ export class CommunitySingleSettingsComponent implements OnInit {
         }
 
         this.updateCommunity(community)
+        this.avatarFileControl.patchValue(null)
       })
     ).subscribe()
   }

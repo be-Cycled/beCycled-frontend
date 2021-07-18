@@ -46,8 +46,7 @@ export class CommunitySingleMainComponent {
   public sportTypesMap: Record<SportType, string> = {
     [ SportType.bicycle ]: `Велосипед`,
     [ SportType.rollerblade ]: `Ролики`,
-    [ SportType.run ]: `Бег`,
-    [ SportType.ski ]: `Лыжи`
+    [ SportType.run ]: `Бег`
   }
 
   public isUsersShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
