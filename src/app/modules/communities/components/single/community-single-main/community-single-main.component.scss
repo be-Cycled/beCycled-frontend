@@ -1,5 +1,6 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
 }
 
 .user-list {
@@ -28,4 +29,23 @@
 
 .sidebar-section:not(:last-child) {
   margin-bottom: 12px;
+}
+
+.sidebar {
+  order: -1;
+}
+
+@media screen and (min-width: 599px) {
+  :host {
+    flex-direction: row;
+  }
+
+  .main {
+    flex-grow: 1;
+  }
+
+  .sidebar {
+    flex-basis: 300px;
+    order: initial;
+  }
 }
