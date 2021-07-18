@@ -39,8 +39,8 @@ export class EventService {
     return this.httpClient.get<BaseEvent>(`${ this.configService.baseApiUrl }/events/${ id }`)
   }
 
-  public readEventByCommunity(nickname: string): Observable<BaseEvent> {
-    return this.httpClient.get<BaseEvent>(`${ this.configService.baseApiUrl }/events/community/${ nickname }`)
+  public readEventByCommunity(nickname: string): Observable<BaseEvent[]> {
+    return this.httpClient.get<BaseEvent[]>(`${ this.configService.baseApiUrl }/events/community/${ nickname }`)
   }
 
   public readEventByUser(nickname: string): Observable<BaseEvent[]> {

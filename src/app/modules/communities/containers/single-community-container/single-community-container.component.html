@@ -31,13 +31,13 @@
   <div class="main-thread">
     <ul class="event-list">
       <li class="event-list-item" *ngFor="let event of events | async">
-        <ng-container [ngSwitch]="event.type">
+        <ng-container [ngSwitch]="detectBaseEventTypeByEventType(event.eventType)">
           <ng-template [ngSwitchCase]="'WORKOUT'">
-            <cy-workout [workout]="event.value"></cy-workout>
+            <cy-workout [workout]="event"></cy-workout>
           </ng-template>
 
           <ng-template [ngSwitchCase]="'COMPETITION'">
-            <cy-competition [competition]="event.value"></cy-competition>
+            <cy-competition [competition]="event"></cy-competition>
           </ng-template>
         </ng-container>
       </li>
