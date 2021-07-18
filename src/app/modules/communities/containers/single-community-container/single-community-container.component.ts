@@ -4,11 +4,19 @@ import { ActivatedRoute } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { BehaviorSubject, defer, forkJoin, Observable, of } from 'rxjs'
 import { catchError, map, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators'
-import { Community, CommunityType, Competition, SportType, User, Workout } from '../../../../global/domain'
+import {
+  BaseCompetition,
+  BaseEventType,
+  BaseWorkout,
+  Community,
+  CommunityType,
+  SportType,
+  User
+} from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
+import { SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
 
 @Component({
@@ -27,8 +35,7 @@ export class SingleCommunityContainerComponent {
   public sportTypesMap: Record<SportType, string> = {
     [ SportType.bicycle ]: `Велосипед`,
     [ SportType.rollerblade ]: `Ролики`,
-    [ SportType.run ]: `Бег`,
-    [ SportType.ski ]: `Лыжи`
+    [ SportType.run ]: `Бег`
   }
 
   public communityTypesMap: Record<CommunityType, string> = {
@@ -40,11 +47,13 @@ export class SingleCommunityContainerComponent {
     this.workoutService.readWorkoutsByCommunity(this.communityHolder.value.nickname),
     this.competitionService.readCompetitionsByCommunity(this.communityHolder.value.nickname)
   ]).pipe(
-    map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+    map(([ workouts, competitions ]: [ BaseWorkout[], BaseCompetition[] ]) => {
       const result: SomeWrappedEvent[] = []
 
-      const workoutEvents: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => ({ type: EventType.workout, value: workout }))
-      const competitionEvents: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => ({ type: EventType.competition, value: competition }))
+      const workoutEvents: WrappedEvent<BaseEventType.workout, BaseWorkout>[] = workouts.map((workout: BaseWorkout) =>
+        ({ type: BaseEventType.workout, value: workout }))
+      const competitionEvents: WrappedEvent<BaseEventType.competition, BaseCompetition>[] = competitions.map((competition: BaseCompetition) =>
+        ({ type: BaseEventType.competition, value: competition }))
 
       result.push(...workoutEvents)
       result.push(...competitionEvents)

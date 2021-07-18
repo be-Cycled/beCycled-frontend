@@ -10,6 +10,7 @@ import { RouteService } from './services/route/route.service'
 import { TelemetryService } from './services/telemetry/telemetry.service'
 import { TrackerService } from './services/tracker/tracker.service'
 import { WorkoutService } from './services/workout/workout.service'
+import { EventService } from './services/event/event.service'
 
 @NgModule({
   declarations: [],
@@ -26,6 +27,7 @@ import { WorkoutService } from './services/workout/workout.service'
     PostService,
     TrackerService,
     TelemetryService,
+    EventService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
