@@ -1,7 +1,7 @@
 import { SportType } from '../../domain'
 
 /**
- * @see Route
+ * @link Route
  */
 export interface RouteDto {
   id: null

@@ -234,10 +234,8 @@ export class AddEventComponent implements OnInit {
         id: null,
         ownerUserId: userId,
         communityId: null,
-        isPrivate: false,
         startDate: this.generateStartDateIsoString(),
         routeId: route.id,
-        sportType: this.eventForm.get('sportType')?.value,
         venueGeoData: JSON.stringify(this.venueCoordinates),
         memberUserIds: [ userId ],
         duration: this.generateDurationInSeconds(),
@@ -248,7 +246,7 @@ export class AddEventComponent implements OnInit {
 
       /**
        * Если выбрано соревнование и велосипед.
-       * @see BicycleCompetitionDto
+       * @link BicycleCompetitionDto
        */
       if (this.eventForm.get('eventType')?.value === BaseEventType.competition
         && this.eventForm.get('sportType')?.value === SportType.bicycle) {
@@ -260,7 +258,7 @@ export class AddEventComponent implements OnInit {
 
       /**
        * Базовое тело события.
-       * @see BaseEventDto
+       * @link BaseEventDto
        */
       return baseEventProperties
     }
