@@ -19,7 +19,6 @@ import { Observable } from 'rxjs'
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
 import {
   BaseEventType,
-  BaseWorkout,
   BicycleCompetitionType,
   BicycleType,
   DirectionType,
@@ -29,14 +28,13 @@ import {
   SportType,
   User
 } from '../../../../global/domain'
-import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
-import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
 import { ISO8601 } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
+import { EventService } from '../../../../global/domain/services/event/event.service'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -197,8 +195,7 @@ export class AddEventComponent implements OnInit {
 
   constructor(private mapboxNetworkService: MapboxNetworkService,
               private userHolderService: UserHolderService,
-              private workoutService: WorkoutService,
-              private competitionService: CompetitionService,
+              private eventService: EventService,
               private routeService: RouteService,
               private routerService: Router,
               private title: Title,
@@ -284,14 +281,6 @@ export class AddEventComponent implements OnInit {
       popularity: 0,
       createdAt: null
     })
-  }
-
-  private createWorkoutByRouteAndUserId(route: Route, userId: number): Observable<BaseWorkout> {
-    return this.workoutService.create(this.generateEventBodyByRouteAndUserId(route, userId))
-  }
-
-  private createCompetitionByRouteAndUserId(route: Route, userId: number): Observable<BaseWorkout> {
-    return this.competitionService.create(this.generateEventBodyByRouteAndUserId(route, userId))
   }
 
   public ngOnInit(): void {
@@ -570,36 +559,18 @@ export class AddEventComponent implements OnInit {
                       /**
                        * Создаем событие в зависимости от выбранного типа
                        */
-                      switch (this.eventForm.get('eventType')?.value) {
-                        case BaseEventType.workout:
-                          return this.createWorkoutByRouteAndUserId(route, currentUser.id).pipe(
-                            tap(() => {
-                              this.isLoading = false
+                      return this.eventService.create(this.generateEventBodyByRouteAndUserId(route, currentUser.id)).pipe(
+                        tap(() => {
+                          this.isLoading = false
 
-                              this.notificationsService
-                                .show('Тренировка успешно добавлена', {
-                                  status: TuiNotification.Success
-                                }).subscribe()
+                          this.notificationsService
+                            .show('Тренировка успешно добавлена', {
+                              status: TuiNotification.Success
+                            }).subscribe()
 
-                              this.routerService.navigate([ '' ])
-                            })
-                          )
-                        case BaseEventType.competition:
-                          return this.createCompetitionByRouteAndUserId(route, currentUser.id).pipe(
-                            tap(() => {
-                              this.isLoading = false
-
-                              this.notificationsService
-                                .show('Соревнование успешно добавлено', {
-                                  status: TuiNotification.Success
-                                }).subscribe()
-
-                              this.routerService.navigate([ '' ])
-                            })
-                          )
-                        default:
-                          throw new Error('Не указан тип события')
-                      }
+                          this.routerService.navigate([ '' ])
+                        })
+                      )
                     })
                   )
                 }),
