@@ -1,5 +1,15 @@
 {
   "extends": [
     "@waliot-oss/tslint-config"
-  ]
+  ],
+  "rules": {
+    "align": [
+      true,
+      "parameters",
+      "statements",
+      "members",
+//      "arguments",
+      "elements"
+    ]
+  }
 }

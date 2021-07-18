@@ -1,3 +1,44 @@
 :host {
   display: block;
 }
+
+.field:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+.field {
+  width: 100%;
+}
+
+.avatar-preview img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.main-controls {
+  margin-bottom: 12px;
+}
+
+.avatar-preview {
+  margin-bottom: 12px;
+}
+
+.tui-group {
+  width: 100%;
+}
+
+.additional-controls {
+  margin-bottom: 12px;
+}
+
+.save-button {
+  width: 100%;
+}
+
+@media screen and (min-width: 599px) {
+  .main-controls {
+    margin-bottom: 0;
+  }
+}

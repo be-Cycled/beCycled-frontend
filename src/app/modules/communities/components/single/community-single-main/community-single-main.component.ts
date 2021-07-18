@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { BehaviorSubject, forkJoin, Observable } from 'rxjs'
+import { BehaviorSubject, Observable, of } from 'rxjs'
 import { map, pluck, shareReplay, switchMap, tap } from 'rxjs/operators'
-import { Community, Competition, SportType, User, Workout } from '../../../../../global/domain'
+import { Community, SportType, User } from '../../../../../global/domain'
 import { CommunityService } from '../../../../../global/domain/services/community/community.service'
 import { CompetitionService } from '../../../../../global/domain/services/competition/competition.service'
 import { WorkoutService } from '../../../../../global/domain/services/workout/workout.service'
-import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../../global/models'
+import { SomeWrappedEvent } from '../../../../../global/models'
 import { CommunityStoreService } from '../../../services'
 
 @Component({
@@ -17,7 +17,8 @@ import { CommunityStoreService } from '../../../services'
 })
 export class CommunitySingleMainComponent {
 
-  public events: Observable<SomeWrappedEvent[]> = this.communityStoreService.communityChanges.pipe(
+  public events: Observable<SomeWrappedEvent[]> = of([])
+    /*this.communityStoreService.communityChanges.pipe(
     switchMap((community: Community) => forkJoin([
       this.workoutService.readWorkoutsByCommunity(community.nickname),
       this.competitionService.readCompetitionsByCommunity(community.nickname)
@@ -36,7 +37,7 @@ export class CommunitySingleMainComponent {
         })
       })
     ))
-  )
+  )*/
 
   public sportTypes: Observable<SportType[]> = this.communityStoreService.communityChanges.pipe(
     pluck('sportTypes')
