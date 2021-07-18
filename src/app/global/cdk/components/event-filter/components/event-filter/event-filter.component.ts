@@ -15,7 +15,12 @@ import { takeUntil, tap } from 'rxjs/operators'
 import { Observable, Subject } from 'rxjs'
 import { ActivatedRoute, Params, Router } from '@angular/router'
 import { FilterTag, FilterType } from '../../models'
-import { checkCompetition, checkWorkout, detectBaseEventTypeByEventType } from '../../../../../utils'
+import {
+  checkCompetition,
+  checkWorkout,
+  detectBaseEventTypeByEventType,
+  detectSportTypeByEventType
+} from '../../../../../utils'
 
 @Component({
   selector: 'cy-event-filter',
@@ -88,6 +93,7 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
         this.updateSportTypeBadgesCount(this.events.filter((event: BaseWorkout | BaseCompetition) => checkCompetition(event.eventType)))
       } else {
         this.resetSportTypeBadgeCount()
+        this.resetBaseEventTypeBadgeCount()
 
         this.updateAllBadgesCount(this.events)
       }
@@ -142,7 +148,8 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
 
   private updateSportTypeBadgesCount(events: BaseWorkout[] | BaseCompetition[]): void {
     events.forEach((event: BaseWorkout | BaseCompetition) => {
-      const currentBadge: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.sportType === filterTag.value)
+      const sportType: SportType = detectSportTypeByEventType(event.eventType)
+      const currentBadge: FilterTag | undefined = this.items.find((filterTag: FilterTag) => sportType === filterTag.value)
 
       if (typeof currentBadge !== 'undefined') {
         currentBadge.count += 1
@@ -150,11 +157,12 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     })
   }
 
-  private updateAllBadgesCount(events: BaseWorkout[] | BaseCompetition[]): void {
+  private updateAllBadgesCount(events: (BaseWorkout | BaseCompetition)[]): void {
     events.forEach((event: BaseWorkout | BaseCompetition) => {
       const baseEventType: BaseEventType = detectBaseEventTypeByEventType(event.eventType)
+      const sportType: SportType = detectSportTypeByEventType(event.eventType)
 
-      const currentSportTypeTag: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.sportType === filterTag.value)
+      const currentSportTypeTag: FilterTag | undefined = this.items.find((filterTag: FilterTag) => sportType === filterTag.value)
       const currentEventTypeTag: FilterTag | undefined = this.items.find((filterTag: FilterTag) => baseEventType === filterTag.value)
 
       if (typeof currentSportTypeTag !== 'undefined') {
@@ -169,6 +177,16 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
 
   private resetSportTypeBadgeCount(): void {
     const badges: string[] = Object.values(SportType)
+
+    this.items.forEach((item: FilterTag) => {
+      if (badges.includes(item.value)) {
+        item.count = 0
+      }
+    })
+  }
+
+  private resetBaseEventTypeBadgeCount(): void {
+    const badges: string[] = Object.values(BaseEventType)
 
     this.items.forEach((item: FilterTag) => {
       if (badges.includes(item.value)) {

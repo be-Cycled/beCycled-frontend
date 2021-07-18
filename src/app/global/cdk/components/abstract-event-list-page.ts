@@ -6,7 +6,7 @@ import { ISO8601 } from '../../models'
 import { FormControl } from '@angular/forms'
 import { TuiHandler } from '@taiga-ui/cdk'
 import { FilterTag } from './event-filter'
-import { detectBaseEventTypeByEventType } from '../../utils'
+import { detectBaseEventTypeByEventType, detectSportTypeByEventType } from '../../utils'
 
 interface EventsByDay {
   date: ISO8601
@@ -52,7 +52,8 @@ export abstract class AbstractEventListPage {
       }
 
       if (activatedSportTypeFilters.length !== 0) {
-        sortedEvents = sortedEvents.filter((event: BaseWorkout | BaseCompetition) => activatedSportTypeFilters.includes(event.sportType))
+        sortedEvents = sortedEvents.filter((event: BaseWorkout | BaseCompetition) =>
+          activatedSportTypeFilters.includes(detectSportTypeByEventType(event.eventType)))
       }
 
       const eventsCalendar: EventsByDay[] = []

@@ -5,8 +5,8 @@ import { Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 import { BaseCompetition, BaseEventType, BaseWorkout, EventType } from '../../../../global/domain'
 import { AbstractEventListPage } from '../../../../global/cdk/components/abstract-event-list-page'
-import { FeedService } from '../../../../global/domain/services/feed/feed.service'
 import { detectBaseEventTypeByEventType } from '../../../../global/utils'
+import { EventService } from '../../../../global/domain/services/event/event.service'
 
 @Component({
   selector: 'cy-feed-container',
@@ -17,11 +17,11 @@ import { detectBaseEventTypeByEventType } from '../../../../global/utils'
 export class FeedContainerComponent extends AbstractEventListPage implements OnInit {
   public filters: FormControl = new FormControl()
 
-  public events$: Observable<(BaseWorkout | BaseCompetition)[]> = this.feedService.readAll().pipe(
+  public events$: Observable<(BaseWorkout | BaseCompetition)[]> = this.eventService.readFeed().pipe(
     shareReplay(1)
   )
 
-  constructor(private feedService: FeedService,
+  constructor(private eventService: EventService,
               private title: Title) {
     super()
     this.title.setTitle('Лента')

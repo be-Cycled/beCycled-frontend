@@ -2,22 +2,21 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
-import { BehaviorSubject, defer, forkJoin, Observable, of } from 'rxjs'
+import { BehaviorSubject, defer, Observable, of } from 'rxjs'
 import { catchError, map, shareReplay, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import {
-  BaseCompetition,
+  BaseEvent,
   BaseEventType,
-  BaseWorkout,
   Community,
   CommunityType,
+  EventType,
   SportType,
   User
 } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
-import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
-import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
 import { UserHolderService } from '../../../../global/services'
+import { EventService } from '../../../../global/domain/services/event/event.service'
+import { detectBaseEventTypeByEventType } from 'src/app/global/utils'
 
 @Component({
   selector: 'cy-single-community-container',
@@ -43,26 +42,7 @@ export class SingleCommunityContainerComponent {
     [ CommunityType.club ]: `Клуб`
   }
 
-  public events: Observable<SomeWrappedEvent[]> = forkJoin([
-    this.workoutService.readWorkoutsByCommunity(this.communityHolder.value.nickname),
-    this.competitionService.readCompetitionsByCommunity(this.communityHolder.value.nickname)
-  ]).pipe(
-    map(([ workouts, competitions ]: [ BaseWorkout[], BaseCompetition[] ]) => {
-      const result: SomeWrappedEvent[] = []
-
-      const workoutEvents: WrappedEvent<BaseEventType.workout, BaseWorkout>[] = workouts.map((workout: BaseWorkout) =>
-        ({ type: BaseEventType.workout, value: workout }))
-      const competitionEvents: WrappedEvent<BaseEventType.competition, BaseCompetition>[] = competitions.map((competition: BaseCompetition) =>
-        ({ type: BaseEventType.competition, value: competition }))
-
-      result.push(...workoutEvents)
-      result.push(...competitionEvents)
-
-      return result.sort((a: SomeWrappedEvent, b: SomeWrappedEvent) => {
-        return new Date(a.value.createdAd).getTime() - new Date(b.value.startDate).getTime()
-      })
-    })
-  )
+  public events: Observable<BaseEvent[]> = this.eventService.readEventByCommunity(this.communityHolder.value.nickname)
 
   public isAuthorizedUser: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges.pipe()
 
@@ -120,8 +100,7 @@ export class SingleCommunityContainerComponent {
   ))
 
   constructor(private activatedRoute: ActivatedRoute,
-              private workoutService: WorkoutService,
-              private competitionService: CompetitionService,
+              private eventService: EventService,
               private userHolderService: UserHolderService,
               private communityService: CommunityService,
               private title: Title,
@@ -161,4 +140,7 @@ export class SingleCommunityContainerComponent {
     }
   }
 
+  public detectBaseEventTypeByEventType(eventType: EventType): BaseEventType {
+    return detectBaseEventTypeByEventType(eventType)
+  }
 }
