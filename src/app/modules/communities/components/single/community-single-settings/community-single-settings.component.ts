@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
-import { Observable, of, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
 import { catchError, startWith, switchMap, tap } from 'rxjs/operators'
 import { Community, CommunityType, SportType } from '../../../../../global/domain'
 import { CommunityService } from '../../../../../global/domain/services/community/community.service'
@@ -48,6 +48,8 @@ export class CommunitySingleSettingsComponent implements OnInit {
     })
   )
 
+  public saveButtonShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
   constructor(private communityStoreService: CommunityStoreService,
               private communityService: CommunityService,
               private fb: FormBuilder,
@@ -72,6 +74,8 @@ export class CommunitySingleSettingsComponent implements OnInit {
     if (this.communityFormGroup.invalid) {
       return
     }
+
+    this.saveButtonShowLoader.next(true)
 
     const newAvatar: File | null = this.avatarFileControl.value
     const originCommunity: Community | null = this.communityStoreService.takeCommunity()
@@ -118,8 +122,10 @@ export class CommunitySingleSettingsComponent implements OnInit {
           .subscribe()
         this.communityStoreService.setCommunity(community)
         this.communityFormGroup.patchValue(community)
+        this.saveButtonShowLoader.next(false)
       }),
       catchError(() => {
+        this.saveButtonShowLoader.next(false)
         return this.notificationService.show(`Произошла ошибка`, { status: TuiNotification.Error })
       })
     ).subscribe()

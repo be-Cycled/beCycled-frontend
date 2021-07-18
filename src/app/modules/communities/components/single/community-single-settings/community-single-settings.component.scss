@@ -38,7 +38,22 @@
 }
 
 @media screen and (min-width: 599px) {
+  .settings-container {
+    display: flex;
+    margin-bottom: 12px;
+  }
+
   .main-controls {
+    flex-grow: 1;
+    margin-right: 12px;
     margin-bottom: 0;
+  }
+
+  .additional-controls {
+    flex-basis: 250px;
+  }
+
+  .save-button {
+    width: fit-content;
   }
 }
