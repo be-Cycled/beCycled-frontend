@@ -11,8 +11,7 @@ export abstract class AbstractEventCard {
   public sportTypeMap: Record<SportType, string> = {
     [ SportType.bicycle ]: 'Велосипед',
     [ SportType.rollerblade ]: 'Роликовые коньки',
-    [ SportType.run ]: 'Бег',
-    [ SportType.ski ]: 'Лыжи'
+    [ SportType.run ]: 'Бег'
   }
 
   public map: mapboxgl.Map | null = null
@@ -39,16 +38,21 @@ export abstract class AbstractEventCard {
     return `${ distanceInKilometres } км`
   }
 
+  /**
+   * Принимает секунды в качестве аргумента
+   */
   public generateDurationString(duration: number): string {
+    const durationInMinutes: number = duration / 60
+
     let hours: number = 0
     let minutes: number = 0
 
-    if (duration < 60) {
-      return `${ buildCountString(duration, [ 'минута', 'минуты', 'минут' ]) }`
+    if (durationInMinutes < 60) {
+      return `${ buildCountString(durationInMinutes, [ 'минута', 'минуты', 'минут' ]) }`
     }
 
-    hours = Math.floor(duration / 60)
-    minutes = duration - (hours * 60)
+    hours = Math.floor(durationInMinutes / 60)
+    minutes = durationInMinutes - (hours * 60)
 
     return `${ buildCountString(hours, [ 'час', 'часа', 'часов' ]) }
      ${ minutes === 0

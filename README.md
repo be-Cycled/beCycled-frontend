@@ -39,6 +39,8 @@ docker build -t becycled-frontend .
 npm run test
 ```
 
+---
+
 <p align="center">
   <a href="https://github.com/waliot"><img align="center" src="https://raw.githubusercontent.com/waliot/waliot/main/assets/waliot-support-ru.svg" alt="beCycled logo" width="150"></a>
 </p>

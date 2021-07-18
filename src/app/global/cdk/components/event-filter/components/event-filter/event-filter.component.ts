@@ -9,20 +9,13 @@ import {
   SimpleChanges
 } from '@angular/core'
 import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
-import { EventType } from '../../../../../models'
-import { Competition, SportType, Workout } from '../../../../../domain'
+import { BaseCompetition, BaseEventType, BaseWorkout, SportType } from '../../../../../domain'
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { takeUntil, tap } from 'rxjs/operators'
 import { Observable, Subject } from 'rxjs'
 import { ActivatedRoute, Params, Router } from '@angular/router'
-
-interface FilterTag {
-  title: string
-  value: EventType | SportType
-  count: number
-}
-
-export type FilterType = 'event' | 'sport' | 'all'
+import { FilterTag, FilterType } from '../../models'
+import { checkCompetition, checkWorkout, detectBaseEventTypeByEventType } from '../../../../../utils'
 
 @Component({
   selector: 'cy-event-filter',
@@ -45,12 +38,12 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
   private eventTypeItems: FilterTag[] = [
     {
       title: 'Тренировки',
-      value: EventType.workout,
+      value: BaseEventType.workout,
       count: 0
     },
     {
       title: 'Соревнования',
-      value: EventType.competition,
+      value: BaseEventType.competition,
       count: 0
     }
   ]
@@ -70,11 +63,6 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
       title: 'Бег',
       value: SportType.run,
       count: 0
-    },
-    {
-      title: 'Лыжи',
-      value: SportType.ski,
-      count: 0
     }
   ]
 
@@ -88,16 +76,16 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
   private badgeSportTypeCountChanges$: Observable<FilterTag[]> = this.filters.valueChanges.pipe(
     takeUntil(this.destroy$),
     tap((filters: FilterTag[]) => {
-      const selectedValues: string[] = filters.map((item: FilterTag) => item.value)
+      const selectedFilterValues: string[] = filters.map((item: FilterTag) => item.value)
 
-      if (selectedValues.includes(EventType.workout) && !selectedValues.includes(EventType.competition)) {
+      if (selectedFilterValues.includes(BaseEventType.workout) && !selectedFilterValues.includes(BaseEventType.competition)) {
         this.resetSportTypeBadgeCount()
 
-        this.updateSportTypeBadgesCount(this.events[ 0 ])
-      } else if (selectedValues.includes(EventType.competition) && !selectedValues.includes(EventType.workout)) {
+        this.updateSportTypeBadgesCount(this.events.filter((event: BaseWorkout | BaseCompetition) => checkWorkout(event.eventType)))
+      } else if (selectedFilterValues.includes(BaseEventType.competition) && !selectedFilterValues.includes(BaseEventType.workout)) {
         this.resetSportTypeBadgeCount()
 
-        this.updateSportTypeBadgesCount(this.events[ 1 ])
+        this.updateSportTypeBadgesCount(this.events.filter((event: BaseWorkout | BaseCompetition) => checkCompetition(event.eventType)))
       } else {
         this.resetSportTypeBadgeCount()
 
@@ -110,7 +98,7 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
    * Ивенты нужны только для актуализации данных счетчиков в тегах
    */
   @Input()
-  public events: [ Workout[], Competition[] ] = [ [], [] ]
+  public events: (BaseWorkout | BaseCompetition)[] = []
 
   @Input()
   public filterType: FilterType = 'all'
@@ -152,8 +140,8 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     this.destroy$.complete()
   }
 
-  private updateSportTypeBadgesCount(events: Workout[] | Competition[]): void {
-    events.forEach((event: Workout | Competition) => {
+  private updateSportTypeBadgesCount(events: BaseWorkout[] | BaseCompetition[]): void {
+    events.forEach((event: BaseWorkout | BaseCompetition) => {
       const currentBadge: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.sportType === filterTag.value)
 
       if (typeof currentBadge !== 'undefined') {
@@ -162,15 +150,19 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     })
   }
 
-  private updateAllBadgesCount([ workouts, competitions ]: [ Workout[], Competition[] ]): void {
-    this.items.find((filterTag: FilterTag) => filterTag.value === EventType.workout)!.count = workouts.length
-    this.items.find((filterTag: FilterTag) => filterTag.value === EventType.competition)!.count = competitions.length;
+  private updateAllBadgesCount(events: BaseWorkout[] | BaseCompetition[]): void {
+    events.forEach((event: BaseWorkout | BaseCompetition) => {
+      const baseEventType: BaseEventType = detectBaseEventTypeByEventType(event.eventType)
 
-    [ ...workouts, ...competitions ].forEach((event: Workout | Competition) => {
-      const currentBadge: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.sportType === filterTag.value)
+      const currentSportTypeTag: FilterTag | undefined = this.items.find((filterTag: FilterTag) => event.sportType === filterTag.value)
+      const currentEventTypeTag: FilterTag | undefined = this.items.find((filterTag: FilterTag) => baseEventType === filterTag.value)
 
-      if (typeof currentBadge !== 'undefined') {
-        currentBadge.count += 1
+      if (typeof currentSportTypeTag !== 'undefined') {
+        currentSportTypeTag.count += 1
+      }
+
+      if (typeof currentEventTypeTag !== 'undefined') {
+        currentEventTypeTag.count += 1
       }
     })
   }
@@ -222,13 +214,13 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
     /**
      * Логика обновления квери параметров при активации фильтра
      */
-    const selectedFilters: (EventType | SportType)[] = filters.map((item: FilterTag) => item.value)
+    const selectedFilters: (SportType | BaseEventType)[] = filters.map((item: FilterTag) => item.value)
 
     if (selectedFilters.length > 0) {
-      const selectedEventFilters: (EventType | SportType)[] = selectedFilters.filter((item: EventType | SportType) =>
-        Object.values(EventType).includes(item as EventType))
+      const selectedEventFilters: (BaseEventType | SportType)[] = selectedFilters.filter((item: BaseEventType | SportType) =>
+        Object.values(BaseEventType).includes(item as BaseEventType))
 
-      const selectedSportFilters: (EventType | SportType)[] = selectedFilters.filter((item: EventType | SportType) =>
+      const selectedSportFilters: (BaseEventType | SportType)[] = selectedFilters.filter((item: BaseEventType | SportType) =>
         Object.values(SportType).includes(item as SportType))
 
       let queryParams: Params = {}

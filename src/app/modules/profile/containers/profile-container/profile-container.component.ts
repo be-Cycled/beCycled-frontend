@@ -1,12 +1,24 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, forkJoin, fromEvent, iif, Observable, of } from 'rxjs'
-import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
-import { Community, Competition, User, UserService, Workout } from '../../../../global/domain'
+import {
+  catchError,
+  filter,
+  finalize,
+  map,
+  pluck,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators'
+import { BaseCompetition, BaseEventType, BaseWorkout, Community, User, UserService } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
@@ -14,9 +26,8 @@ import { CompetitionService } from '../../../../global/domain/services/competiti
 import { TelemetryService } from '../../../../global/domain/services/telemetry/telemetry.service'
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { EventType, SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
-import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
-import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens'
+import { SomeWrappedEvent, WrappedEvent } from '../../../../global/models'
+import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 
 @Component({
   selector: 'cy-profile-container',
@@ -26,6 +37,8 @@ import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens'
   providers: [ TuiDestroyService ]
 })
 export class ProfileContainerComponent {
+  // 1Mb
+  public maxFileSize: number = 1_000_000
 
   public activitiesFilterControl: FormControl = this.fb.control([ 'Тренировки' ])
 
@@ -72,12 +85,15 @@ export class ProfileContainerComponent {
       this.workoutService.readByUser(user.login),
       this.competitionService.readByUser(user.login)
     ]).pipe(
-      map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+      map(([ workouts, competitions ]: [ BaseWorkout[], BaseCompetition[] ]) => {
         const result: SomeWrappedEvent[] = []
 
-        const workoutEvents: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => ({ type: EventType.workout, value: workout }))
-        const competitionEvents: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => ({
-          type: EventType.competition,
+        const workoutEvents: WrappedEvent<BaseEventType.workout, BaseWorkout>[] = workouts.map((workout: BaseWorkout) => ({
+          type: BaseEventType.workout,
+          value: workout
+        }))
+        const competitionEvents: WrappedEvent<BaseEventType.competition, BaseCompetition>[] = competitions.map((competition: BaseCompetition) => ({
+          type: BaseEventType.competition,
           value: competition
         }))
 
@@ -96,7 +112,7 @@ export class ProfileContainerComponent {
       startWith((this.activatedRoute.snapshot.paramMap)),
       map((paramMap: ParamMap) => paramMap.get('login'))
     ),
-    this.userStoreService.validUserChanges
+    this.userHolderService.userChanges.pipe()
   ]).pipe(
     map(([ userLogin, user ]: [ string | null, User ]) => userLogin === user.login),
     shareReplay(1)
@@ -130,7 +146,7 @@ export class ProfileContainerComponent {
   private previewAvatarCalc: Observable<any> = this.avatarFileReader.valueChanges.pipe(
     tap((file: File | null) => {
       if (file === null) {
-        this.editForm.patchValue({ avatar: this.userStoreService.user!.avatar })
+        this.editForm.patchValue({ avatar: this.userHolderService.getUser()!.avatar })
         return
       }
 
@@ -145,7 +161,7 @@ export class ProfileContainerComponent {
     })
   )
 
-  public userTracker: Observable<Tracker | null> = this.userStoreService.validUserChanges.pipe(
+  public userTracker: Observable<Tracker | null> = this.userHolderService.userChanges.pipe(
     switchMap((user: User) => {
       return this.trackerService.getByUser(user.login).pipe(
         catchError(() => of(null))
@@ -204,14 +220,12 @@ export class ProfileContainerComponent {
               private communityService: CommunityService,
               private workoutService: WorkoutService,
               private competitionService: CompetitionService,
-              private userStoreService: UserStoreService,
+              private userHolderService: UserHolderService,
               private userService: UserService,
               private trackerService: TrackerService,
               private telemetryService: TelemetryService,
               private title: Title,
               private destroyService: TuiDestroyService,
-              @Inject(MAX_AVATAR_FILE_SIZE)
-              public readonly maxAvatarFileSize: number,
               private imageNetworkService: ImageNetworkService,
               private configService: ConfigService,
               private notificationService: TuiNotificationsService) {
@@ -221,7 +235,7 @@ export class ProfileContainerComponent {
 
   public updateUser(): void {
     const result: User = {
-      ...this.userStoreService.user!,
+      ...this.userHolderService.getUser()!,
       ...this.editForm.value
     }
 
@@ -229,7 +243,7 @@ export class ProfileContainerComponent {
       finalize(() => this.onClickCancelButton()),
       tap((user: User) => {
         this.user.next(user)
-        this.userStoreService.setUser(user)
+        this.userHolderService.updateUser(user)
       }),
       catchError(() => EMPTY)
     ).subscribe()
@@ -238,7 +252,7 @@ export class ProfileContainerComponent {
   public onClickEditButton(): void {
     this.isEditMode.next(true)
 
-    const user: User | null = this.userStoreService.user
+    const user: User | null = this.userHolderService.getUser()
 
     if (user === null) {
       throw new Error(`User not found`)

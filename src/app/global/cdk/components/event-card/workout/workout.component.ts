@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
-import { MapboxRouteGeoData, Route, Workout } from '../../../../domain'
+import { BaseWorkout, MapboxRouteGeoData, Route } from '../../../../domain'
 import { map, shareReplay } from 'rxjs/operators'
 import { defer, Observable } from 'rxjs'
 import { AbstractEventCard } from '../abstract-event-card'
@@ -13,7 +13,7 @@ import { RouteService } from '../../../../domain/services/route/route.service'
 })
 export class WorkoutComponent extends AbstractEventCard {
   @Input()
-  public workout: Workout | null = null
+  public workout: BaseWorkout | null = null
 
   public route$: Observable<Route> = defer(() => this.routeService.readById(this.workout?.routeId!)).pipe(
     shareReplay(1)

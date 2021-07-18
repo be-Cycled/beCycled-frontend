@@ -2,7 +2,7 @@
   [showLoader]="isLoading"
   [overlay]="true"
 >
-  <tui-island *ngIf="isUserAuthorized$ | async">
+  <tui-island class="add-event-island" *ngIf="isUserAuthorized$ | async">
     <p class="tui-island__category">
       Новое событие
     </p>
@@ -32,64 +32,89 @@
       [formGroup]="eventForm"
     >
       <p class="form-label">Тип события</p>
-      <div tuiGroup class="sport-type-inner tui-space_bottom-3" orientation="vertical" [collapsed]="true">
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="eventType"
-          item="WORKOUT"
-          size="m"
-        >
-          Тренировка
-        </tui-radio-block>
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="eventType"
-          item="COMPETITION"
-          size="m"
-        >
-          Соревнование
-        </tui-radio-block>
-      </div>
+      <tui-select
+        class="sport-type-inner tui-space_bottom-3"
+        formControlName="eventType"
+        tuiTextfieldSize="m"
+        [tuiTextfieldLabelOutside]="true"
+        [valueContent]="stringify(eventTypesWithLabels)"
+      >
+        <ng-template tuiDataList>
+          <tui-data-list>
+            <button *ngFor="let eventType of eventTypesWithLabels" tuiOption [value]="eventType.value">
+              {{ eventType.label }}
+            </button>
+          </tui-data-list>
+        </ng-template>
+      </tui-select>
 
       <p class="form-label">Вид спорта</p>
-      <div tuiGroup class="sport-type-inner" orientation="vertical" [collapsed]="true">
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="sportType"
-          item="BICYCLE"
-          size="m"
+      <tui-select
+        class="sport-type-inner tui-space_bottom-3"
+        formControlName="sportType"
+        tuiTextfieldSize="m"
+        [tuiTextfieldLabelOutside]="true"
+        [valueContent]="stringify(sportTypesWithLabels)"
+      >
+        <ng-template tuiDataList>
+          <tui-data-list>
+            <button *ngFor="let sportType of sportTypesWithLabels" tuiOption [value]="sportType.value">
+              {{ sportType.label }}
+            </button>
+          </tui-data-list>
+        </ng-template>
+      </tui-select>
+
+      <ng-container
+        *ngIf="eventForm.controls[ 'eventType' ].value === 'COMPETITION' && eventForm.controls[ 'sportType' ].value === 'BICYCLE'">
+        <p class="form-label">Тип велосипедного соревнования</p>
+        <tui-select
+          class="sport-type-inner tui-space_bottom-3"
+          formControlName="bicycleCompetitionType"
+          tuiTextfieldSize="m"
+          [tuiTextfieldLabelOutside]="true"
+          [valueContent]="stringify(bicycleCompetitionTypesWithLabels)"
         >
-          Велосипед
-        </tui-radio-block>
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="sportType"
-          item="RUN"
-          size="m"
-        >
-          Бег
-        </tui-radio-block>
-        <tui-radio-block
-          contentAlign="right"
-          formControlName="sportType"
-          item="ROLLERBLADE"
-          size="m"
-        >
-          Роликовые коньки
-        </tui-radio-block>
-      </div>
+          <ng-template tuiDataList>
+            <tui-data-list>
+              <button *ngFor="let bicycleCompetitionType of bicycleCompetitionTypesWithLabels" tuiOption
+                      [value]="bicycleCompetitionType.value">
+                {{ bicycleCompetitionType.label }}
+              </button>
+            </tui-data-list>
+          </ng-template>
+        </tui-select>
+      </ng-container>
+
+
+      <p class="form-label">Тип велосипеда</p>
+      <tui-select
+        class="sport-type-inner tui-space_bottom-3"
+        formControlName="bicycleType"
+        tuiTextfieldSize="m"
+        [tuiTextfieldLabelOutside]="true"
+        [valueContent]="stringify(bicycleTypesWithLabels)"
+      >
+        <ng-template tuiDataList>
+          <tui-data-list>
+            <button *ngFor="let bicycleTypes of bicycleTypesWithLabels" tuiOption [value]="bicycleTypes.value">
+              {{ bicycleTypes.label }}
+            </button>
+          </tui-data-list>
+        </ng-template>
+      </tui-select>
     </form>
 
     <form
       class="date-form tui-space_bottom-5"
       [class.hide]="activeTabIndex !== 1"
       [formGroup]="eventForm"
+      [tuiTextfieldCleaner]="true"
     >
 
       <p class="form-label">Дата</p>
       <tui-input-date
         class="date-input"
-        tuiUnfinishedValidator="Выберите дату события"
         formControlName="startDay"
         tuiTextfieldSize="m"
         [min]="buildCurrentTuiDay()"
@@ -100,7 +125,6 @@
       <p class="form-label">Время начала</p>
       <tui-input-time
         class="time-input"
-        tuiUnfinishedValidator="Выберите время начала события"
         formControlName="startTime"
         tuiTextfieldSize="m"
       >
@@ -172,6 +196,7 @@
 
       <mgl-control position="top-left" mglGeocoder></mgl-control>
       <mgl-control position="bottom-right" mglFullscreen></mgl-control>
+      <mgl-control position="bottom-right" mglNavigation></mgl-control>
     </mgl-map>
 
     <div class="actions">

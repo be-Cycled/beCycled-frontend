@@ -1,19 +1,19 @@
-<cy-event-filter [formControl]="filters" [events]="events | async"></cy-event-filter>
+<cy-event-filter [formControl]="filters" [events]="events$ | async"></cy-event-filter>
 
-<section class="events-wrapper" *ngFor="let day of calendar | async">
+<section class="events-wrapper" *ngFor="let day of calendar$ | async">
   <h2 class="date">
     {{ getWorkoutListDate(day.date) }}
   </h2>
   <ul class="event-list">
     <li class="event-item" *ngFor="let event of day.events">
-      <ng-container [ngSwitch]="event.type">
+      <ng-container [ngSwitch]="detectBaseEventTypeByEventType(event.eventType)">
 
         <ng-template [ngSwitchCase]="'WORKOUT'">
-          <cy-workout [workout]="event.value"></cy-workout>
+          <cy-workout [workout]="event"></cy-workout>
         </ng-template>
 
         <ng-template [ngSwitchCase]="'COMPETITION'">
-          <cy-competition [competition]="event.value"></cy-competition>
+          <cy-competition [competition]="event"></cy-competition>
         </ng-template>
 
       </ng-container>
