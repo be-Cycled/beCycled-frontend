@@ -19,6 +19,10 @@ mgl-map {
   overflow: hidden;
 }
 
+.icon-list {
+  margin-bottom: 16px;
+}
+
 .icon-list li {
   display: flex;
   padding: 8px 0;
@@ -28,6 +32,17 @@ mgl-map {
   display: block;
   margin-right: 6px;
   color: var(--icon-color);
+}
+
+.actions {
+  display: flex;
+  max-width: 320px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.delete-button {
+  margin-left: auto;
 }
 
 @media (min-width: 768px) {

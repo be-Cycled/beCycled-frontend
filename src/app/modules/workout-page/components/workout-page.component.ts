@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { Title } from '@angular/platform-browser'
-import { ActivatedRoute, ParamMap } from '@angular/router'
+import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../global/cdk/components/abstract-event-page'
@@ -8,6 +8,8 @@ import { BaseWorkout, Route } from '../../../global/domain'
 import { RouteService } from '../../../global/domain/services/route/route.service'
 import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
 import { EventService } from '../../../global/domain/services/event/event.service'
+import { UserHolderService } from '../../../global/services'
+import { TuiNotificationsService } from '@taiga-ui/core'
 
 @Component({
   selector: 'cy-workout-page',
@@ -31,10 +33,17 @@ export class WorkoutPageComponent extends AbstractEventPage {
     shareReplay(1)
   )
 
+  public isCanEdit$: Observable<boolean> = this.workout$.pipe(
+    map((workout: BaseWorkout) => workout.ownerUserId === this.userHolderService.getUser()?.id)
+  )
+
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
               private eventService: EventService,
-              private title: Title) {
-    super()
+              private title: Title,
+              private userHolderService: UserHolderService,
+              private notificationsService: TuiNotificationsService,
+              private routerService: Router) {
+    super(eventService, notificationsService, routerService)
   }
 }

@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
-import { BaseCompetition, BaseWorkout } from '../../../../global/domain'
+import { BaseCompetition, BaseEventType, BaseWorkout, EventType } from '../../../../global/domain'
 import { UserHolderService } from '../../../../global/services'
 import { AbstractEventListPage } from '../../../../global/cdk/components/abstract-event-list-page'
 import { EventService } from '../../../../global/domain/services/event/event.service'
+import { detectBaseEventTypeByEventType } from 'src/app/global/utils'
 
 @Component({
   selector: 'cy-affiche-container',
@@ -28,5 +29,9 @@ export class AfficheContainerComponent extends AbstractEventListPage implements 
   }
 
   public ngOnInit(): void {
+  }
+
+  public detectBaseEventTypeByEventType(eventType: EventType): BaseEventType {
+    return detectBaseEventTypeByEventType(eventType)
   }
 }

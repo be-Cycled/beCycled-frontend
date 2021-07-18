@@ -6,6 +6,7 @@ import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 import { WorkoutPageComponent } from './components/workout-page.component'
 
 import { WorkoutPageRoutingModule } from './workout-page-routing.module'
+import { TuiButtonModule } from '@taiga-ui/core'
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { WorkoutPageRoutingModule } from './workout-page-routing.module'
     WorkoutPageRoutingModule,
     TuiIslandModule,
     NgxMapboxGLModule,
-    TuiLetModule
+    TuiLetModule,
+    TuiButtonModule
   ]
 })
 export class WorkoutPageModule {

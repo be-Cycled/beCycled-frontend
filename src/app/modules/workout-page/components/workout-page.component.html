@@ -73,4 +73,26 @@
       </li>
     </ul>
   </ng-container>
+
+  <div class="actions" *ngIf="isCanEdit$ | async">
+    <button
+      tuiButton
+      class="edit-button"
+      type="button"
+      appearance="secondary"
+      size="m"
+    >
+      Изменить
+    </button>
+    <button
+      tuiButton
+      class="delete-button"
+      type="button"
+      appearance="primary"
+      size="m"
+      (click)="onDeleteButtonClick(workout.id)"
+    >
+      Удалить
+    </button>
+  </div>
 </tui-island>
