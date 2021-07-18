@@ -31,12 +31,14 @@
       [class.hide]="activeTabIndex !== 0"
       [formGroup]="eventForm"
     >
+      <p class="form-label">Тип события</p>
       <tui-select
         class="sport-type-inner tui-space_bottom-3"
         formControlName="eventType"
+        tuiTextfieldSize="m"
+        [tuiTextfieldLabelOutside]="true"
         [valueContent]="stringify(eventTypesWithLabels)"
       >
-        Тип события
         <ng-template tuiDataList>
           <tui-data-list>
             <button *ngFor="let eventType of eventTypesWithLabels" tuiOption [value]="eventType.value">
@@ -46,12 +48,14 @@
         </ng-template>
       </tui-select>
 
+      <p class="form-label">Вид спорта</p>
       <tui-select
         class="sport-type-inner tui-space_bottom-3"
         formControlName="sportType"
+        tuiTextfieldSize="m"
+        [tuiTextfieldLabelOutside]="true"
         [valueContent]="stringify(sportTypesWithLabels)"
       >
-        Вид спорта
         <ng-template tuiDataList>
           <tui-data-list>
             <button *ngFor="let sportTypes of sportTypesWithLabels" tuiOption [value]="sportTypes.value">
@@ -61,12 +65,14 @@
         </ng-template>
       </tui-select>
 
+      <p class="form-label">Тип велосипеда</p>
       <tui-select
         class="sport-type-inner tui-space_bottom-3"
         formControlName="bicycleType"
+        tuiTextfieldSize="m"
+        [tuiTextfieldLabelOutside]="true"
         [valueContent]="stringify(bicycleTypesWithLabels)"
       >
-        Тип велосипеда
         <ng-template tuiDataList>
           <tui-data-list>
             <button *ngFor="let bicycleTypes of bicycleTypesWithLabels" tuiOption [value]="bicycleTypes.value">
