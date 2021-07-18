@@ -2,9 +2,9 @@
 
 # 🏂🏼 beCycled 📱
 
-[![Waliot](https://raw.githubusercontent.com/waliot/waliot/main/assets/waliot-tech-badge.svg)](https://github.com/waliot)
-
 PWA-приложение для работы с сервисом.
+
+![beCycled Deploy Status](https://img.shields.io/github/workflow/status/be-Cycled/beCycled-devops/Deploy?label=deploy)
 
 ## Установка
 
@@ -37,6 +37,8 @@ docker build -t becycled-frontend .
 ```bash
 npm run test
 ```
+
+---
 
 <p align="center">
   <a href="https://github.com/waliot"><img align="center" src="https://raw.githubusercontent.com/waliot/waliot/main/assets/waliot-support-ru.svg" alt="beCycled logo" width="150"></a>

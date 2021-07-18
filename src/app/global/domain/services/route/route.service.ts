@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { Route, RouteDto } from '../../models'
+import { Route } from '../../models'
 import { Observable } from 'rxjs'
 import { ConfigService } from '../../../services'
+import { RouteDto } from '../../../dto'
 
 @Injectable()
 export class RouteService {

@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { ConfigService } from '../../../services'
-import { Competition, CompetitionDto } from '../../models'
+import { BaseCompetition } from '../../models'
+import { BaseCompetitionDto } from '../../../dto'
 
 @Injectable()
 export class CompetitionService {
@@ -10,23 +11,23 @@ export class CompetitionService {
               private configService: ConfigService) {
   }
 
-  public create(entity: CompetitionDto): Observable<Competition> {
-    return this.httpClient.post<Competition>(`${ this.configService.baseApiUrl }/competitions`, entity)
+  public create(entity: BaseCompetitionDto): Observable<BaseCompetition> {
+    return this.httpClient.post<BaseCompetition>(`${ this.configService.baseApiUrl }/competitions`, entity)
   }
 
-  public readCompetitionsByCommunity(nickname: string): Observable<Competition[]> {
-    return this.httpClient.get<Competition[]>(`${ this.configService.baseApiUrl }/competitions/community/${ nickname }`)
+  public readCompetitionsByCommunity(nickname: string): Observable<BaseCompetition[]> {
+    return this.httpClient.get<BaseCompetition[]>(`${ this.configService.baseApiUrl }/competitions/community/${ nickname }`)
   }
 
-  public readByUser(login: string): Observable<Competition[]> {
-    return this.httpClient.get<Competition[]>(`${ this.configService.baseApiUrl }/competitions/user/${ login }`)
+  public readByUser(login: string): Observable<BaseCompetition[]> {
+    return this.httpClient.get<BaseCompetition[]>(`${ this.configService.baseApiUrl }/competitions/user/${ login }`)
   }
 
-  public readCompetitions(): Observable<Competition[]> {
-    return this.httpClient.get<Competition[]>(`${ this.configService.baseApiUrl }/competitions/all`)
+  public readCompetitions(): Observable<BaseCompetition[]> {
+    return this.httpClient.get<BaseCompetition[]>(`${ this.configService.baseApiUrl }/competitions/all`)
   }
 
-  public readById(id: number): Observable<Competition> {
-    return this.httpClient.get<Competition>(`${ this.configService.baseApiUrl }/competitions/${ id }`)
+  public readById(id: number): Observable<BaseCompetition> {
+    return this.httpClient.get<BaseCompetition>(`${ this.configService.baseApiUrl }/competitions/${ id }`)
   }
 }

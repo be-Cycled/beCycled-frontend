@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
-import { Competition, MapboxRouteGeoData, Route } from '../../../../domain'
+import { BaseCompetition, MapboxRouteGeoData, Route } from '../../../../domain'
 import { defer, Observable } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 import { RouteService } from '../../../../domain/services/route/route.service'
@@ -13,7 +13,7 @@ import { AbstractEventCard } from '../abstract-event-card'
 })
 export class CompetitionComponent extends AbstractEventCard {
   @Input()
-  public competition: Competition | null = null
+  public competition: BaseCompetition | null = null
 
   public route$: Observable<Route> = defer(() => this.routeService.readById(this.competition?.routeId!)).pipe(
     shareReplay(1)

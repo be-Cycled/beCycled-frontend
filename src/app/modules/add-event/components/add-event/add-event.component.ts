@@ -2,20 +2,41 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { Router } from '@angular/router'
-import { TUI_IS_ANDROID, TUI_IS_IOS, TUI_IS_MOBILE, TuiDay, TuiTime } from '@taiga-ui/cdk'
+import {
+  TUI_IS_ANDROID,
+  TUI_IS_IOS,
+  TUI_IS_MOBILE,
+  TuiContextWithImplicit,
+  TuiDay,
+  tuiPure,
+  TuiStringHandler,
+  TuiTime
+} from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { Observable } from 'rxjs'
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
-import { DirectionType, MapboxRouteGeoData, Route, SportType, User, Workout } from '../../../../global/domain'
+import {
+  BaseEventType,
+  BaseWorkout,
+  BicycleCompetitionType,
+  BicycleType,
+  DirectionType,
+  EventType,
+  MapboxRouteGeoData,
+  Route,
+  SportType,
+  User
+} from '../../../../global/domain'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { WorkoutService } from '../../../../global/domain/services/workout/workout.service'
-import { EventType, ISO8601 } from '../../../../global/models'
+import { ISO8601 } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
+import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
+import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -24,6 +45,11 @@ const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
     type: 'LineString',
     coordinates: []
   }
+}
+
+interface EnumValueWithLabel<T> {
+  value: T
+  label: string
 }
 
 @Component({
@@ -78,6 +104,62 @@ export class AddEventComponent implements OnInit {
     }
   ]
 
+  public readonly eventTypesWithLabels: EnumValueWithLabel<BaseEventType>[] = [
+    {
+      value: BaseEventType.workout,
+      label: 'Тренировка'
+    },
+    {
+      value: BaseEventType.competition,
+      label: 'Соревнование'
+    }
+  ]
+
+  public readonly sportTypesWithLabels: EnumValueWithLabel<SportType>[] = [
+    {
+      value: SportType.bicycle,
+      label: 'Велосипед'
+    },
+    {
+      value: SportType.run,
+      label: 'Бег'
+    },
+    {
+      value: SportType.rollerblade,
+      label: 'Роликовые коньки'
+    }
+  ]
+
+  public readonly bicycleCompetitionTypesWithLabels: EnumValueWithLabel<BicycleCompetitionType>[] = [
+    {
+      value: BicycleCompetitionType.individual,
+      label: 'ITT'
+    },
+    {
+      value: BicycleCompetitionType.group,
+      label: 'Групповая'
+    }
+  ]
+
+  public readonly bicycleTypesWithLabels: EnumValueWithLabel<BicycleType>[] = [
+    {
+      value: BicycleType.any,
+      label: 'Любой'
+    },
+    {
+      value: BicycleType.road,
+      label: 'Шоссейный'
+    },
+    {
+      value: BicycleType.mountain,
+      label: 'Горный'
+    },
+    {
+      value: BicycleType.gravel,
+      label: 'Гревел'
+    }
+  ]
+
   public activeTabIndex: number = 0
 
   public map: mapboxgl.Map | null = null
@@ -95,10 +177,12 @@ export class AddEventComponent implements OnInit {
   public preview: string = ''
 
   public eventForm: FormGroup = new FormGroup({
-    eventType: new FormControl(EventType.workout, Validators.required),
+    eventType: new FormControl(BaseEventType.workout, Validators.required),
+    bicycleCompetitionType: new FormControl(BicycleCompetitionType.individual),
     startDay: new FormControl(null, Validators.required),
     startTime: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
+    bicycleType: new FormControl(BicycleType.any),
     description: new FormControl(),
     durationHours: new FormControl(),
     durationMinutes: new FormControl()
@@ -133,7 +217,7 @@ export class AddEventComponent implements OnInit {
     return startDateUtc.toISOString() as ISO8601
   }
 
-  private generateDurationMinutes(): number {
+  private generateDurationInSeconds(): number {
     const durationHours: number = this.eventForm.get('durationHours')?.value
       ? this.eventForm.get('durationHours')?.value
       : 0
@@ -142,7 +226,49 @@ export class AddEventComponent implements OnInit {
       ? this.eventForm.get('durationMinutes')?.value
       : 0
 
-    return durationHours * 60 + durationMinutes
+    return (durationHours * 60 + durationMinutes) * 60
+  }
+
+  private generateEventBodyByRouteAndUserId(route: Route, userId: number): BaseEventDto | BicycleCompetitionDto {
+    const eventType: EventType | null = detectEventTypeBySportType(BaseEventType.workout, this.eventForm.get('sportType')?.value)
+
+    if (eventType !== null) {
+      const baseEventProperties: BaseEventDto = {
+        id: null,
+        ownerUserId: userId,
+        communityId: null,
+        isPrivate: false,
+        startDate: this.generateStartDateIsoString(),
+        routeId: route.id,
+        sportType: this.eventForm.get('sportType')?.value,
+        venueGeoData: JSON.stringify(this.venueCoordinates),
+        memberUserIds: [ userId ],
+        duration: this.generateDurationInSeconds(),
+        description: this.eventForm.get('description')?.value,
+        createdAd: null,
+        eventType
+      }
+
+      /**
+       * Если выбрано соревнование и велосипед.
+       * @see BicycleCompetitionDto
+       */
+      if (this.eventForm.get('eventType')?.value === BaseEventType.competition
+        && this.eventForm.get('sportType')?.value === SportType.bicycle) {
+        return {
+          ...baseEventProperties,
+          bicycleCompetitionType: this.eventForm.get('bicycleCompetitionType')?.value
+        }
+      }
+
+      /**
+       * Базовое тело события.
+       * @see BaseEventDto
+       */
+      return baseEventProperties
+    }
+
+    throw new Error('Не удалось определить тип события')
   }
 
   private createRouteByUserId(userId: number): Observable<Route> {
@@ -160,41 +286,33 @@ export class AddEventComponent implements OnInit {
     })
   }
 
-  private createWorkoutByRouteAndUserId(route: Route, userId: number): Observable<Workout> {
-    return this.workoutService.create({
-      id: null,
-      userId: userId,
-      communityId: null,
-      private: false,
-      startDate: this.generateStartDateIsoString(),
-      routeId: route.id,
-      sportType: this.eventForm.get('sportType')?.value,
-      venueGeoData: JSON.stringify(this.venueCoordinates),
-      userIds: [ userId ],
-      duration: this.generateDurationMinutes(),
-      description: this.eventForm.get('description')?.value,
-      createdAd: null
-    })
+  private createWorkoutByRouteAndUserId(route: Route, userId: number): Observable<BaseWorkout> {
+    return this.workoutService.create(this.generateEventBodyByRouteAndUserId(route, userId))
   }
 
-  private createCompetitionByRouteAndUserId(route: Route, userId: number): Observable<Workout> {
-    return this.competitionService.create({
-      id: null,
-      userId: userId,
-      communityId: null,
-      private: false,
-      startDate: this.generateStartDateIsoString(),
-      routeId: route.id,
-      sportType: this.eventForm.get('sportType')?.value,
-      venueGeoData: JSON.stringify(this.venueCoordinates),
-      userIds: [ userId ],
-      duration: this.generateDurationMinutes(),
-      description: this.eventForm.get('description')?.value,
-      createdAd: null
-    })
+  private createCompetitionByRouteAndUserId(route: Route, userId: number): Observable<BaseWorkout> {
+    return this.competitionService.create(this.generateEventBodyByRouteAndUserId(route, userId))
   }
 
   public ngOnInit(): void {
+  }
+
+  /**
+   * Взято из примера на сайте Taiga UI. Типизация "подшаманена".
+   */
+  @tuiPure
+  public stringify<T>(items: ReadonlyArray<EnumValueWithLabel<T>>): TuiStringHandler<TuiContextWithImplicit<T>> {
+    const map: Map<T, string> = new Map(items.map((item: EnumValueWithLabel<T>) => [ item.value, item.label ]))
+
+    return ({ $implicit }: TuiContextWithImplicit<T>) => {
+      const tuiContextWithImplicit: string | undefined = map.get($implicit)
+
+      if (typeof tuiContextWithImplicit !== 'undefined') {
+        return tuiContextWithImplicit as any
+      }
+
+      return '' as any
+    }
   }
 
   public buildCurrentTuiDay(): TuiDay {
@@ -453,7 +571,7 @@ export class AddEventComponent implements OnInit {
                        * Создаем событие в зависимости от выбранного типа
                        */
                       switch (this.eventForm.get('eventType')?.value) {
-                        case EventType.workout:
+                        case BaseEventType.workout:
                           return this.createWorkoutByRouteAndUserId(route, currentUser.id).pipe(
                             tap(() => {
                               this.isLoading = false
@@ -466,7 +584,7 @@ export class AddEventComponent implements OnInit {
                               this.routerService.navigate([ '' ])
                             })
                           )
-                        case EventType.competition:
+                        case BaseEventType.competition:
                           return this.createCompetitionByRouteAndUserId(route, currentUser.id).pipe(
                             tap(() => {
                               this.isLoading = false
