@@ -36,7 +36,7 @@
         emoji_people
       </span>
         <span>
-        Вид спорта: {{ sportTypeMap[workout.sportType] }}
+        Вид спорта: {{ sportTypeMap[detectSportTypeByEventType(workout.eventType)] }}
       </span>
       </li>
       <li>

@@ -4,8 +4,8 @@ import { Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
 import { BaseCompetition, BaseWorkout } from '../../../../global/domain'
 import { UserHolderService } from '../../../../global/services'
-import { AfficheService } from '../../../../global/domain/services/affiche/affiche.service'
 import { AbstractEventListPage } from '../../../../global/cdk/components/abstract-event-list-page'
+import { EventService } from '../../../../global/domain/services/event/event.service'
 
 @Component({
   selector: 'cy-affiche-container',
@@ -16,12 +16,12 @@ import { AbstractEventListPage } from '../../../../global/cdk/components/abstrac
 export class AfficheContainerComponent extends AbstractEventListPage implements OnInit {
   public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
 
-  public events$: Observable<(BaseWorkout | BaseCompetition)[]> = this.afficheService.readAll().pipe(
+  public events$: Observable<(BaseWorkout | BaseCompetition)[]> = this.eventService.readAffiche().pipe(
     shareReplay(1)
   )
 
-  constructor(private afficheService: AfficheService,
-              private title: Title,
+  constructor(private title: Title,
+              private eventService: EventService,
               private userHolderService: UserHolderService) {
     super()
     this.title.setTitle(`Афиша`)
