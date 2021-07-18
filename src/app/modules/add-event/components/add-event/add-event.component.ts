@@ -297,11 +297,22 @@ export class AddEventComponent implements OnInit {
   public ngOnInit(): void {
   }
 
+  /**
+   * Взято из примера на сайте Taiga UI. Типизация "подшаманена".
+   */
   @tuiPure
   public stringify<T>(items: ReadonlyArray<EnumValueWithLabel<T>>): TuiStringHandler<TuiContextWithImplicit<T>> {
     const map: Map<T, string> = new Map(items.map((item: EnumValueWithLabel<T>) => [ item.value, item.label ]))
 
-    return ({ $implicit }: TuiContextWithImplicit<T>) => map.get($implicit) || ''
+    return ({ $implicit }: TuiContextWithImplicit<T>) => {
+      const tuiContextWithImplicit: string | undefined = map.get($implicit)
+
+      if (typeof tuiContextWithImplicit !== 'undefined') {
+        return tuiContextWithImplicit as any
+      }
+
+      return '' as any
+    }
   }
 
   public buildCurrentTuiDay(): TuiDay {
