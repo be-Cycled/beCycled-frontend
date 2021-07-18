@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
-import { Competition, Workout } from '../../../../global/domain'
+import { BaseCompetition, BaseWorkout } from '../../../../global/domain'
 import { UserHolderService } from '../../../../global/services'
 import { AfficheService } from '../../../../global/domain/services/affiche/affiche.service'
 import { AbstractEventListPage } from '../../../../global/cdk/components/abstract-event-list-page'
@@ -16,7 +16,7 @@ import { AbstractEventListPage } from '../../../../global/cdk/components/abstrac
 export class AfficheContainerComponent extends AbstractEventListPage implements OnInit {
   public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
 
-  public events$: Observable<(Workout | Competition)[]> = this.afficheService.readAll().pipe(
+  public events$: Observable<(BaseWorkout | BaseCompetition)[]> = this.afficheService.readAll().pipe(
     shareReplay(1)
   )
 

@@ -1,7 +1,7 @@
-import { EventType, SportType } from '../../../../domain'
+import { BaseEventType, SportType } from '../../../../domain'
 
 export interface FilterTag {
   title: string
-  value: EventType | SportType
+  value: SportType | BaseEventType
   count: number
 }

@@ -1,15 +1,16 @@
 import { Directive } from '@angular/core'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
-import { Competition, EventType, SportType, Workout } from '../../domain'
+import { BaseCompetition, BaseEventType, BaseWorkout, SportType } from '../../domain'
 import { ISO8601 } from '../../models'
 import { FormControl } from '@angular/forms'
 import { TuiHandler } from '@taiga-ui/cdk'
 import { FilterTag } from './event-filter'
+import { detectBaseEventTypeByEventType } from '../../utils'
 
 interface EventsByDay {
   date: ISO8601
-  events: (Workout | Competition)[]
+  events: (BaseWorkout | BaseCompetition)[]
 }
 
 /**
@@ -19,7 +20,7 @@ interface EventsByDay {
 export class AbstractEventListPage {
   public filters: FormControl = new FormControl()
 
-  public events$: Observable<(Workout | Competition)[]> = of([])
+  public events$: Observable<(BaseWorkout | BaseCompetition)[]> = of([])
 
   public calendar$: Observable<EventsByDay[]> = combineLatest([
     this.events$,
@@ -27,29 +28,29 @@ export class AbstractEventListPage {
       startWith([])
     )
   ]).pipe(
-    map(([ events, filters ]: [ (Workout | Competition)[], FilterTag[] ]) => {
+    map(([ events, filters ]: [ (BaseWorkout | BaseCompetition)[], FilterTag[] ]) => {
       let activatedSportTypeFilters: string[] = []
 
-      const isWorkoutFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.workout).length !== 0
-      const isCompetitionFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === EventType.competition).length !== 0
+      const isWorkoutFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === BaseEventType.workout).length !== 0
+      const isCompetitionFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === BaseEventType.competition).length !== 0
 
       if (filters.length > 0) {
         activatedSportTypeFilters = filters.filter((item: any) =>
           Object.values(SportType).includes(item.value)).map((item: any) => item.value)
       }
 
-      let sortedEvents: (Workout | Competition)[] = events
+      let sortedEvents: (BaseWorkout | BaseCompetition)[] = events
 
       if (isWorkoutFilterActivated && !isCompetitionFilterActivated) {
-        sortedEvents = events.filter((event: Workout | Competition) => event.eventType === EventType.workout)
+        sortedEvents = events.filter((event: BaseWorkout | BaseCompetition) => detectBaseEventTypeByEventType(event.eventType) === BaseEventType.workout)
       }
 
       if (isCompetitionFilterActivated && !isWorkoutFilterActivated) {
-        sortedEvents = events.filter((event: Workout | Competition) => event.eventType === EventType.competition)
+        sortedEvents = events.filter((event: BaseWorkout | BaseCompetition) => detectBaseEventTypeByEventType(event.eventType) === BaseEventType.competition)
       }
 
       if (activatedSportTypeFilters.length !== 0) {
-        sortedEvents = sortedEvents.filter((event: Workout | Competition) => activatedSportTypeFilters.includes(event.sportType))
+        sortedEvents = sortedEvents.filter((event: BaseWorkout | BaseCompetition) => activatedSportTypeFilters.includes(event.sportType))
       }
 
       const eventsCalendar: EventsByDay[] = []
@@ -57,7 +58,7 @@ export class AbstractEventListPage {
       let currentDate: null | ISO8601 = null
       let currentCalendarItemIndex: number = 0
 
-      sortedEvents.forEach((event: Workout | Competition) => {
+      sortedEvents.forEach((event: BaseWorkout | BaseCompetition) => {
         if (currentDate === null) {
           currentDate = event.startDate
 

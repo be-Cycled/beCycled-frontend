@@ -18,14 +18,15 @@ import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { Observable } from 'rxjs'
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
 import {
+  BaseEventType,
+  BaseWorkout,
   BicycleType,
   DirectionType,
   EventType,
   MapboxRouteGeoData,
   Route,
   SportType,
-  User,
-  Workout
+  User
 } from '../../../../global/domain'
 import { CompetitionService } from '../../../../global/domain/services/competition/competition.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
@@ -33,7 +34,7 @@ import { WorkoutService } from '../../../../global/domain/services/workout/worko
 import { ISO8601 } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
+import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -101,13 +102,13 @@ export class AddEventComponent implements OnInit {
     }
   ]
 
-  public readonly eventTypesWithLabels: EnumValueWithLabel<EventType>[] = [
+  public readonly eventTypesWithLabels: EnumValueWithLabel<BaseEventType>[] = [
     {
-      value: EventType.workout,
+      value: BaseEventType.workout,
       label: 'Тренировка'
     },
     {
-      value: EventType.competition,
+      value: BaseEventType.competition,
       label: 'Соревнование'
     }
   ]
@@ -163,7 +164,7 @@ export class AddEventComponent implements OnInit {
   public preview: string = ''
 
   public eventForm: FormGroup = new FormGroup({
-    eventType: new FormControl(EventType.workout, Validators.required),
+    eventType: new FormControl(BaseEventType.workout, Validators.required),
     startDay: new FormControl(null, Validators.required),
     startTime: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
@@ -236,40 +237,52 @@ export class AddEventComponent implements OnInit {
     })
   }
 
-  private createWorkoutByRouteAndUserId(route: Route, userId: number): Observable<Workout> {
-    return this.workoutService.create({
-      id: null,
-      eventType: EventType.workout,
-      ownerUserId: userId,
-      communityId: null,
-      isPrivate: false,
-      startDate: this.generateStartDateIsoString(),
-      routeId: route.id,
-      sportType: this.eventForm.get('sportType')?.value,
-      venueGeoData: JSON.stringify(this.venueCoordinates),
-      userIds: [ userId ],
-      duration: this.generateDurationInSeconds(),
-      description: this.eventForm.get('description')?.value,
-      createdAd: null
-    })
+  private createWorkoutByRouteAndUserId(route: Route, userId: number): Observable<BaseWorkout> {
+    const eventType: EventType | null = detectEventTypeBySportType(BaseEventType.workout, this.eventForm.get('sportType')?.value)
+
+    if (eventType !== null) {
+      return this.workoutService.create({
+        id: null,
+        ownerUserId: userId,
+        communityId: null,
+        isPrivate: false,
+        startDate: this.generateStartDateIsoString(),
+        routeId: route.id,
+        sportType: this.eventForm.get('sportType')?.value,
+        venueGeoData: JSON.stringify(this.venueCoordinates),
+        userIds: [ userId ],
+        duration: this.generateDurationInSeconds(),
+        description: this.eventForm.get('description')?.value,
+        createdAd: null,
+        eventType
+      })
+    }
+
+    throw new Error('Не удалось определить тип тренировки')
   }
 
-  private createCompetitionByRouteAndUserId(route: Route, userId: number): Observable<Workout> {
-    return this.competitionService.create({
-      id: null,
-      eventType: EventType.competition,
-      ownerUserId: userId,
-      communityId: null,
-      isPrivate: false,
-      startDate: this.generateStartDateIsoString(),
-      routeId: route.id,
-      sportType: this.eventForm.get('sportType')?.value,
-      venueGeoData: JSON.stringify(this.venueCoordinates),
-      userIds: [ userId ],
-      duration: this.generateDurationInSeconds(),
-      description: this.eventForm.get('description')?.value,
-      createdAd: null
-    })
+  private createCompetitionByRouteAndUserId(route: Route, userId: number): Observable<BaseWorkout> {
+    const eventType: EventType | null = detectEventTypeBySportType(BaseEventType.workout, this.eventForm.get('sportType')?.value)
+
+    if (eventType !== null) {
+      return this.competitionService.create({
+        id: null,
+        ownerUserId: userId,
+        communityId: null,
+        isPrivate: false,
+        startDate: this.generateStartDateIsoString(),
+        routeId: route.id,
+        sportType: this.eventForm.get('sportType')?.value,
+        venueGeoData: JSON.stringify(this.venueCoordinates),
+        userIds: [ userId ],
+        duration: this.generateDurationInSeconds(),
+        description: this.eventForm.get('description')?.value,
+        createdAd: null,
+        eventType
+      })
+    }
+
+    throw new Error('Не удалось определить тип соревнования')
   }
 
   public ngOnInit(): void {
@@ -531,7 +544,7 @@ export class AddEventComponent implements OnInit {
                        * Создаем событие в зависимости от выбранного типа
                        */
                       switch (this.eventForm.get('eventType')?.value) {
-                        case EventType.workout:
+                        case BaseEventType.workout:
                           return this.createWorkoutByRouteAndUserId(route, currentUser.id).pipe(
                             tap(() => {
                               this.isLoading = false
@@ -544,7 +557,7 @@ export class AddEventComponent implements OnInit {
                               this.routerService.navigate([ '' ])
                             })
                           )
-                        case EventType.competition:
+                        case BaseEventType.competition:
                           return this.createCompetitionByRouteAndUserId(route, currentUser.id).pipe(
                             tap(() => {
                               this.isLoading = false

@@ -4,7 +4,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../global/cdk/components/abstract-event-page'
-import { Route, Workout } from '../../../global/domain'
+import { BaseWorkout, Route } from '../../../global/domain'
 import { RouteService } from '../../../global/domain/services/route/route.service'
 import { WorkoutService } from '../../../global/domain/services/workout/workout.service'
 import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
@@ -16,18 +16,18 @@ import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkoutPageComponent extends AbstractEventPage {
-  public workout$: Observable<Workout> = this.activatedRoute.paramMap.pipe(
+  public workout$: Observable<BaseWorkout> = this.activatedRoute.paramMap.pipe(
     map((paramMap: ParamMap) => paramMap.get('id')),
     switchMap((id: string | null) => this.workoutService.readById(Number.parseInt(id!, 10))),
     shareReplay(1),
-    tap((workout: Workout) => {
+    tap((workout: BaseWorkout) => {
       this.title.setTitle(`Тренировка ${ getWorkoutListDate(workout.startDate) } ${ generateStartTime(workout.startDate) }`)
       this.venueCoordinates = JSON.parse(workout.venueGeoData)
     })
   )
 
   public route$: Observable<Route> = this.workout$.pipe(
-    switchMap((workout: Workout) => this.routeService.readById(workout.routeId)),
+    switchMap((workout: BaseWorkout) => this.routeService.readById(workout.routeId)),
     shareReplay(1)
   )
 

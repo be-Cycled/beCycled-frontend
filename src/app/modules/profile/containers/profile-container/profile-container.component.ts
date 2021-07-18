@@ -18,7 +18,7 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators'
-import { Community, Competition, EventType, User, UserService, Workout } from '../../../../global/domain'
+import { BaseCompetition, BaseEventType, BaseWorkout, Community, User, UserService } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
@@ -85,12 +85,15 @@ export class ProfileContainerComponent {
       this.workoutService.readByUser(user.login),
       this.competitionService.readByUser(user.login)
     ]).pipe(
-      map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
+      map(([ workouts, competitions ]: [ BaseWorkout[], BaseCompetition[] ]) => {
         const result: SomeWrappedEvent[] = []
 
-        const workoutEvents: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => ({ type: EventType.workout, value: workout }))
-        const competitionEvents: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => ({
-          type: EventType.competition,
+        const workoutEvents: WrappedEvent<BaseEventType.workout, BaseWorkout>[] = workouts.map((workout: BaseWorkout) => ({
+          type: BaseEventType.workout,
+          value: workout
+        }))
+        const competitionEvents: WrappedEvent<BaseEventType.competition, BaseCompetition>[] = competitions.map((competition: BaseCompetition) => ({
+          type: BaseEventType.competition,
           value: competition
         }))
 
