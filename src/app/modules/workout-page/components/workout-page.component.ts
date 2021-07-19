@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { Observable } from 'rxjs'
@@ -45,7 +45,7 @@ export class WorkoutPageComponent extends AbstractEventPage {
               private userHolderService: UserHolderService,
               private notificationsService: TuiNotificationsService,
               private routerService: Router,
-              @Inject(TuiDialogService) private readonly dialogService: TuiDialogService) {
+              private dialogService: TuiDialogService) {
     super(eventService, notificationsService, routerService)
   }
 
