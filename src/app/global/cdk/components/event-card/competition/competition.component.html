@@ -16,7 +16,24 @@
         emoji_people
       </span>
       <span>
-        Вид спорта: {{ sportTypeMap[competition.sportType] }}
+        Вид спорта: {{ sportTypeMap[detectSportTypeByEventType(competition.eventType)] }}
+      </span>
+    </li>
+    <li
+      *ngIf="detectSportTypeByEventType(competition.eventType) === 'BICYCLE' && competition[ 'bicycleType' ] !== null">
+      <span class="material-icons-outlined">
+        pedal_bike
+      </span>
+      <span>
+        Велосипед: {{ bicycleTypeMap[competition['bicycleType']] }}
+      </span>
+    </li>
+    <li *ngIf="competition.eventType === 'BICYCLE_COMPETITION' && competition[ 'bicycleCompetitionType' ] !== null">
+      <span class="material-icons-outlined">
+        emoji_events
+      </span>
+      <span>
+        Вид гонки: {{ bicycleCompetitionTypeMap[competition['bicycleCompetitionType']] }}
       </span>
     </li>
     <li>

@@ -1,8 +1,8 @@
 import { Directive } from '@angular/core'
 import mapboxgl, { AnyLayer } from 'mapbox-gl'
-import { SportType } from '../../../domain'
+import { BicycleCompetitionType, BicycleType, EventType, SportType } from '../../../domain'
 import { ISO8601 } from '../../../models'
-import { buildCountString } from '../../../utils'
+import { buildCountString, detectSportTypeByEventType } from '../../../utils'
 
 @Directive()
 export abstract class AbstractEventCard {
@@ -12,6 +12,18 @@ export abstract class AbstractEventCard {
     [ SportType.bicycle ]: 'Велосипед',
     [ SportType.rollerblade ]: 'Роликовые коньки',
     [ SportType.run ]: 'Бег'
+  }
+
+  public bicycleTypeMap: Record<BicycleType, string> = {
+    [ BicycleType.any ]: 'Любой',
+    [ BicycleType.road ]: 'Шоссейный',
+    [ BicycleType.mountain ]: 'Горный',
+    [ BicycleType.gravel ]: 'Гравийный'
+  }
+
+  public bicycleCompetitionTypeMap: Record<BicycleCompetitionType, string> = {
+    [ BicycleCompetitionType.individual ]: 'ITT',
+    [ BicycleCompetitionType.group ]: 'Групповая'
   }
 
   public map: mapboxgl.Map | null = null
@@ -77,5 +89,9 @@ export abstract class AbstractEventCard {
         .setLngLat(this.currentCoords![ this.currentCoords!.length - 1 ] as any)
         .addTo(this.map)
     }
+  }
+
+  public detectSportTypeByEventType(eventType: EventType): SportType {
+    return detectSportTypeByEventType(eventType)
   }
 }

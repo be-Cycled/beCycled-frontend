@@ -1,7 +1,7 @@
 import { BaseEventDto } from './base-event-dto'
 
 /**
- * @see Workout
+ * @link Workout
  */
 export interface BaseWorkoutDto extends BaseEventDto {
 }

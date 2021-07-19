@@ -4,12 +4,10 @@ import { NgModule } from '@angular/core'
 import { AuthInterceptor } from '../interceptors'
 import { UserService } from './services'
 import { CommunityService } from './services/community/community.service'
-import { CompetitionService } from './services/competition/competition.service'
 import { PostService } from './services/post/post.service'
 import { RouteService } from './services/route/route.service'
 import { TelemetryService } from './services/telemetry/telemetry.service'
 import { TrackerService } from './services/tracker/tracker.service'
-import { WorkoutService } from './services/workout/workout.service'
 import { EventService } from './services/event/event.service'
 
 @NgModule({
@@ -22,8 +20,6 @@ import { EventService } from './services/event/event.service'
     UserService,
     RouteService,
     CommunityService,
-    WorkoutService,
-    CompetitionService,
     PostService,
     TrackerService,
     TelemetryService,

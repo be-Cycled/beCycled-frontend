@@ -1,5 +1,5 @@
 import { ISO8601 } from '../../../models'
-import { EventType, SportType } from './enums'
+import { EventType } from './enums'
 
 export interface BaseEvent {
   /**
@@ -23,11 +23,6 @@ export interface BaseEvent {
   eventType: EventType
 
   /**
-   * Флаг приватности
-   */
-  isPrivate: boolean
-
-  /**
    * Время начала события
    */
   startDate: ISO8601
@@ -36,11 +31,6 @@ export interface BaseEvent {
    * Идентификатор маршрута, по которому будет проходить событие
    */
   routeId: number
-
-  /**
-   * Вид спорта
-   */
-  sportType: SportType
 
   /**
    * Строковое представление JSON: { lng: number, lat: number }

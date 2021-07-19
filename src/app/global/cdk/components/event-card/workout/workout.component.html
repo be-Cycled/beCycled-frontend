@@ -16,7 +16,15 @@
         emoji_people
       </span>
       <span>
-        Вид спорта: {{ sportTypeMap[workout.sportType] }}
+        Вид спорта: {{ sportTypeMap[detectSportTypeByEventType(workout.eventType)] }}
+      </span>
+    </li>
+    <li *ngIf="detectSportTypeByEventType(workout.eventType) === 'BICYCLE' && workout[ 'bicycleType' ] !== null">
+      <span class="material-icons-outlined">
+        pedal_bike
+      </span>
+      <span>
+        Велосипед: {{ bicycleTypeMap[workout['bicycleType']] }}
       </span>
     </li>
     <li>

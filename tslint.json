@@ -1,16 +1,5 @@
 {
   "extends": [
     "@waliot-oss/tslint-config"
-  ],
-  "rules": {
-    "no-redundant-jsdoc": false,
-    "align": [
-      true,
-      "parameters",
-      "statements",
-      "members",
-      //      "arguments",
-      "elements"
-    ]
-  }
+  ]
 }

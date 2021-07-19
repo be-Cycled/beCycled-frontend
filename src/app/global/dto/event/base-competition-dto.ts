@@ -1,7 +1,7 @@
 import { BaseEventDto } from './base-event-dto'
 
 /**
- * @see Competition
+ * @link Competition
  */
 export interface BaseCompetitionDto extends BaseEventDto {
 
