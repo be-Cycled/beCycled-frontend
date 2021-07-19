@@ -3,13 +3,12 @@ import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiButtonModule, TuiErrorModule, TuiLinkModule } from '@taiga-ui/core'
-import { TUI_VALIDATION_ERRORS, TuiFieldErrorModule, TuiInputModule, TuiInputPasswordModule } from '@taiga-ui/kit'
+import { TuiFieldErrorModule, TuiInputModule, TuiInputPasswordModule } from '@taiga-ui/kit'
 
 import { AuthRoutingModule } from './auth-routing.module'
 import { LoginComponent } from './components/login/login.component'
 import { RegistrationComponent } from './components/registration/registration.component'
 import { AuthContainerComponent } from './containers/auth-container/auth-container.component'
-import { AuthorizationService } from './services/authorization/authorization.service'
 
 @NgModule({
   declarations: [
@@ -28,17 +27,6 @@ import { AuthorizationService } from './services/authorization/authorization.ser
     TuiButtonModule,
     HttpClientModule,
     TuiErrorModule
-  ],
-  providers: [
-    AuthorizationService,
-    {
-      provide: TUI_VALIDATION_ERRORS,
-      useValue: {
-        required: 'Поле обязательно',
-        email: 'Эл. почта введена не правильно',
-        pattern: 'Значение не соотвествует шаблону'
-      }
-    }
   ]
 })
 export class AuthModule { }

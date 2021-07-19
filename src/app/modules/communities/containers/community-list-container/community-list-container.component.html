@@ -1,0 +1,50 @@
+<div class="module-header">
+  <h1>Сообщества</h1>
+  <a tuiButton routerLink="/communities/create" size="m">Создать</a>
+</div>
+
+<div class="communities-container" [formGroup]="filtrationForm">
+  <div class="filter">
+    <tui-input
+      formControlName="search"
+      class="search-input"
+      tuiTextfieldSize="m">Поиск</tui-input>
+    <tui-select
+      formControlName="communityType"
+      tuiTextfieldSize="m"
+      [valueContent]="communityTypeValueRef"
+    >
+      Тип сообщества
+      <tui-data-list *tuiDataList>
+        <button tuiOption *ngFor="let type of communityTypeKeys" [value]="type">{{ communityTypesMap[type] }}</button>
+      </tui-data-list>
+    </tui-select>
+    <tui-filter
+      formControlName="sportTypes"
+      size="s"
+      [items]="sportTypeKeys"
+      [content]="sportTypeViewRef"
+    ></tui-filter>
+  </div>
+
+  <div class="result">
+    <tui-loader [showLoader]="communityIsLoading | async"></tui-loader>
+    <table class="tui-table">
+      <tr class="tui-table__tr" *ngFor="let community of communitiesWithFiltration | async">
+        <td class="tui-table__td">
+          <div class="avatar-and-name">
+            <img class="avatar" [attr.src]="community.avatar" [attr.alt]="community.name">
+            <a tuiLink [routerLink]="[ '/', 'communities', community.nickname ]">{{ community.name }}</a>
+          </div>
+        </td>
+        <td class="tui-table__td count">{{ community.userIds.length | tuiMapper: buildMemberCountString }}</td>
+        <td class="tui-table__td">{{ community.sportTypes | tuiMapper: sportTypeTranslate: sportTypesMap }}</td>
+        <td class="tui-table__td">{{ communityTypesMap[community.communityType] }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<ng-template #sportTypeViewRef let-option>{{ sportTypesMap[ option ] }}</ng-template>
+
+<ng-template #communityTypeValueRef let-option>{{ communityTypesMap[ option ] }}</ng-template>

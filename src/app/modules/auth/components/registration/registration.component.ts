@@ -80,7 +80,7 @@ export class RegistrationComponent {
     this.authorizationService.register({ email, login, password }).pipe(
       finalize(() => this.isButtonLoaderShow.next(false)),
       switchMap(() => {
-        setTimeout(() => this.router.navigate([ '/auth/login' ]), 1000)
+        setTimeout(() => this.router.navigateByUrl(`/auth/login`), 1000)
         return this.notificationService.show(`Регистрация прошла успешно`, { status: TuiNotification.Success })
       }),
       catchError((httpErrorResponse: HttpErrorResponse) => {

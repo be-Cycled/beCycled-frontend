@@ -2,9 +2,10 @@
 
 # 🏂🏼 beCycled 📱
 
-PWA-приложение для работы с сервисом.
-
+[![Waliot Tech Team](https://raw.githubusercontent.com/waliot/waliot/main/assets/waliot-tech-badge.svg)](https://github.com/waliot)
 ![beCycled Deploy Status](https://img.shields.io/github/workflow/status/be-Cycled/beCycled-devops/Deploy?label=deploy)
+
+PWA-приложение для работы с сервисом.
 
 ## Установка
 

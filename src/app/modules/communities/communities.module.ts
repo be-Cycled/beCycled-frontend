@@ -2,43 +2,73 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import { TuiLetModule, TuiMapperPipeModule } from '@taiga-ui/cdk'
-import { TuiButtonModule, TuiDataListModule, TuiHintModule, TuiLinkModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
-import { TuiAvatarModule, TuiDataListWrapperModule, TuiFilterModule, TuiInputModule, TuiIslandModule, TuiSelectModule } from '@taiga-ui/kit'
+import { TuiButtonModule, TuiDataListModule, TuiGroupModule, TuiHintModule, TuiLabelModule, TuiLinkModule, TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core'
+import {
+  TuiAvatarModule,
+  TuiCheckboxBlockModule,
+  TuiFieldErrorModule,
+  TuiFilterModule,
+  TuiInputFileModule,
+  TuiInputModule,
+  TuiIslandModule,
+  TuiRadioBlockModule,
+  TuiSelectModule,
+  TuiTabsModule,
+  TuiTextAreaModule
+} from '@taiga-ui/kit'
 import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
+import { SafePipeModule } from '../../global/cdk/pipes/safe/safe-pipe.module'
+import { ImageNetworkService } from '../../global/services'
 
 import { CommunitiesRoutingModule } from './communities-routing.module'
-import { CommunityCreationComponent } from './components/community-creation/community-creation.component'
-import { CommunitiesContainerComponent } from './containers/communities-container/communities-container.component'
-import { SingleCommunityContainerComponent } from './containers/single-community-container/single-community-container.component'
-import { SingleCommunityResolver } from './resolvers/single-community/single-community.resolver'
+import { CommunitySingleMainComponent, CommunitySingleSettingsComponent, CommunitySingleUsersComponent } from './components'
+import { CommunityCreateContainerComponent, CommunityListContainerComponent, CommunitySingleContainerComponent } from './containers'
+import { CommunitySettingsGuard } from './guards'
+import { CommunityStoreService } from './services'
 
 @NgModule({
   declarations: [
-    CommunitiesContainerComponent,
-    SingleCommunityContainerComponent,
-    CommunityCreationComponent
+    CommunityListContainerComponent,
+    CommunitySingleContainerComponent,
+    CommunitySingleMainComponent,
+    CommunitySingleUsersComponent,
+    CommunitySingleSettingsComponent,
+    CommunityCreateContainerComponent
   ],
   imports: [
     CommonModule,
     CommunitiesRoutingModule,
     TuiButtonModule,
-    TuiInputModule,
-    TuiFilterModule,
-    TuiSelectModule,
-    TuiDataListWrapperModule,
-    TuiTextfieldControllerModule,
     ReactiveFormsModule,
+    TuiInputModule,
+    TuiSelectModule,
+    TuiTextfieldControllerModule,
     TuiDataListModule,
-    TuiMapperPipeModule,
+    TuiFilterModule,
     TuiLinkModule,
-    TuiIslandModule,
-    EventCardModule,
+    TuiMapperPipeModule,
+    TuiLoaderModule,
+    SafePipeModule,
+    TuiTabsModule,
     TuiLetModule,
+    EventCardModule,
+    TuiIslandModule,
+    TuiSvgModule,
+    TuiHintModule,
     TuiAvatarModule,
-    TuiHintModule
+    TuiTextAreaModule,
+    TuiInputFileModule,
+    TuiGroupModule,
+    TuiRadioBlockModule,
+    TuiCheckboxBlockModule,
+    TuiLabelModule,
+    TuiFieldErrorModule
   ],
   providers: [
-    SingleCommunityResolver
+    CommunitySettingsGuard,
+    CommunityStoreService,
+    ImageNetworkService
   ]
 })
-export class CommunitiesModule { }
+export class CommunitiesModule {
+}

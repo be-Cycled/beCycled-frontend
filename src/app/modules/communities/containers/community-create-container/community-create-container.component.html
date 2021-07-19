@@ -1,0 +1,30 @@
+<h1 class="title">Создание сообщества</h1>
+
+<form class="community-create-form" [formGroup]="createForm">
+  <div class="field">
+    <tui-input formControlName="name">Название *</tui-input>
+    <tui-field-error formControlName="name"></tui-field-error>
+  </div>
+
+  <div class="field">
+    <tui-input formControlName="nickname">Никнейм *</tui-input>
+    <span class="nickname-preview">
+      <span class="main-url">https://becycled.me/communities/</span>
+      <span class="community-nickname">{{ nicknamePreview | async }}</span>
+    </span>
+    <tui-field-error formControlName="nickname"></tui-field-error>
+  </div>
+
+  <label class="field" tuiLabel label="Тип сообщества *">
+    <div class="field" tuiGroup orientation="vertical" [collapsed]="true">
+      <tui-radio-block formControlName="communityType" [item]="communityType.club">Клуб</tui-radio-block>
+      <tui-radio-block formControlName="communityType" [item]="communityType.organization">Организация</tui-radio-block>
+    </div>
+  </label>
+</form>
+
+<div class="actions-container">
+  <button tuiButton
+          class="save-button"
+          (click)="onClickSaveButton()">Создать</button>
+</div>

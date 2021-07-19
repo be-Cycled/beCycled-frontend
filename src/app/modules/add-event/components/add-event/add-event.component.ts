@@ -2,40 +2,21 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { Router } from '@angular/router'
-import {
-  TUI_IS_ANDROID,
-  TUI_IS_IOS,
-  TUI_IS_MOBILE,
-  TuiContextWithImplicit,
-  TuiDay,
-  tuiPure,
-  TuiStringHandler,
-  TuiTime
-} from '@taiga-ui/cdk'
+import { TUI_IS_ANDROID, TUI_IS_IOS, TUI_IS_MOBILE, TuiContextWithImplicit, TuiDay, tuiPure, TuiStringHandler, TuiTime } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { Observable } from 'rxjs'
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
-import {
-  BaseEventType,
-  BicycleCompetitionType,
-  BicycleType,
-  DirectionType,
-  EventType,
-  MapboxRouteGeoData,
-  Route,
-  SportType,
-  User
-} from '../../../../global/domain'
+import { BaseEventType, BicycleCompetitionType, BicycleType, DirectionType, EventType, MapboxRouteGeoData, Route, SportType, User } from '../../../../global/domain'
+import { EventService } from '../../../../global/domain/services/event/event.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
+import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
+import { BicycleWorkoutDto } from '../../../../global/dto/event/bicycle-workout-dto'
 import { ISO8601 } from '../../../../global/models'
-import { ConfigService, ImageNetworkService, UserHolderService } from '../../../../global/services'
+import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
-import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
-import { EventService } from '../../../../global/domain/services/event/event.service'
-import { BicycleWorkoutDto } from '../../../../global/dto/event/bicycle-workout-dto'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -78,7 +59,7 @@ type BicycleEventDto = BicycleWorkoutDto | BicycleCompetitionDto
   ]
 })
 export class AddEventComponent implements OnInit {
-  public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+  public isUserAuthorized$: Observable<boolean> = this.userStoreService.isAuthChanges
 
   public isLoading: boolean = false
 
@@ -197,7 +178,7 @@ export class AddEventComponent implements OnInit {
   )
 
   constructor(private mapboxNetworkService: MapboxNetworkService,
-              private userHolderService: UserHolderService,
+              private userStoreService: UserStoreService,
               private eventService: EventService,
               private routeService: RouteService,
               private routerService: Router,
@@ -525,7 +506,7 @@ export class AddEventComponent implements OnInit {
   public onPublishButtonClick(): void {
     this.drawTrackPointsOnCanvas()
 
-    const currentUser: User | null = this.userHolderService.getUser()
+    const currentUser: User | null = this.userStoreService.user
     if (currentUser !== null) {
       this.isLoading = true
 

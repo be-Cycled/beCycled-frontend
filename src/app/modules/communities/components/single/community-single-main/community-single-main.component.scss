@@ -1,0 +1,51 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.user-list-item {
+  position: relative;
+
+  margin-left: -12px;
+
+  border-radius: 50%;
+  border: 4px solid hsl(0deg 0% 100%);
+  background-color: hsl(0deg 0% 100%);
+
+  overflow: hidden;
+}
+
+.users .section-title a {
+  color: currentColor;
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sidebar-section:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+.sidebar {
+  order: -1;
+}
+
+@media screen and (min-width: 599px) {
+  :host {
+    flex-direction: row;
+  }
+
+  .main {
+    flex-grow: 1;
+  }
+
+  .sidebar {
+    flex-basis: 300px;
+    order: initial;
+  }
+}
