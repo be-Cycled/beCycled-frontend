@@ -1,4 +1,4 @@
-<img align="right" src="src/assets/logo.svg" alt="beCycled logo" width="100">
+<img align="right" src="https://github.com/be-Cycled/beCycled/blob/main/assets/beCycled-icon.png" alt="beCycled logo" width="100">
 
 # 🏂🏼 beCycled 📱
 
