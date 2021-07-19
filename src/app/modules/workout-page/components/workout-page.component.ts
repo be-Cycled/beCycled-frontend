@@ -4,13 +4,13 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../global/cdk/components/abstract-event-page'
-import { BaseWorkout, Route } from '../../../global/domain'
+import { BaseWorkout, Route, User, UserService } from '../../../global/domain'
 import { RouteService } from '../../../global/domain/services/route/route.service'
 import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
 import { EventService } from '../../../global/domain/services/event/event.service'
-import { UserHolderService } from '../../../global/services'
 import { TuiDialogContext, TuiDialogService, TuiNotificationsService } from '@taiga-ui/core'
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
+import { UserStoreService } from '../../../global/services'
 
 @Component({
   selector: 'cy-workout-page',

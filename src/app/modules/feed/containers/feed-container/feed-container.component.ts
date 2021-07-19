@@ -14,8 +14,6 @@ import { EventService } from '../../../../global/domain/services/event/event.ser
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FeedContainerComponent extends AbstractEventListPage {
-  public isLoading: boolean = true
-
   public filters: FormControl = new FormControl()
 
   public events$: Observable<(BaseWorkout | BaseCompetition)[]> = this.eventService.readFeed().pipe(

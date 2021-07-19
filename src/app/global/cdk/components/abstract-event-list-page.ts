@@ -18,6 +18,8 @@ interface EventsByDay {
  */
 @Directive()
 export abstract class AbstractEventListPage {
+  public isLoading: boolean = true
+
   public filters: FormControl = new FormControl()
 
   public events$: Observable<(BaseWorkout | BaseCompetition)[]> = of([])
