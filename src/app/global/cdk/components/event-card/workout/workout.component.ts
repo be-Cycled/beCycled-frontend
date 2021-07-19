@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
-import { BaseWorkout, MapboxRouteGeoData, Route } from '../../../../domain'
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core'
+import { BaseWorkout, MapboxRouteGeoData, Route, User, UserService } from '../../../../domain'
 import { map, shareReplay } from 'rxjs/operators'
-import { defer, Observable } from 'rxjs'
+import { defer, Observable, of } from 'rxjs'
 import { AbstractEventCard } from '../abstract-event-card'
 import { RouteService } from '../../../../domain/services/route/route.service'
 
@@ -11,7 +11,7 @@ import { RouteService } from '../../../../domain/services/route/route.service'
   styleUrls: [ './workout.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkoutComponent extends AbstractEventCard {
+export class WorkoutComponent extends AbstractEventCard implements OnChanges {
   @Input()
   public workout: BaseWorkout | null = null
 
@@ -36,7 +36,18 @@ export class WorkoutComponent extends AbstractEventCard {
     })
   )
 
-  constructor(private routeService: RouteService) {
+  public memberAvatars$: Observable<(string | null)[]> = of([])
+
+  constructor(private routeService: RouteService,
+              private userService: UserService) {
     super()
+  }
+
+  public ngOnChanges({ workout }: SimpleChanges): void {
+    if (typeof workout.currentValue !== 'undefined') {
+      this.memberAvatars$ = this.userService.readUsersByIds(this.workout!.memberUserIds).pipe(
+        map((users: User[]) => users.map((user: User) => user.avatar))
+      )
+    }
   }
 }

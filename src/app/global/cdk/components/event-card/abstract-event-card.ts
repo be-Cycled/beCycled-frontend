@@ -72,6 +72,10 @@ export abstract class AbstractEventCard {
       : buildCountString(minutes, [ 'минута', 'минуты', 'минут' ]) }`
   }
 
+  public generateMembersString(count: number): string {
+    return buildCountString(count, [ 'участник', 'участника', 'участников' ])
+  }
+
   public onMapboxLoad(map: mapboxgl.Map): void {
     this.map = map
     this.map.getStyle().layers!.forEach((layer: AnyLayer) => {

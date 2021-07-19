@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
-import { BaseCompetition, MapboxRouteGeoData, Route } from '../../../../domain'
-import { defer, Observable } from 'rxjs'
+import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core'
+import { BaseCompetition, MapboxRouteGeoData, Route, User, UserService } from '../../../../domain'
+import { defer, Observable, of } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 import { RouteService } from '../../../../domain/services/route/route.service'
 import { AbstractEventCard } from '../abstract-event-card'
@@ -36,7 +36,18 @@ export class CompetitionComponent extends AbstractEventCard {
     })
   )
 
-  constructor(private routeService: RouteService) {
+  public memberAvatars$: Observable<(string | null)[]> = of([])
+
+  constructor(private routeService: RouteService,
+              private userService: UserService) {
     super()
+  }
+
+  public ngOnChanges({ competition }: SimpleChanges): void {
+    if (typeof competition.currentValue !== 'undefined') {
+      this.memberAvatars$ = this.userService.readUsersByIds(this.competition!.memberUserIds).pipe(
+        map((users: User[]) => users.map((user: User) => user.avatar))
+      )
+    }
   }
 }

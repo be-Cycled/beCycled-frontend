@@ -60,13 +60,15 @@
         Описание: {{ competition.description }}
       </span>
     </li>
-    <li>
-      <span class="material-icons-outlined">
-        group
-      </span>
-      <span>
-        Участники: {{ competition.memberUserIds.length }}
-      </span>
+    <li
+      *tuiLet="memberAvatars$ | async as memberAvatars"
+    >
+      <ng-container *ngIf="memberAvatars !== null">
+        <div class="avatar-container" *ngFor="let avatar of memberAvatars">
+          <img width="36" height="36" [src]="avatar">
+        </div>
+        <span class="members-count">{{ generateMembersString(memberAvatars.length) }}</span>
+      </ng-container>
     </li>
   </ul>
 </a>

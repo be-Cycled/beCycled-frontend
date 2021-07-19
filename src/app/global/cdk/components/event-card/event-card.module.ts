@@ -4,6 +4,7 @@ import { WorkoutComponent } from './workout/workout.component'
 import { CompetitionComponent } from './competition/competition.component'
 import { TuiIslandModule } from '@taiga-ui/kit'
 import { RouterModule } from '@angular/router'
+import { TuiLetModule } from '@taiga-ui/cdk'
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { RouterModule } from '@angular/router'
   imports: [
     CommonModule,
     TuiIslandModule,
-    RouterModule
+    RouterModule,
+    TuiLetModule
   ],
   exports: [
     WorkoutComponent,
