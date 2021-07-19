@@ -1,13 +1,13 @@
 <div class="main">
   <ul class="event-list">
     <li class="event-list-item" *ngFor="let event of events | async">
-      <ng-container [ngSwitch]="event.type">
+      <ng-container [ngSwitch]="detectBaseEventTypeByEventType(event.eventType)">
         <ng-template [ngSwitchCase]="'WORKOUT'">
-          <cy-workout [workout]="event.value"></cy-workout>
+          <cy-workout [workout]="event"></cy-workout>
         </ng-template>
 
         <ng-template [ngSwitchCase]="'COMPETITION'">
-          <cy-competition [competition]="event.value"></cy-competition>
+          <cy-competition [competition]="event"></cy-competition>
         </ng-template>
       </ng-container>
     </li>
@@ -31,8 +31,7 @@
         <span class="user-count">{{ userCount | async }} <tui-svg src="tuiIconChevronRight"></tui-svg></span>
       </a>
     </h3>
-    <tui-loader [showLoader]="isUsersShowLoader | async"></tui-loader>
-    <ul class="user-list" *ngIf="!(isUsersShowLoader | async)">
+    <ul class="user-list">
       <li
         class="user-list-item"
         *ngFor="let user of firstUsers | async"

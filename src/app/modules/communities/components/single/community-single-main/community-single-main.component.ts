@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { BehaviorSubject, Observable, of } from 'rxjs'
-import { map, pluck, shareReplay, switchMap, tap } from 'rxjs/operators'
-import { Community, SportType, User } from '../../../../../global/domain'
+import { Observable, of } from 'rxjs'
+import { catchError, map, pluck, shareReplay, switchMap } from 'rxjs/operators'
+import { BaseEvent, BaseEventType, Community, EventType, SportType, User } from '../../../../../global/domain'
 import { CommunityService } from '../../../../../global/domain/services/community/community.service'
-import { CompetitionService } from '../../../../../global/domain/services/competition/competition.service'
-import { WorkoutService } from '../../../../../global/domain/services/workout/workout.service'
-import { SomeWrappedEvent } from '../../../../../global/models'
+import { EventService } from '../../../../../global/domain/services/event/event.service'
+import { detectBaseEventTypeByEventType } from '../../../../../global/utils'
 import { CommunityStoreService } from '../../../services'
 
 @Component({
@@ -17,7 +16,11 @@ import { CommunityStoreService } from '../../../services'
 })
 export class CommunitySingleMainComponent {
 
-  public events: Observable<SomeWrappedEvent[]> = of([])
+  public events: Observable<BaseEvent[]> = this.communityStoreService.communityChanges.pipe(
+    switchMap((community: Community) => this.eventService.readEventByCommunity(community.nickname).pipe(
+      catchError(() => of([]))
+    ))
+  )
 
   public sportTypes: Observable<SportType[]> = this.communityStoreService.communityChanges.pipe(
     pluck('sportTypes')
@@ -29,17 +32,12 @@ export class CommunitySingleMainComponent {
     [ SportType.run ]: `Бег`
   }
 
-  public isUsersShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
-
   public users: Observable<User[]> = this.communityStoreService.communityChanges.pipe(
-    switchMap((community: Community) => {
-      this.isUsersShowLoader.next(true)
-
-      return this.communityService.getUsersByCommunity(community.nickname).pipe(
-        tap(() => this.isUsersShowLoader.next(false)),
+    switchMap((community: Community) =>
+      this.communityService.getUsersByCommunity(community.nickname).pipe(
+        catchError(() => of([])),
         shareReplay({ bufferSize: 1, refCount: true })
-      )
-    })
+      ))
   )
 
   public userCount: Observable<number> = this.users.pipe(
@@ -52,8 +50,11 @@ export class CommunitySingleMainComponent {
 
   constructor(private communityStoreService: CommunityStoreService,
               private communityService: CommunityService,
-              private workoutService: WorkoutService,
-              private competitionService: CompetitionService,
-              public readonly activatedRoute: ActivatedRoute) {
+              public readonly activatedRoute: ActivatedRoute,
+              private eventService: EventService) {
+  }
+
+  public detectBaseEventTypeByEventType(eventType: EventType): BaseEventType {
+    return detectBaseEventTypeByEventType(eventType)
   }
 }
