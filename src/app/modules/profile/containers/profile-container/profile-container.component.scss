@@ -48,6 +48,10 @@
   margin-bottom: 1rem;
 }
 
+.user-name {
+  line-height: 120%;
+}
+
 .user-login {
   margin-bottom: 0;
 }
@@ -115,7 +119,7 @@
 @media screen and (min-width: 600px) {
   :host {
     flex-direction: row;
-    max-width: 900px;
+    max-width: 980px;
     margin: 0 auto;
   }
 
@@ -149,6 +153,5 @@
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 16px;
     max-width: 672px;
-    margin-right: 16px;
   }
 }
