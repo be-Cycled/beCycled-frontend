@@ -3,12 +3,16 @@ import { AbstractEventCard } from './event-card/abstract-event-card'
 import mapboxgl, { AnyLayer, LngLat } from 'mapbox-gl'
 import { combineLatest, defer, Observable, of, Subject } from 'rxjs'
 import { MapboxRouteGeoData, Route } from '../../domain'
-import { filter, map, tap } from 'rxjs/operators'
+import { filter, map, take, tap } from 'rxjs/operators'
 import { generateBounds, generateGeoJsonFeature } from '../../utils'
+import { EventService } from '../../domain/services/event/event.service'
+import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
+import { Router } from '@angular/router'
 
 @Directive()
 export abstract class AbstractEventPage extends AbstractEventCard {
   protected mapIsReady$: Subject<void> = new Subject()
+  public isLoading: boolean = false
 
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
@@ -73,6 +77,12 @@ export abstract class AbstractEventPage extends AbstractEventCard {
     map((coordinates: number[][]) => generateGeoJsonFeature(coordinates))
   )
 
+  protected constructor(protected eventService: EventService,
+                        protected notificationsService: TuiNotificationsService,
+                        protected router: Router) {
+    super()
+  }
+
   public onMapboxLoad(map: mapboxgl.Map): void {
     this.map = map
 
@@ -83,5 +93,23 @@ export abstract class AbstractEventPage extends AbstractEventCard {
     })
 
     this.mapIsReady$.next()
+  }
+
+  public onDeleteButtonClick(id: number): void {
+    this.isLoading = true
+
+    this.eventService.delete(id).pipe(
+      tap(() => {
+        this.notificationsService
+          .show('Событие успешно удалено', {
+            status: TuiNotification.Success
+          }).subscribe()
+
+        this.isLoading = false
+
+        this.router.navigateByUrl('/')
+      }),
+      take(1)
+    ).subscribe()
   }
 }

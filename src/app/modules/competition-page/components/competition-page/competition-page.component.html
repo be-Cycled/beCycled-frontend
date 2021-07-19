@@ -1,6 +1,52 @@
 <tui-island *tuiLet="competition$ | async as competition">
   <ng-container *ngIf="competition">
-    <h3 class="tui-island__title">{{ generateStartTime(competition.startDate, false) }}</h3>
+    <header class="event-header">
+      <h3 class="tui-island__title">{{ generateStartTime(competition.startDate, false) }}</h3>
+
+      <tui-hosted-dropdown [content]="dropdownContentRef" *ngIf="isCanEdit$ | async">
+        <button
+          type="button"
+          tuiButton
+          size="s"
+          appearance="flat"
+        >
+          <span class="material-icons-outlined">
+            more_vert
+          </span>
+        </button>
+      </tui-hosted-dropdown>
+
+      <ng-template #dropdownContentRef>
+        <tui-data-list role="menu">
+          <!--            <button type="button" tuiOption role="menuitem">Изменить</button>-->
+          <button type="button" tuiOption role="menuitem" (click)="showDeleteDialog(deleteDialogRef)">Удалить</button>
+        </tui-data-list>
+      </ng-template>
+
+      <ng-template #deleteDialogRef let-observer>
+        <p>Удалить тренировку?</p>
+        <div class="button-container">
+          <button
+            tuiButton
+            type="button"
+            size="m"
+            appearance="secondary"
+            (click)="observer.complete()"
+          >
+            Нет
+          </button>
+          <button
+            tuiButton
+            type="button"
+            size="m"
+            (click)="onDeleteButtonClick(competition.id); observer.complete()"
+          >
+            Да
+          </button>
+        </div>
+
+      </ng-template>
+    </header>
     <p class="tui-island__category">Соревнование</p>
     <mgl-map
       [style]="'mapbox://styles/mapbox/streets-v11'"
@@ -37,6 +83,23 @@
       </span>
         <span>
         Вид спорта: {{ sportTypeMap[detectSportTypeByEventType(competition.eventType)] }}
+      </span>
+      </li>
+      <li
+        *ngIf="detectSportTypeByEventType(competition.eventType) === 'BICYCLE' && competition[ 'bicycleType' ] !== null">
+      <span class="material-icons-outlined">
+        pedal_bike
+      </span>
+        <span>
+        Велосипед: {{ bicycleTypeMap[competition['bicycleType']] }}
+      </span>
+      </li>
+      <li *ngIf="competition.eventType === 'BICYCLE_COMPETITION' && competition[ 'bicycleCompetitionType' ] !== null">
+      <span class="material-icons-outlined">
+        emoji_events
+      </span>
+        <span>
+        Вид гонки: {{ bicycleCompetitionTypeMap[competition['bicycleCompetitionType']] }}
       </span>
       </li>
       <li>
