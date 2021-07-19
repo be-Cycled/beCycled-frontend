@@ -71,6 +71,10 @@
     }
   }
 
+  .events-wrapper:last-of-type {
+    padding-bottom: 0;
+  }
+
   .add-button {
     right: 36px;
     bottom: 36px;

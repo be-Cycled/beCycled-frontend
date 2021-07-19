@@ -35,6 +35,7 @@ import { MapboxNetworkService } from '../../../../global/services/mapbox-network
 import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
 import { EventService } from '../../../../global/domain/services/event/event.service'
+import { BicycleWorkoutDto } from '../../../../global/dto/event/bicycle-workout-dto'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -49,6 +50,8 @@ interface EnumValueWithLabel<T> {
   value: T
   label: string
 }
+
+type BicycleEventDto = BicycleWorkoutDto | BicycleCompetitionDto
 
 @Component({
   selector: 'cy-add-event',
@@ -226,7 +229,7 @@ export class AddEventComponent implements OnInit {
     return (durationHours * 60 + durationMinutes) * 60
   }
 
-  private generateEventBodyByRouteAndUserId(route: Route, userId: number): BaseEventDto | BicycleCompetitionDto {
+  private generateEventBodyByRouteAndUserId(route: Route, userId: number): BaseEventDto | BicycleEventDto {
     const eventType: EventType | null = detectEventTypeBySportType(this.eventForm.get('eventType')?.value, this.eventForm.get('sportType')?.value)
 
     if (eventType !== null) {
@@ -252,7 +255,20 @@ export class AddEventComponent implements OnInit {
         && this.eventForm.get('sportType')?.value === SportType.bicycle) {
         return {
           ...baseEventProperties,
+          bicycleType: this.eventForm.get('bicycleType')?.value,
           bicycleCompetitionType: this.eventForm.get('bicycleCompetitionType')?.value
+        }
+      }
+
+      /**
+       * Если выбрана тренировка и велосипед.
+       * @link BicycleWorkoutDto
+       */
+      if (this.eventForm.get('eventType')?.value === BaseEventType.workout
+        && this.eventForm.get('sportType')?.value === SportType.bicycle) {
+        return {
+          ...baseEventProperties,
+          bicycleType: this.eventForm.get('bicycleType')?.value
         }
       }
 

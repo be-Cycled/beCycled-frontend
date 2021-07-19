@@ -44,6 +44,10 @@
       max-width: 672px;
     }
   }
+
+  .events-wrapper:last-of-type {
+    padding-bottom: 0;
+  }
 }
 
 @media (min-width: 1366px) {
