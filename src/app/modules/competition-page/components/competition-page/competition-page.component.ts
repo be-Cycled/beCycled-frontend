@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { Observable } from 'rxjs'
@@ -9,7 +9,8 @@ import { RouteService } from '../../../../global/domain/services/route/route.ser
 import { generateStartTime, getWorkoutListDate } from '../../../../global/utils'
 import { EventService } from '../../../../global/domain/services/event/event.service'
 import { UserHolderService } from '../../../../global/services'
-import { TuiNotificationsService } from '@taiga-ui/core'
+import { TuiDialogContext, TuiDialogService, TuiNotificationsService } from '@taiga-ui/core'
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
 
 @Component({
   selector: 'cy-competition-page',
@@ -33,13 +34,22 @@ export class CompetitionPageComponent extends AbstractEventPage {
     shareReplay(1)
   )
 
+  public isCanEdit$: Observable<boolean> = this.competition$.pipe(
+    map((competition: BaseCompetition) => competition.ownerUserId === this.userHolderService.getUser()?.id)
+  )
+
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
               private eventService: EventService,
               private title: Title,
               private userHolderService: UserHolderService,
               private notificationsService: TuiNotificationsService,
-              private routerService: Router) {
+              private routerService: Router,
+              @Inject(TuiDialogService) private readonly dialogService: TuiDialogService) {
     super(eventService, notificationsService, routerService)
+  }
+
+  public showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.dialogService.open(content, { size: 's' }).subscribe()
   }
 }
