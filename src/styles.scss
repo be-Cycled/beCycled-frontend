@@ -73,3 +73,92 @@ tui-root {
     padding-bottom: 66px;
   }
 }
+
+// Общие стили для событий
+
+.event-card {
+  .tui-island__category {
+    margin-bottom: 16px;
+  }
+
+  .preview-container {
+    margin-bottom: 16px;
+
+    border-radius: var(--tui-radius-l);
+
+    overflow: hidden;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 150px;
+    }
+  }
+
+  .icon-list li {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+  }
+
+  .material-icons-outlined {
+    display: block;
+    margin-right: 8px;
+    color: var(--icon-color);
+  }
+
+  .avatar-container {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid white;
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    img {
+      display: block;
+    }
+  }
+
+  .avatar-container:not(:first-of-type) {
+    margin-left: -12px;
+  }
+
+  .avatar-container:last-of-type {
+    margin-right: 8px;
+  }
+
+  .event-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  mgl-map {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 16px;
+
+    border-radius: var(--tui-radius-l);
+
+    overflow: hidden;
+  }
+
+  tui-hosted-dropdown .material-icons-outlined {
+    margin-right: 0;
+  }
+}
+
+.event-page {
+  display: block;
+  padding: 12px 12px calc(var(--menu-height) + 12px);
+}
+
+@media (min-width: 768px) {
+  .event-page {
+    padding: 36px;
+  }
+}

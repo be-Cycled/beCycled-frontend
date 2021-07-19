@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, SimpleChanges } from '@angular/core'
 import { BaseCompetition, MapboxRouteGeoData, Route, User, UserService } from '../../../../domain'
-import { defer, Observable, of } from 'rxjs'
+import { defer, Observable } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 import { RouteService } from '../../../../domain/services/route/route.service'
 import { AbstractEventCard } from '../abstract-event-card'
@@ -9,6 +9,7 @@ import { AbstractEventCard } from '../abstract-event-card'
   selector: 'cy-competition',
   templateUrl: './competition.component.html',
   styleUrls: [ './competition.component.scss' ],
+  host: { class: 'event-card' },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompetitionComponent extends AbstractEventCard {
@@ -35,8 +36,6 @@ export class CompetitionComponent extends AbstractEventCard {
       return distance
     })
   )
-
-  public memberAvatars$: Observable<(string | null)[]> = of([])
 
   constructor(private routeService: RouteService,
               private userService: UserService) {

@@ -3,6 +3,7 @@ import mapboxgl, { AnyLayer } from 'mapbox-gl'
 import { BicycleCompetitionType, BicycleType, EventType, SportType } from '../../../domain'
 import { ISO8601 } from '../../../models'
 import { buildCountString, detectSportTypeByEventType } from '../../../utils'
+import { Observable, of } from 'rxjs'
 
 @Directive()
 export abstract class AbstractEventCard {
@@ -27,6 +28,8 @@ export abstract class AbstractEventCard {
   }
 
   public map: mapboxgl.Map | null = null
+
+  public memberAvatars$: Observable<(string | null)[]> = of([])
 
   public generateStartTime(date: ISO8601, isOnlyTimeShow: boolean = true): string {
     const parsedDate: Date = new Date(date)

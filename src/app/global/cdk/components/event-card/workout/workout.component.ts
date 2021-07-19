@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core'
 import { BaseWorkout, MapboxRouteGeoData, Route, User, UserService } from '../../../../domain'
 import { map, shareReplay } from 'rxjs/operators'
-import { defer, Observable, of } from 'rxjs'
+import { defer, Observable } from 'rxjs'
 import { AbstractEventCard } from '../abstract-event-card'
 import { RouteService } from '../../../../domain/services/route/route.service'
 
@@ -9,6 +9,7 @@ import { RouteService } from '../../../../domain/services/route/route.service'
   selector: 'cy-workout',
   templateUrl: './workout.component.html',
   styleUrls: [ './workout.component.scss' ],
+  host: { class: 'event-card' },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkoutComponent extends AbstractEventCard implements OnChanges {
@@ -35,8 +36,6 @@ export class WorkoutComponent extends AbstractEventCard implements OnChanges {
       return distance
     })
   )
-
-  public memberAvatars$: Observable<(string | null)[]> = of([])
 
   constructor(private routeService: RouteService,
               private userService: UserService) {
