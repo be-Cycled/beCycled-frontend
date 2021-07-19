@@ -11,17 +11,7 @@
       </h2>
       <ul class="event-list">
         <li class="event-item" *ngFor="let event of day.events">
-          <ng-container [ngSwitch]="detectBaseEventTypeByEventType(event.eventType)">
-
-            <ng-template [ngSwitchCase]="'WORKOUT'">
-              <cy-workout [workout]="event"></cy-workout>
-            </ng-template>
-
-            <ng-template [ngSwitchCase]="'COMPETITION'">
-              <cy-competition [competition]="event"></cy-competition>
-            </ng-template>
-
-          </ng-container>
+          <cy-event-card [event]="event"></cy-event-card>
         </li>
       </ul>
     </section>

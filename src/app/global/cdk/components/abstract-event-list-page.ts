@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core'
 import { combineLatest, defer, Observable, of } from 'rxjs'
 import { map, startWith } from 'rxjs/operators'
-import { BaseCompetition, BaseEventType, BaseWorkout, SportType } from '../../domain'
+import { BaseCompetition, BaseEventType, BaseWorkout, EventType, SportType } from '../../domain'
 import { ISO8601 } from '../../models'
 import { FormControl } from '@angular/forms'
 import { TuiHandler } from '@taiga-ui/cdk'
@@ -110,4 +110,8 @@ export abstract class AbstractEventListPage {
    * Хэндлер для подсчета элементов фильтром
    */
   public badgeHandler: TuiHandler<Record<string, any>, number> = (item: Record<string, any>) => item.count
+
+  public detectBaseEventTypeByEventType(eventType: EventType): BaseEventType {
+    return detectBaseEventTypeByEventType(eventType)
+  }
 }

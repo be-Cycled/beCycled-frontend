@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+tui-island {
+  box-shadow: var(--default-shadow);
+}
+
+.tui-island__category {
+  margin-bottom: 16px;
+}
+
+.preview-container {
+  margin-bottom: 16px;
+
+  border-radius: var(--tui-radius-l);
+
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 150px;
+  }
+}

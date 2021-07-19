@@ -29,6 +29,7 @@ tui-root {
 
   --header-height: 76px;
   --menu-height: 66px;
+  --default-shadow: 0 4px 24px rgb(0 0 0 / 12%);
 }
 
 .event-list {
@@ -77,61 +78,6 @@ tui-root {
 // Общие стили для событий
 
 .event-card {
-  .tui-island__category {
-    margin-bottom: 16px;
-  }
-
-  .preview-container {
-    margin-bottom: 16px;
-
-    border-radius: var(--tui-radius-l);
-
-    overflow: hidden;
-
-    img {
-      display: block;
-      width: 100%;
-      height: 150px;
-    }
-  }
-
-  .icon-list li {
-    display: flex;
-    align-items: center;
-    padding: 8px 0;
-  }
-
-  .material-icons-outlined {
-    display: block;
-    margin-right: 8px;
-    color: var(--icon-color);
-  }
-
-  .avatar-container {
-    position: relative;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border: 2px solid white;
-    border-radius: 50%;
-
-    overflow: hidden;
-
-    img {
-      display: block;
-    }
-  }
-
-  .avatar-container:not(:first-of-type) {
-    margin-left: -12px;
-  }
-
-  .avatar-container:last-of-type {
-    margin-right: 8px;
-  }
-
   .event-header {
     display: flex;
     justify-content: space-between;

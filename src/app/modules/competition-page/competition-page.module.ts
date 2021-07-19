@@ -7,6 +7,7 @@ import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 import { CompetitionPageRoutingModule } from './competition-page-routing.module'
 import { CompetitionPageComponent } from './components/competition-page/competition-page.component'
 import { TuiButtonModule, TuiDataListModule, TuiHostedDropdownModule } from '@taiga-ui/core'
+import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TuiButtonModule, TuiDataListModule, TuiHostedDropdownModule } from '@ta
     TuiLetModule,
     TuiHostedDropdownModule,
     TuiDataListModule,
-    TuiButtonModule
+    TuiButtonModule,
+    EventCardModule
   ]
 })
 export class CompetitionPageModule {
