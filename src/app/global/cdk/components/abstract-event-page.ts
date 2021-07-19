@@ -77,9 +77,9 @@ export abstract class AbstractEventPage extends AbstractEventCard {
     map((coordinates: number[][]) => generateGeoJsonFeature(coordinates))
   )
 
-  protected constructor(private abstractEventService: EventService,
-                        private abstractNotificationsService: TuiNotificationsService,
-                        private abstractRouterService: Router) {
+  protected constructor(protected eventService: EventService,
+                        protected notificationsService: TuiNotificationsService,
+                        protected router: Router) {
     super()
   }
 
@@ -98,16 +98,16 @@ export abstract class AbstractEventPage extends AbstractEventCard {
   public onDeleteButtonClick(id: number): void {
     this.isLoading = true
 
-    this.abstractEventService.delete(id).pipe(
+    this.eventService.delete(id).pipe(
       tap(() => {
-        this.abstractNotificationsService
+        this.notificationsService
           .show('Событие успешно удалено', {
             status: TuiNotification.Success
           }).subscribe()
 
         this.isLoading = false
 
-        this.abstractRouterService.navigateByUrl('/')
+        this.router.navigateByUrl('/')
       }),
       take(1)
     ).subscribe()

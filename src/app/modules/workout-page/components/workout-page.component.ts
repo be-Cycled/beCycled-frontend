@@ -40,13 +40,13 @@ export class WorkoutPageComponent extends AbstractEventPage {
 
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
-              private eventService: EventService,
               private title: Title,
               private userHolderService: UserHolderService,
-              private notificationsService: TuiNotificationsService,
-              private routerService: Router,
-              private dialogService: TuiDialogService) {
-    super(eventService, notificationsService, routerService)
+              private dialogService: TuiDialogService,
+              notificationsService: TuiNotificationsService,
+              eventService: EventService,
+              router: Router) {
+    super(eventService, notificationsService, router)
   }
 
   public showDeleteDialog(content: PolymorpheusContent<TuiDialogContext>): void {
