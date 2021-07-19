@@ -57,15 +57,22 @@
     </ng-container>
 
     <button
+      *ngIf="isCanJoinEvent | async"
+      [class.is-joined]="isJoined | async"
       tuiButton
       class="event-join-button"
       type="button"
       appearance="outline"
       size="m"
+      [showLoader]="isJoinButtonLoading"
+      (click)="onJoinButtonClick(event)"
     >
-            <span class="material-icons-outlined">
-              person_add
-            </span>
+      <span class="material-icons-outlined person-add-icon">
+        person_add
+      </span>
+      <span class="material-icons-outlined check-icon">
+        check
+      </span>
     </button>
   </li>
 </ul>

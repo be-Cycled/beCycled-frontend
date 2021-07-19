@@ -32,4 +32,8 @@ export class UserService {
   public readUsersByIds(ids: number[]): Observable<User[]> {
     return this.httpClient.post<User[]>(`${ this.configService.baseApiUrl }/users/multiple`, ids)
   }
+
+  public readAllUsers(): Observable<User[]> {
+    return this.httpClient.get<User[]>(`${ this.configService.baseApiUrl }/users/all`)
+  }
 }

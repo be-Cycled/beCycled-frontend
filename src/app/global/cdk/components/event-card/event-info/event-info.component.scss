@@ -43,5 +43,29 @@
 }
 
 .event-join-button {
+  width: 80px;
   margin-left: auto;
+}
+
+.check-icon {
+  display: none;
+}
+
+.is-joined {
+  .person-add-icon {
+    display: none;
+  }
+
+  .check-icon {
+    display: inline;
+    margin-right: 0;
+
+    color: var(--cy-success);
+  }
+}
+
+::ng-deep {
+  .is-joined tui-wrapper[data-appearance='outline']:after {
+    color: var(--cy-success)
+  }
 }
