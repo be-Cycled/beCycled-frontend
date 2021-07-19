@@ -27,7 +27,11 @@ export class CommunitySettingsGuard implements CanActivate {
         if (community === null) {
           const parentRoute: ActivatedRouteSnapshot | null = route.parent
 
-          const communityNickname: string | null | undefined = parentRoute?.paramMap.get(PATH_PARAMS.communityNickname)
+          if (parentRoute === null) {
+            throw new Error(`Misuse of the guard: Parent route does not exist`)
+          }
+
+          const communityNickname: string | null = parentRoute.paramMap.get(PATH_PARAMS.communityNickname)
 
           if (typeof communityNickname !== 'string') {
             return of(false)

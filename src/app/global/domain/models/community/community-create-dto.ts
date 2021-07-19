@@ -3,6 +3,7 @@ import { Community } from './community'
 import { CommunityType } from './community-type'
 
 /**
+ * DTO сущности сообщества при ее создании
  * @see Community
  */
 export interface CommunityCreateDto {
