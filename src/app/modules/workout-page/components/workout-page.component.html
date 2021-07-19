@@ -1,76 +1,137 @@
-<tui-island *tuiLet="workout$ | async as workout">
-  <ng-container *ngIf="workout">
-    <h3 class="tui-island__title">{{ generateStartTime(workout.startDate, false) }}</h3>
-    <p class="tui-island__category">Тренировка</p>
-    <mgl-map
-      [style]="'mapbox://styles/mapbox/streets-v11'"
-      [fitBounds]="bounds$ | async"
-      [fitBoundsOptions]="{ padding: 8, linear: true }"
-      [attributionControl]="false"
-      [doubleClickZoom]="false"
-      [zoom]="15"
-      [center]="[ 38.97616408756599, 45.04022357823186 ]"
-      (mapLoad)="onMapboxLoad($event)"
-    >
-      <mgl-geojson-source
-        id="geojson-route"
-        [data]="geoJson$ | async"
+<tui-loader
+  [showLoader]="isLoading"
+  [overlay]="true"
+>
+  <tui-island *tuiLet="workout$ | async as workout">
+    <ng-container *ngIf="workout">
+      <header class="event-header">
+        <h3 class="tui-island__title">{{ generateStartTime(workout.startDate, false) }}</h3>
+
+        <tui-hosted-dropdown [content]="dropdownContentRef" *ngIf="isCanEdit$ | async">
+          <button
+            type="button"
+            tuiButton
+            size="s"
+            appearance="flat"
+          >
+          <span class="material-icons-outlined">
+            more_vert
+          </span>
+          </button>
+        </tui-hosted-dropdown>
+
+        <ng-template #dropdownContentRef>
+          <tui-data-list role="menu">
+            <!--            <button type="button" tuiOption role="menuitem">Изменить</button>-->
+            <button type="button" tuiOption role="menuitem" (click)="showDeleteDialog(deleteDialogRef)">Удалить</button>
+          </tui-data-list>
+        </ng-template>
+
+        <ng-template #deleteDialogRef let-observer>
+          <p>Удалить тренировку?</p>
+          <div class="button-container">
+            <button
+              tuiButton
+              type="button"
+              size="m"
+              appearance="secondary"
+              (click)="observer.complete()"
+            >
+              Нет
+            </button>
+            <button
+              tuiButton
+              type="button"
+              size="m"
+              (click)="onDeleteButtonClick(workout.id); observer.complete()"
+            >
+              Да
+            </button>
+          </div>
+
+        </ng-template>
+      </header>
+
+      <p class="tui-island__category">Тренировка</p>
+      <mgl-map
+        [style]="'mapbox://styles/mapbox/streets-v11'"
+        [fitBounds]="bounds$ | async"
+        [fitBoundsOptions]="{ padding: 8, linear: true }"
+        [attributionControl]="false"
+        [doubleClickZoom]="false"
+        [zoom]="15"
+        [center]="[ 38.97616408756599, 45.04022357823186 ]"
+        (mapLoad)="onMapboxLoad($event)"
       >
-      </mgl-geojson-source>
-      <mgl-layer
-        id="route"
-        type="line"
-        source="geojson-route"
-        [paint]="{
+        <mgl-geojson-source
+          id="geojson-route"
+          [data]="geoJson$ | async"
+        >
+        </mgl-geojson-source>
+        <mgl-layer
+          id="route"
+          type="line"
+          source="geojson-route"
+          [paint]="{
           'line-color': '#0093D1',
           'line-width': 4
         }"
-      >
-      </mgl-layer>
-      <mgl-control mglNavigation></mgl-control>
-      <mgl-control position="bottom-right" mglFullscreen></mgl-control>
-    </mgl-map>
-    <ul class="icon-list">
-      <li>
+        >
+        </mgl-layer>
+        <mgl-control mglNavigation></mgl-control>
+        <mgl-control position="bottom-right" mglFullscreen></mgl-control>
+      </mgl-map>
+      <ul class="icon-list">
+        <li>
       <span class="material-icons-outlined">
         emoji_people
       </span>
-        <span>
+          <span>
         Вид спорта: {{ sportTypeMap[detectSportTypeByEventType(workout.eventType)] }}
       </span>
-      </li>
-      <li>
+        </li>
+        <li *ngIf="detectSportTypeByEventType(workout.eventType) === 'BICYCLE' && workout[ 'bicycleType' ] !== null">
+      <span class="material-icons-outlined">
+        pedal_bike
+      </span>
+          <span>
+        Велосипед: {{ bicycleTypeMap[workout['bicycleType']] }}
+      </span>
+        </li>
+        <li>
       <span class="material-icons-outlined">
         moving
       </span>
-        <span>
+          <span>
         Дистанция: {{ generateDistanceString(distance$ | async) }}
       </span>
-      </li>
-      <li *ngIf="workout.duration > 0">
+        </li>
+        <li *ngIf="workout.duration > 0">
       <span class="material-icons-outlined">
         access_time
       </span>
-        <span>
+          <span>
         Длительность: {{ generateDurationString(workout.duration) }}
       </span>
-      </li>
-      <li>
+        </li>
+        <li>
       <span class="material-icons-outlined">
         description
       </span>
-        <span>
+          <span>
         Описание: {{ workout.description }}
       </span>
-      </li>
-      <li>
+        </li>
+        <li>
       <span class="material-icons-outlined">
         group
       </span>
-        <span>
+          <span>
         Участники: {{ workout.memberUserIds.length }}
       </span>
-      </li>
-    </ul>
-  </ng-container>
-</tui-island>
+        </li>
+      </ul>
+    </ng-container>
+  </tui-island>
+</tui-loader>
+

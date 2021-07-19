@@ -9,6 +9,11 @@
   margin-bottom: 16px;
 }
 
+.event-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 mgl-map {
   width: 100%;
   height: 400px;
@@ -28,6 +33,15 @@ mgl-map {
   display: block;
   margin-right: 6px;
   color: var(--icon-color);
+}
+
+tui-hosted-dropdown .material-icons-outlined {
+  margin-right: 0;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
 }
 
 @media (min-width: 768px) {

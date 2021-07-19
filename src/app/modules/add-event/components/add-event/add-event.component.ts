@@ -35,6 +35,7 @@ import { MapboxNetworkService } from '../../../../global/services/mapbox-network
 import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
 import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
 import { EventService } from '../../../../global/domain/services/event/event.service'
+import { BicycleWorkoutDto } from '../../../../global/dto/event/bicycle-workout-dto'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -49,6 +50,8 @@ interface EnumValueWithLabel<T> {
   value: T
   label: string
 }
+
+type BicycleEventDto = BicycleWorkoutDto | BicycleCompetitionDto
 
 @Component({
   selector: 'cy-add-event',
@@ -206,8 +209,8 @@ export class AddEventComponent implements OnInit {
   }
 
   private generateStartDateIsoString(): ISO8601 {
-    const startDay: TuiDay = this.eventForm.get('startDay')?.value
-    const startTime: TuiTime = this.eventForm.get('startTime')?.value
+    const startDay: TuiDay = this.eventForm.value.startDay
+    const startTime: TuiTime = this.eventForm.value.startTime
     const startDateUtc: Date = startDay.toUtcNativeDate()
     startDateUtc.setHours(startTime.hours, startTime.minutes)
 
@@ -215,19 +218,19 @@ export class AddEventComponent implements OnInit {
   }
 
   private generateDurationInSeconds(): number {
-    const durationHours: number = this.eventForm.get('durationHours')?.value
-      ? this.eventForm.get('durationHours')?.value
+    const durationHours: number = this.eventForm.value.durationHours
+      ? this.eventForm.value.durationHours
       : 0
 
-    const durationMinutes: number = this.eventForm.get('durationMinutes')?.value
-      ? this.eventForm.get('durationMinutes')?.value
+    const durationMinutes: number = this.eventForm.value.durationMinutes
+      ? this.eventForm.value.durationMinutes
       : 0
 
     return (durationHours * 60 + durationMinutes) * 60
   }
 
-  private generateEventBodyByRouteAndUserId(route: Route, userId: number): BaseEventDto | BicycleCompetitionDto {
-    const eventType: EventType | null = detectEventTypeBySportType(BaseEventType.workout, this.eventForm.get('sportType')?.value)
+  private generateEventBodyByRouteAndUserId(route: Route, userId: number): BaseEventDto | BicycleEventDto {
+    const eventType: EventType | null = detectEventTypeBySportType(this.eventForm.value.eventType, this.eventForm.value.sportType)
 
     if (eventType !== null) {
       const baseEventProperties: BaseEventDto = {
@@ -239,7 +242,7 @@ export class AddEventComponent implements OnInit {
         venueGeoData: JSON.stringify(this.venueCoordinates),
         memberUserIds: [ userId ],
         duration: this.generateDurationInSeconds(),
-        description: this.eventForm.get('description')?.value,
+        description: this.eventForm.value.description,
         createdAd: null,
         eventType
       }
@@ -248,11 +251,24 @@ export class AddEventComponent implements OnInit {
        * Если выбрано соревнование и велосипед.
        * @link BicycleCompetitionDto
        */
-      if (this.eventForm.get('eventType')?.value === BaseEventType.competition
-        && this.eventForm.get('sportType')?.value === SportType.bicycle) {
+      if (this.eventForm.value.eventType === BaseEventType.competition
+        && this.eventForm.value.sportType === SportType.bicycle) {
         return {
           ...baseEventProperties,
-          bicycleCompetitionType: this.eventForm.get('bicycleCompetitionType')?.value
+          bicycleType: this.eventForm.value.bicycleType,
+          bicycleCompetitionType: this.eventForm.value.bicycleCompetitionType
+        }
+      }
+
+      /**
+       * Если выбрана тренировка и велосипед.
+       * @link BicycleWorkoutDto
+       */
+      if (this.eventForm.value.eventType === BaseEventType.workout
+        && this.eventForm.value.sportType === SportType.bicycle) {
+        return {
+          ...baseEventProperties,
+          bicycleType: this.eventForm.value.bicycleType
         }
       }
 
@@ -273,7 +289,7 @@ export class AddEventComponent implements OnInit {
       name: null,
       routeGeoData: JSON.stringify(this.routeGeoData),
       routePreview: this.preview,
-      sportTypes: [ this.eventForm.get('sportType')?.value ],
+      sportTypes: [ this.eventForm.value.sportType ],
       disposable: true,
       description: '',
       popularity: 0,
@@ -332,7 +348,7 @@ export class AddEventComponent implements OnInit {
   }
 
   private getCurrentDirectionType(): DirectionType {
-    switch (this.eventForm.get('sportType')?.value) {
+    switch (this.eventForm.value.sportType) {
       case SportType.bicycle:
         return DirectionType.driving
       case SportType.rollerblade:
@@ -566,7 +582,7 @@ export class AddEventComponent implements OnInit {
                               status: TuiNotification.Success
                             }).subscribe()
 
-                          this.routerService.navigate([ '' ])
+                          this.routerService.navigateByUrl('/')
                         })
                       )
                     })

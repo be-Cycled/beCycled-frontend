@@ -40,7 +40,7 @@ export enum BicycleType {
   /**
    * Шоссейный.
    */
-  road = 'Road',
+  road = 'ROAD',
 
   /**
    * Горный.
