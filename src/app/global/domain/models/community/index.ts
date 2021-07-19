@@ -1,2 +1,3 @@
 export * from './community'
-export * from './community-type.enum'
+export * from './community-type'
+export * from './community-create-dto'

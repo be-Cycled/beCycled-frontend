@@ -1,0 +1,51 @@
+<form class="community-settings-form" [formGroup]="communityFormGroup">
+  <div class="settings-container">
+    <div class="main-controls">
+      <div class="field">
+        <tui-input formControlName="name">Название *</tui-input>
+        <tui-field-error formControlName="name"></tui-field-error>
+      </div>
+
+      <div class="field">
+        <tui-input formControlName="nickname">Никнейм *</tui-input>
+        <tui-field-error formControlName="nickname"></tui-field-error>
+      </div>
+
+      <label class="field" tuiLabel label="Тип сообщества *">
+        <div tuiGroup orientation="vertical" [collapsed]="true">
+          <tui-radio-block formControlName="communityType" [item]="communityType.club">Клуб</tui-radio-block>
+          <tui-radio-block formControlName="communityType" [item]="communityType.organization">Организация</tui-radio-block>
+        </div>
+      </label>
+
+      <div class="field">
+        <tui-input formControlName="url">Ссылка</tui-input>
+      </div>
+      <div class="field">
+        <tui-text-area formControlName="description">Описание</tui-text-area>
+      </div>
+    </div>
+
+    <aside class="additional-controls">
+      <label tuiLabel label="Аватарка">
+        <div class="avatar-preview">
+          <img [attr.src]="avatarUrl | async" alt="">
+        </div>
+      </label>
+      <tui-input-file
+        [multiple]="false"
+        [maxFileSize]="maxFileSize"
+        accept="image/png,image/jpg,image/jpeg"
+        [formControl]="avatarFileControl"
+      ></tui-input-file>
+    </aside>
+  </div>
+
+  <div class="actions-container">
+    <button tuiButton
+            class="save-button"
+            (click)="onClickSaveButton()"
+            [showLoader]="saveButtonShowLoader | async"
+    >Сохранить</button>
+  </div>
+</form>

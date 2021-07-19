@@ -1,25 +1,39 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { CommunityCreationComponent } from './components/community-creation/community-creation.component'
-import { CommunitiesContainerComponent } from './containers/communities-container/communities-container.component'
-import { SingleCommunityContainerComponent } from './containers/single-community-container/single-community-container.component'
-import { SingleCommunityResolver } from './resolvers/single-community/single-community.resolver'
+import { PATH_PARAMS } from '../../global/models'
+import { CommunitySingleMainComponent, CommunitySingleSettingsComponent, CommunitySingleUsersComponent } from './components'
+import { CommunityCreateContainerComponent, CommunityListContainerComponent, CommunitySingleContainerComponent } from './containers'
+import { CommunitySettingsGuard } from './guards'
 
 const routes: Routes = [
   {
-    path: '',
-    component: CommunitiesContainerComponent
+    path: ``,
+    component: CommunityListContainerComponent
   },
   {
-    path: ':nickname',
-    component: SingleCommunityContainerComponent,
-    resolve: {
-      community: SingleCommunityResolver
-    }
+    path: `create`,
+    component: CommunityCreateContainerComponent
   },
   {
-    path: 'create',
-    component: CommunityCreationComponent
+    path: `:${ PATH_PARAMS.communityNickname }`,
+    component: CommunitySingleContainerComponent,
+    children: [
+      {
+        path: ``,
+        component: CommunitySingleMainComponent
+      },
+      {
+        path: `users`,
+        component: CommunitySingleUsersComponent
+      },
+      {
+        path: `settings`,
+        component: CommunitySingleSettingsComponent,
+        canActivate: [
+          CommunitySettingsGuard
+        ]
+      }
+    ]
   }
 ]
 

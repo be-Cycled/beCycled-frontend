@@ -1,10 +1,11 @@
-<img align="right" src="src/assets/logo.svg" alt="beCycled logo" width="100">
+<img align="right" src="https://github.com/be-Cycled/beCycled/blob/main/assets/beCycled-icon.png" alt="beCycled logo" width="100">
 
 # 🏂🏼 beCycled 📱
 
-PWA-приложение для работы с сервисом.
-
+[![Waliot Tech Team](https://raw.githubusercontent.com/waliot/waliot/main/assets/waliot-tech-badge.svg)](https://github.com/waliot)
 ![beCycled Deploy Status](https://img.shields.io/github/workflow/status/be-Cycled/beCycled-devops/Deploy?label=deploy)
+
+PWA-приложение для работы с сервисом.
 
 ## Установка
 

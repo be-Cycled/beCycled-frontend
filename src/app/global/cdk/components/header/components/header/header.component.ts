@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
+import { Router } from '@angular/router'
 import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { AuthorizationService } from '../../../../../../modules/auth/services/authorization/authorization.service'
 import { User } from '../../../../../domain'
 import { BrowserStorage, DEFAULT_AVATAR, takeBrowserStorageKey } from '../../../../../models'
-import { UserHolderService } from '../../../../../services'
-import { Router } from '@angular/router'
+import { UserStoreService } from '../../../../../services'
 
 @Component({
   selector: 'cy-header',
@@ -15,13 +16,13 @@ import { Router } from '@angular/router'
 })
 export class HeaderComponent {
 
-  public isUserAuthorized: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+  public isUserAuthorized: Observable<boolean> = this.userStoreService.isAuthChanges
 
   public isUserUnauthorized: Observable<boolean> = this.isUserAuthorized.pipe(
     map((isUserAuthorized: boolean) => !isUserAuthorized)
   )
 
-  public userAvatar: Observable<string> = this.userHolderService.userChanges.pipe(
+  public userAvatar: Observable<string> = this.userStoreService.validUserChanges.pipe(
     map((user: User) => {
       if (user.avatar !== null) {
         return `${ user.avatar }`
@@ -31,20 +32,21 @@ export class HeaderComponent {
     })
   )
 
-  public profileRouterLink: Observable<string> = this.userHolderService.userChanges.pipe(
+  public profileRouterLink: Observable<string> = this.userStoreService.validUserChanges.pipe(
     map((user: User) => user.login),
     map((userLogin: string) => `/users/${ userLogin }`)
   )
 
-  constructor(private userHolderService: UserHolderService,
+  constructor(private userStoreService: UserStoreService,
               @Inject(LOCAL_STORAGE)
               private localStorage: Storage,
-              private router: Router) {
+              private router: Router,
+              private authorizationService: AuthorizationService) {
   }
 
   public onClickLogoutButton(): void {
     this.localStorage.removeItem(takeBrowserStorageKey(BrowserStorage.accessToken))
-    this.userHolderService.updateUser(null)
+    this.userStoreService.reset()
   }
 
   /**
@@ -58,5 +60,9 @@ export class HeaderComponent {
     }
 
     return this.router.url === url
+  }
+
+  public captureRedirectUrl(): void {
+    this.authorizationService.redirectAfterAuthUrl = this.router.url
   }
 }

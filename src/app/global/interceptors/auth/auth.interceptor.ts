@@ -4,13 +4,13 @@ import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { Observable } from 'rxjs'
 import { tap } from 'rxjs/operators'
 import { BrowserStorage, takeBrowserStorageKey } from '../../models'
-import { UserHolderService } from '../../services'
+import { UserStoreService } from '../../services'
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(@Inject(LOCAL_STORAGE)
               private localStorage: Storage,
-              private userHolderService: UserHolderService) {
+              private userStoreService: UserStoreService) {
   }
 
   public intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -27,7 +27,7 @@ export class AuthInterceptor implements HttpInterceptor {
           error: (error: HttpErrorResponse) => {
             if (error.status === 401) {
               this.localStorage.removeItem(key)
-              this.userHolderService.updateUser(null)
+              this.userStoreService.reset()
             }
           }
         })

@@ -4,7 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../../global/cdk/components/abstract-event-page'
-import { BaseCompetition, BaseWorkout, Route, User, UserService } from '../../../../global/domain'
+import { BaseCompetition, BaseWorkout, Route } from '../../../../global/domain'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { generateStartTime, getWorkoutListDate } from '../../../../global/utils'
 import { EventService } from '../../../../global/domain/services/event/event.service'
@@ -50,6 +50,7 @@ export class CompetitionPageComponent extends AbstractEventPage {
               private title: Title,
               private userHolderService: UserHolderService,
               private userService: UserService,
+              private userStoreService: UserStoreService,
               private dialogService: TuiDialogService,
               notificationsService: TuiNotificationsService,
               eventService: EventService,

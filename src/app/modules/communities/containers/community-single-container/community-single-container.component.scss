@@ -1,0 +1,92 @@
+:host {
+  display: block;
+  padding: 12px;
+  height: 100%;
+  overflow-y: auto;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  --avatar-size: 100px;
+
+  display: grid;
+  grid-template-columns: var(--avatar-size) repeat(4, 1fr);
+  grid-template-rows: 32px repeat(5, auto);
+  grid-auto-flow: row;
+  gap: 0.5rem;
+  grid-template-areas:
+    "avatar type . . ."
+    "avatar name name name name"
+    "avatar links links links links"
+    "avatar description description description description"
+    "actions actions actions actions actions";
+}
+
+.header.is-settings-tab-active {
+  --avatar-size: 50px;
+
+  grid-template-columns: var(--avatar-size) 1fr;
+  grid-template-rows: 18px 1fr;
+  grid-template-areas:
+    "avatar type"
+    "avatar name"
+}
+
+.community-type-container {
+  grid-area: type;
+  text-transform: uppercase;
+}
+
+.community-avatar-container {
+  grid-area: avatar;
+}
+
+.community-actions-container {
+  grid-area: actions;
+}
+
+.community-name-container {
+  grid-area: name;
+}
+
+.community-name {
+  margin: 0;
+}
+
+.community-links-container {
+  grid-area: links;
+}
+
+.community-description-container {
+  grid-area: description;
+}
+
+.community-avatar-container img {
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.community-link-list-item {
+  display: flex;
+  align-items: center;
+}
+
+.join-button {
+  --tui-primary: var(--cy-primary);
+  width: 100%;
+
+  @media screen and (min-width: 600px) {
+    width: initial;
+  }
+}
+
+.join-button.is-user-joined {
+  --tui-primary: var(--cy-success);
+}
+
+.community-view-control {
+  margin-bottom: 12px;
+}

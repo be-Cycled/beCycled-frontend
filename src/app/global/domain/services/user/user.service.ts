@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
-import { ConfigService } from '../../../services'
+import { ConfigService } from '../../../services/config/config.service'
 import { User } from '../../models'
 
 @Injectable()

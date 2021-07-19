@@ -4,7 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../global/cdk/components/abstract-event-page'
-import { BaseWorkout, Route, User, UserService } from '../../../global/domain'
+import { BaseWorkout, Route } from '../../../global/domain'
 import { RouteService } from '../../../global/domain/services/route/route.service'
 import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
 import { EventService } from '../../../global/domain/services/event/event.service'
@@ -36,7 +36,7 @@ export class WorkoutPageComponent extends AbstractEventPage {
   )
 
   public isCanEdit$: Observable<boolean> = this.workout$.pipe(
-    map((workout: BaseWorkout) => workout.ownerUserId === this.userHolderService.getUser()?.id)
+    map((workout: BaseWorkout) => workout.ownerUserId === this.userStoreService.user?.id)
   )
 
   public memberAvatars$: Observable<(string | null)[]> = this.workout$.pipe(
@@ -48,7 +48,7 @@ export class WorkoutPageComponent extends AbstractEventPage {
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
               private title: Title,
-              private userHolderService: UserHolderService,
+              private userStoreService: UserStoreService,
               private userService: UserService,
               private dialogService: TuiDialogService,
               notificationsService: TuiNotificationsService,

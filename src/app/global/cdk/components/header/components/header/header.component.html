@@ -67,6 +67,6 @@
 </div>
 
 <div class="unauthorized-user-info-container" *ngIf="isUserUnauthorized | async">
-  <a class="login-button" routerLink="/auth/login" size="m" tuiButton>Войти</a>
-  <a class="register-button" routerLink="/auth/registration" size="m" tuiButton appearance="outline">Регистрация</a>
+  <a class="login-button" routerLink="/auth/login" size="m" tuiButton (click)="captureRedirectUrl()">Войти</a>
+  <a class="register-button" routerLink="/auth/registration" size="m" (click)="captureRedirectUrl()" tuiButton appearance="outline">Регистрация</a>
 </div>
