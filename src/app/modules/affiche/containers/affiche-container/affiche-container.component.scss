@@ -62,6 +62,7 @@
 
 @media (min-width: 768px) {
   :host {
+    height: calc(100% - var(--menu-height));
     padding: 36px 0;
 
     & .event-list {
