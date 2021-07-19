@@ -114,7 +114,7 @@ PR Closes #125
 2. После этого переключитесь на `main` ветки и выполнител следующую команду
     
   ```bash
-  npm version <new-version> -m 'chore: v%s'
+  npm version <new-version> -m 'chore: Обновлена версия до `%s`'
   ```
 
   где `new-version` новая версия
