@@ -3,8 +3,7 @@ import { TuiDialogService } from '@taiga-ui/core'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { User } from '../../../../../domain'
-import { UserHolderService } from '../../../../../services'
-import { DEFAULT_AVATAR } from '../../../../../models'
+import { UserStoreService } from '../../../../../services'
 
 @Component({
   selector: 'cy-menu',
@@ -14,24 +13,18 @@ import { DEFAULT_AVATAR } from '../../../../../models'
 })
 export class MenuComponent {
 
-  public profileRouterLink: Observable<string> = this.userHolderService.userChanges.pipe(
+  public profileRouterLink: Observable<string> = this.userStoreService.validUserChanges.pipe(
     map((user: User) => user.login),
     map((userLogin: string) => `/users/${ userLogin }`)
   )
 
-  public isUserAuthorized: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+  public isUserAuthorized: Observable<boolean> = this.userStoreService.isAuthChanges
 
-  public userAvatar: Observable<string> = this.userHolderService.userChanges.pipe(
-    map((user: User) => {
-      if (user.avatar !== null) {
-        return `${ user.avatar }`
-      }
-
-      return DEFAULT_AVATAR
-    })
+  public userAvatar: Observable<string | null> = this.userStoreService.validUserChanges.pipe(
+    map((user: User) => user.avatar)
   )
 
-  constructor(private userHolderService: UserHolderService,
+  constructor(private userStoreService: UserStoreService,
               private dialogService: TuiDialogService) {
   }
 

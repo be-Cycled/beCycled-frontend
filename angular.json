@@ -14,6 +14,12 @@
           "changeDetection": "OnPush",
           "displayBlock": true
         },
+        "@schematics/angular:service": {
+          "flat": false
+        },
+        "@schematics/angular:pipe": {
+          "flat": false
+        },
         "@schematics/angular:application": {
           "strict": true
         }

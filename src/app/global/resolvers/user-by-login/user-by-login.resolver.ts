@@ -4,12 +4,10 @@ import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { Observable, of } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 import { User, UserService } from '../../domain'
-import { UserHolderService } from '../../services'
 
 @Injectable({ providedIn: 'root' })
 export class UserByLoginResolver implements Resolve<User | null> {
   constructor(private userService: UserService,
-              private userHolderService: UserHolderService,
               @Inject(LOCAL_STORAGE)
               private localStorage: Storage) {
   }

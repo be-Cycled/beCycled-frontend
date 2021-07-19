@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/operators'
-import { BaseCompetition, BaseEventType, BaseWorkout, EventType } from '../../../../global/domain'
-import { UserHolderService } from '../../../../global/services'
-import { AbstractEventListPage } from '../../../../global/cdk/components/abstract-event-list-page'
-import { EventService } from '../../../../global/domain/services/event/event.service'
 import { detectBaseEventTypeByEventType } from 'src/app/global/utils'
+import { AbstractEventListPage } from '../../../../global/cdk/components/abstract-event-list-page'
+import { BaseCompetition, BaseEventType, BaseWorkout, EventType } from '../../../../global/domain'
+import { EventService } from '../../../../global/domain/services/event/event.service'
+import { UserStoreService } from '../../../../global/services'
 
 @Component({
   selector: 'cy-affiche-container',
@@ -15,7 +15,7 @@ import { detectBaseEventTypeByEventType } from 'src/app/global/utils'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AfficheContainerComponent extends AbstractEventListPage implements OnInit {
-  public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
+  public isUserAuthorized$: Observable<boolean> = this.userStoreService.isAuthChanges
 
   public events$: Observable<(BaseWorkout | BaseCompetition)[]> = this.eventService.readAffiche().pipe(
     shareReplay(1)
@@ -23,7 +23,7 @@ export class AfficheContainerComponent extends AbstractEventListPage implements 
 
   constructor(private title: Title,
               private eventService: EventService,
-              private userHolderService: UserHolderService) {
+              private userStoreService: UserStoreService) {
     super()
     this.title.setTitle(`Афиша`)
   }

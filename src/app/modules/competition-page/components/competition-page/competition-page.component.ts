@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
+import { TuiDialogContext, TuiDialogService, TuiNotificationsService } from '@taiga-ui/core'
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
 import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../../global/cdk/components/abstract-event-page'
 import { BaseCompetition, BaseWorkout, Route } from '../../../../global/domain'
-import { RouteService } from '../../../../global/domain/services/route/route.service'
-import { generateStartTime, getWorkoutListDate } from '../../../../global/utils'
 import { EventService } from '../../../../global/domain/services/event/event.service'
-import { UserHolderService } from '../../../../global/services'
-import { TuiDialogContext, TuiDialogService, TuiNotificationsService } from '@taiga-ui/core'
-import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
+import { RouteService } from '../../../../global/domain/services/route/route.service'
+import { UserStoreService } from '../../../../global/services'
+import { generateStartTime, getWorkoutListDate } from '../../../../global/utils'
 
 @Component({
   selector: 'cy-competition-page',
@@ -35,13 +35,13 @@ export class CompetitionPageComponent extends AbstractEventPage {
   )
 
   public isCanEdit$: Observable<boolean> = this.competition$.pipe(
-    map((competition: BaseCompetition) => competition.ownerUserId === this.userHolderService.getUser()?.id)
+    map((competition: BaseCompetition) => competition.ownerUserId === this.userStoreService.user?.id)
   )
 
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
               private title: Title,
-              private userHolderService: UserHolderService,
+              private userStoreService: UserStoreService,
               private dialogService: TuiDialogService,
               notificationsService: TuiNotificationsService,
               eventService: EventService,
