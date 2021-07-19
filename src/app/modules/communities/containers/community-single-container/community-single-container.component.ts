@@ -35,6 +35,10 @@ export class CommunitySingleContainerComponent implements OnDestroy {
     distinctUntilChanged()
   )
 
+  public isSettingsTabActive: Observable<boolean> = this.activeTabChanges.pipe(
+    map((activeTab: CommunitySingleTab) => activeTab === CommunitySingleTab.settings)
+  )
+
   public avatar: Observable<string> = this.communityChanges.pipe(
     pluck('avatar')
   )
@@ -51,8 +55,22 @@ export class CommunitySingleContainerComponent implements OnDestroy {
     pluck('description')
   )
 
+  public isDescriptionShow: Observable<boolean> = combineLatest([
+    this.isSettingsTabActive,
+    this.description
+  ]).pipe(
+    map(([ isSettingsTabActive, description ]: [ boolean, string | null ]) => !isSettingsTabActive && description !== null)
+  )
+
   public url: Observable<string | null> = this.communityChanges.pipe(
     pluck('url')
+  )
+
+  public isUrlShow: Observable<boolean> = combineLatest([
+    this.isSettingsTabActive,
+    this.url
+  ]).pipe(
+    map(([ isSettingsTabActive, url ]: [ boolean, string | null ]) => !isSettingsTabActive && url !== null)
   )
 
   public isUserExist: Observable<boolean> = this.userStoreService.isAuthChanges
@@ -85,10 +103,6 @@ export class CommunitySingleContainerComponent implements OnDestroy {
 
   public joinButtonSize: Observable<string> = this.isMobile.pipe(
     map((isMobile: boolean) => isMobile ? 'm' : 's')
-  )
-
-  public isSettingsTabActive: Observable<boolean> = this.activeTabChanges.pipe(
-    map((activeTab: CommunitySingleTab) => activeTab === CommunitySingleTab.settings)
   )
 
   constructor(public readonly activatedRoute: ActivatedRoute,

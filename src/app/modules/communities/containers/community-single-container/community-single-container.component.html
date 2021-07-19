@@ -17,7 +17,7 @@
       <h1 class="community-name">{{ name | async }}</h1>
     </div>
 
-    <div *ngIf="!isSettingsActive" class="community-links-container">
+    <div *ngIf="isUrlShow | async" class="community-links-container">
       <ul class="community-link-list">
         <li class="community-link-list-item">
           <span class="material-icons-outlined">link</span>
@@ -26,7 +26,7 @@
       </ul>
     </div>
 
-    <div *ngIf="!isSettingsActive" class="community-description-container" [innerHTML]="description | async | safe: 'html'"></div>
+    <div *ngIf="isDescriptionShow | async" class="community-description-container" [innerHTML]="description | async | safe: 'html'"></div>
 
     <div *ngIf="!isSettingsActive" class="community-actions-container">
       <ng-container *ngIf="isUserExist | async">
