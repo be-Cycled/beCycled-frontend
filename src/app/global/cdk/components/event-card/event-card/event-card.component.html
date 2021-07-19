@@ -10,7 +10,7 @@
   <div class="preview-container">
     <img [src]="routePreview$ | async">
   </div>
-  <cy-event-info [event]="event"></cy-event-info>
+  <cy-event-info [event]="event" [route]="route$ | async"></cy-event-info>
 
   <button
     tuiButton

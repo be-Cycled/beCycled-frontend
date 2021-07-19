@@ -81,7 +81,7 @@
         <mgl-control mglNavigation></mgl-control>
         <mgl-control position="bottom-right" mglFullscreen></mgl-control>
       </mgl-map>
-      <cy-event-info [event]="workout$ | async"></cy-event-info>
+      <cy-event-info [event]="workout$ | async" [route]="route$ | async"></cy-event-info>
     </ng-container>
   </tui-island>
 </tui-loader>

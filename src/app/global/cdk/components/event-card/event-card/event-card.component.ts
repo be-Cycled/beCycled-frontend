@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { AbstractEventCard } from '../abstract-event-card'
-import { BaseEvent, BaseEventType, EventType, MapboxRouteGeoData, Route, UserService } from '../../../../domain'
+import { BaseEvent, BaseEventType, EventType, Route } from '../../../../domain'
 import { defer, Observable } from 'rxjs'
 import { map, shareReplay } from 'rxjs/operators'
 import { RouteService } from '../../../../domain/services/route/route.service'
@@ -24,21 +24,7 @@ export class EventCardComponent extends AbstractEventCard {
     map((route: Route) => route.routePreview)
   ))
 
-  public routeInfos$: Observable<MapboxRouteGeoData[]> = this.route$.pipe(
-    map((route: Route) => (JSON.parse(route.routeGeoData) as MapboxRouteGeoData[]))
-  )
-
-  public distance$: Observable<number> = this.routeInfos$.pipe(
-    map((routeInfos: MapboxRouteGeoData[]) => {
-      let distance: number = 0
-      routeInfos.forEach((routeInfo: MapboxRouteGeoData) => distance += routeInfo.routes[ 0 ].distance)
-
-      return distance
-    })
-  )
-
-  constructor(private routeService: RouteService,
-              private userService: UserService) {
+  constructor(private routeService: RouteService) {
     super()
   }
 
