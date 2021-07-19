@@ -227,7 +227,7 @@ export class AddEventComponent implements OnInit {
   }
 
   private generateEventBodyByRouteAndUserId(route: Route, userId: number): BaseEventDto | BicycleCompetitionDto {
-    const eventType: EventType | null = detectEventTypeBySportType(BaseEventType.workout, this.eventForm.get('sportType')?.value)
+    const eventType: EventType | null = detectEventTypeBySportType(this.eventForm.get('eventType')?.value, this.eventForm.get('sportType')?.value)
 
     if (eventType !== null) {
       const baseEventProperties: BaseEventDto = {
