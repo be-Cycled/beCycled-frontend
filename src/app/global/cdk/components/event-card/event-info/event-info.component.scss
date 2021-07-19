@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.icon-list li {
+  display: flex;
+  padding: 8px 0;
+}
+
+.material-icons-outlined {
+  display: block;
+  margin-right: 8px;
+  color: var(--icon-color);
+}
+
+.avatars-item {
+  align-items: center;
+}
+
+.avatar-container {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 2px solid white;
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  img {
+    display: block;
+  }
+}
+
+.avatar-container:not(:first-of-type) {
+  margin-left: -12px;
+}
+
+.avatar-container:last-of-type {
+  margin-right: 8px;
+}
+
+.event-join-button {
+  margin-left: auto;
+}

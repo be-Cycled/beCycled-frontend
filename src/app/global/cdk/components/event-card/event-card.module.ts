@@ -5,17 +5,21 @@ import { CompetitionComponent } from './competition/competition.component'
 import { TuiIslandModule } from '@taiga-ui/kit'
 import { RouterModule } from '@angular/router'
 import { TuiLetModule } from '@taiga-ui/cdk'
+import { EventInfoComponent } from './event-info/event-info.component'
+import { TuiButtonModule } from '@taiga-ui/core'
 
 @NgModule({
   declarations: [
     WorkoutComponent,
-    CompetitionComponent
+    CompetitionComponent,
+    EventInfoComponent
   ],
   imports: [
     CommonModule,
     TuiIslandModule,
     RouterModule,
-    TuiLetModule
+    TuiLetModule,
+    TuiButtonModule
   ],
   exports: [
     WorkoutComponent,

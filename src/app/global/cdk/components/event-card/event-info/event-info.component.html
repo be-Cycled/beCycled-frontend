@@ -1,0 +1,71 @@
+<ul class="icon-list" *ngIf="event !== null">
+  <li>
+      <span class="material-icons-outlined">
+        emoji_people
+      </span>
+    <span>
+        Вид спорта: {{ sportTypeMap[detectSportTypeByEventType(event.eventType)] }}
+      </span>
+  </li>
+  <li
+    *ngIf="detectSportTypeByEventType(event.eventType) === 'BICYCLE' && event[ 'bicycleType' ] !== null">
+      <span class="material-icons-outlined">
+        pedal_bike
+      </span>
+    <span>
+        Велосипед: {{ bicycleTypeMap[event['bicycleType']] }}
+      </span>
+  </li>
+  <li *ngIf="event.eventType === 'BICYCLE_COMPETITION' && event[ 'bicycleCompetitionType' ] !== null">
+      <span class="material-icons-outlined">
+        emoji_events
+      </span>
+    <span>
+        Вид гонки: {{ bicycleCompetitionTypeMap[event['bicycleCompetitionType']] }}
+      </span>
+  </li>
+  <li>
+      <span class="material-icons-outlined">
+        moving
+      </span>
+    <span>
+        Дистанция: {{ generateDistanceString(distance$ | async) }}
+      </span>
+  </li>
+  <li *ngIf="event.duration > 0">
+      <span class="material-icons-outlined">
+        access_time
+      </span>
+    <span>
+        Длительность: {{ generateDurationString(event.duration) }}
+      </span>
+  </li>
+  <li>
+      <span class="material-icons-outlined">
+        description
+      </span>
+    <span>
+        Описание: {{ event.description }}
+      </span>
+  </li>
+  <li class="avatars-item" *tuiLet="memberAvatars$ | async as memberAvatars">
+    <ng-container *ngIf="memberAvatars !== null">
+      <div class="avatar-container" *ngFor="let avatar of memberAvatars">
+        <img width="36" height="36" [src]="avatar">
+      </div>
+      <span class="members-count">{{ generateMembersString(memberAvatars.length) }}</span>
+    </ng-container>
+
+    <button
+      tuiButton
+      class="event-join-button"
+      type="button"
+      appearance="outline"
+      size="m"
+    >
+            <span class="material-icons-outlined">
+              person_add
+            </span>
+    </button>
+  </li>
+</ul>
