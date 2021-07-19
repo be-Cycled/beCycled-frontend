@@ -1,23 +1,35 @@
-<cy-event-filter [formControl]="filters" [events]="events$ | async"></cy-event-filter>
+<tui-loader
+  [showLoader]="isLoading"
+  [overlay]="true"
+>
+  <ng-container *ngIf="(events$ | async)?.length > 0; else emptyListMessage">
+    <cy-event-filter [formControl]="filters" [events]="events$ | async"></cy-event-filter>
 
-<section class="events-wrapper" *ngFor="let day of calendar$ | async">
-  <h2 class="date">
-    {{ getWorkoutListDate(day.date) }}
-  </h2>
-  <ul class="event-list">
-    <li class="event-item" *ngFor="let event of day.events">
-      <ng-container [ngSwitch]="detectBaseEventTypeByEventType(event.eventType)">
+    <section class="events-wrapper" *ngFor="let day of calendar$ | async">
+      <h2 class="date">
+        {{ getWorkoutListDate(day.date) }}
+      </h2>
+      <ul class="event-list">
+        <li class="event-item" *ngFor="let event of day.events">
+          <ng-container [ngSwitch]="detectBaseEventTypeByEventType(event.eventType)">
 
-        <ng-template [ngSwitchCase]="'WORKOUT'">
-          <cy-workout [workout]="event"></cy-workout>
-        </ng-template>
+            <ng-template [ngSwitchCase]="'WORKOUT'">
+              <cy-workout [workout]="event"></cy-workout>
+            </ng-template>
 
-        <ng-template [ngSwitchCase]="'COMPETITION'">
-          <cy-competition [competition]="event"></cy-competition>
-        </ng-template>
+            <ng-template [ngSwitchCase]="'COMPETITION'">
+              <cy-competition [competition]="event"></cy-competition>
+            </ng-template>
 
-      </ng-container>
-    </li>
-  </ul>
-</section>
+          </ng-container>
+        </li>
+      </ul>
+    </section>
+  </ng-container>
 
+  <ng-template #emptyListMessage>
+    <h2 class="empty-list">
+      Лента событий пуста.
+    </h2>
+  </ng-template>
+</tui-loader>

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { Observable } from 'rxjs'
-import { shareReplay } from 'rxjs/operators'
+import { shareReplay, tap } from 'rxjs/operators'
 import { BaseCompetition, BaseEventType, BaseWorkout, EventType } from '../../../../global/domain'
 import { UserHolderService } from '../../../../global/services'
 import { AbstractEventListPage } from '../../../../global/cdk/components/abstract-event-list-page'
@@ -15,9 +15,11 @@ import { detectBaseEventTypeByEventType } from 'src/app/global/utils'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AfficheContainerComponent extends AbstractEventListPage implements OnInit {
+  public isLoading: boolean = true
   public isUserAuthorized$: Observable<boolean> = this.userHolderService.isUserAuthorizedChanges
 
   public events$: Observable<(BaseWorkout | BaseCompetition)[]> = this.eventService.readAffiche().pipe(
+    tap(() => this.isLoading = false),
     shareReplay(1)
   )
 

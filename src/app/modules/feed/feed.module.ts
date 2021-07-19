@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 import { EventFilterModule } from '../../global/cdk/components/event-filter/event-filter.module'
 import { EventService } from '../../global/domain/services/event/event.service'
+import { TuiLoaderModule } from '@taiga-ui/core'
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { EventService } from '../../global/domain/services/event/event.service'
     TuiFilterModule,
     EventCardModule,
     ReactiveFormsModule,
-    EventFilterModule
+    EventFilterModule,
+    TuiLoaderModule
   ],
   providers: [
     EventService
