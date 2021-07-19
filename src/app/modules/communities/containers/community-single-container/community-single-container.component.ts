@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core'
+import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
+import { TuiDestroyService } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, iif, Observable } from 'rxjs'
-import { catchError, distinctUntilChanged, filter, map, pluck, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { catchError, distinctUntilChanged, filter, map, pluck, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
 import { Community, CommunityType, User } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { PATH_PARAMS } from '../../../../global/models'
@@ -20,7 +22,8 @@ const enum CommunitySingleTab {
   selector: 'cy-community-single-container',
   templateUrl: './community-single-container.component.html',
   styleUrls: [ './community-single-container.component.scss' ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ TuiDestroyService ]
 })
 export class CommunitySingleContainerComponent implements OnDestroy {
   public readonly communityType: typeof CommunityType = CommunityType
@@ -105,6 +108,24 @@ export class CommunitySingleContainerComponent implements OnDestroy {
     map((isMobile: boolean) => isMobile ? 'm' : 's')
   )
 
+  private pageTitle: Observable<string> = combineLatest([
+    this.activeTabChanges,
+    this.communityChanges
+  ]).pipe(
+    takeUntil(this.destroyService),
+    map(([ activeTab, community ]: [ CommunitySingleTab, Community ]) => {
+      switch (activeTab) {
+        case CommunitySingleTab.users: return `Участники · ${ community.name }`
+        case CommunitySingleTab.settings: return `Настройки · ${ community.name }`
+        case CommunitySingleTab.review:
+        default: {
+          return community.name
+        }
+      }
+    }),
+    tap((title: string) => this.titleService.setTitle(title))
+  )
+
   constructor(public readonly activatedRoute: ActivatedRoute,
               private router: Router,
               private communityService: CommunityService,
@@ -112,8 +133,11 @@ export class CommunitySingleContainerComponent implements OnDestroy {
               private notificationService: TuiNotificationsService,
               private communityStoreService: CommunityStoreService,
               @Inject(IS_MOBILE)
-              private isMobile: Observable<boolean>) {
+              private isMobile: Observable<boolean>,
+              private destroyService: TuiDestroyService,
+              private titleService: Title) {
     this.activatedRoute.paramMap.pipe(
+      takeUntil(this.destroyService),
       switchMap((params: ParamMap) => {
         if (this.communityStoreService.takeCommunity() !== null) {
           return EMPTY
@@ -134,6 +158,8 @@ export class CommunitySingleContainerComponent implements OnDestroy {
         )
       })
     ).subscribe()
+
+    this.pageTitle.subscribe()
   }
 
   public ngOnDestroy(): void {
