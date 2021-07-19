@@ -28,4 +28,8 @@ export class UserService {
   public updateUser(id: number, user: User): Observable<User> {
     return this.httpClient.put<User>(`${ this.configService.baseApiUrl }/users/${ id.toString() }`, user)
   }
+
+  public readUsersByIds(ids: number[]): Observable<User[]> {
+    return this.httpClient.post<User[]>(`${ this.configService.baseApiUrl }/users/multiple`, ids)
+  }
 }
