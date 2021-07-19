@@ -18,26 +18,6 @@ import { CommunityStoreService } from '../../../services'
 export class CommunitySingleMainComponent {
 
   public events: Observable<SomeWrappedEvent[]> = of([])
-    /*this.communityStoreService.communityChanges.pipe(
-    switchMap((community: Community) => forkJoin([
-      this.workoutService.readWorkoutsByCommunity(community.nickname),
-      this.competitionService.readCompetitionsByCommunity(community.nickname)
-    ]).pipe(
-      map(([ workouts, competitions ]: [ Workout[], Competition[] ]) => {
-        const result: SomeWrappedEvent[] = []
-
-        const workoutEvents: WrappedEvent<EventType.workout, Workout>[] = workouts.map((workout: Workout) => ({ type: EventType.workout, value: workout }))
-        const competitionEvents: WrappedEvent<EventType.competition, Competition>[] = competitions.map((competition: Competition) => ({ type: EventType.competition, value: competition }))
-
-        result.push(...workoutEvents)
-        result.push(...competitionEvents)
-
-        return result.sort((a: SomeWrappedEvent, b: SomeWrappedEvent) => {
-          return new Date(a.value.createdAd).getTime() - new Date(b.value.startDate).getTime()
-        })
-      })
-    ))
-  )*/
 
   public sportTypes: Observable<SportType[]> = this.communityStoreService.communityChanges.pipe(
     pluck('sportTypes')

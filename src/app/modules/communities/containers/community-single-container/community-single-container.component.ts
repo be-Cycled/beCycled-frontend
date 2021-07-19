@@ -47,11 +47,11 @@ export class CommunitySingleContainerComponent implements OnDestroy {
     pluck('communityType')
   )
 
-  public description: Observable<string> = this.communityChanges.pipe(
+  public description: Observable<string | null> = this.communityChanges.pipe(
     pluck('description')
   )
 
-  public url: Observable<string> = this.communityChanges.pipe(
+  public url: Observable<string | null> = this.communityChanges.pipe(
     pluck('url')
   )
 

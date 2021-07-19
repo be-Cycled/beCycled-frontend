@@ -1,11 +1,15 @@
 import { SportType } from '../event'
+import { Community } from './community'
 import { CommunityType } from './community-type'
 
-export interface Community {
+/**
+ * @see Community
+ */
+export interface CommunityCreateDto {
   /**
    * Идентификатор сообщества
    */
-  id: number
+  id: null
 
   /**
    * Название
@@ -20,7 +24,7 @@ export interface Community {
   /**
    * Ссылка на аватарку
    */
-  avatar: string
+  avatar: string | null
 
   /**
    * Идентификатор владельца сообщества

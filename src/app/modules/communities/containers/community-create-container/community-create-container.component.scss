@@ -1,3 +1,24 @@
 :host {
   display: block;
+  padding: 12px;
+  height: 100%;
+  overflow-y: auto;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.field:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+.field {
+  width: 100%;
+}
+
+form.community-create-form {
+  margin-bottom: 12px;
+}
+
+button.save-button {
+  width: 100%;
 }
