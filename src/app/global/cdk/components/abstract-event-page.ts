@@ -107,7 +107,7 @@ export abstract class AbstractEventPage extends AbstractEventCard {
 
         this.isLoading = false
 
-        this.abstractRouterService.navigate([ '' ])
+        this.abstractRouterService.navigateByUrl('/')
       }),
       take(1)
     ).subscribe()
