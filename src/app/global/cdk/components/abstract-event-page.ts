@@ -12,6 +12,7 @@ import { Router } from '@angular/router'
 @Directive()
 export abstract class AbstractEventPage extends AbstractEventCard {
   protected mapIsReady$: Subject<void> = new Subject()
+  public isLoading: boolean = false
 
   public startPoint: mapboxgl.Marker | null = null
   public endPoint: mapboxgl.Marker | null = null
@@ -95,12 +96,16 @@ export abstract class AbstractEventPage extends AbstractEventCard {
   }
 
   public onDeleteButtonClick(id: number): void {
+    this.isLoading = true
+
     this.abstractEventService.delete(id).pipe(
       tap(() => {
         this.abstractNotificationsService
           .show('Событие успешно удалено', {
             status: TuiNotification.Success
           }).subscribe()
+
+        this.isLoading = false
 
         this.abstractRouterService.navigate([ '' ])
       }),
