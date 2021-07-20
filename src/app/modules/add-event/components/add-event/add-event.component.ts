@@ -21,6 +21,7 @@ import {
   BaseEventType,
   BicycleCompetitionType,
   BicycleType,
+  Community,
   DirectionType,
   EventType,
   MapboxRouteGeoData,
@@ -36,6 +37,7 @@ import { ISO8601 } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
 import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
+import { CommunityStoreService } from '../../../communities/services'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
   type: 'Feature',
@@ -80,6 +82,8 @@ type BicycleEventDto = BicycleWorkoutDto | BicycleCompetitionDto
 export class AddEventComponent implements OnInit {
   public isUserAuthorized$: Observable<boolean> = this.userStoreService.isAuthChanges
 
+  public userOwnerCommunities: Community[] = []
+
   public isLoading: boolean = false
 
   public readonly tabs: any = [
@@ -100,8 +104,8 @@ export class AddEventComponent implements OnInit {
       icon: 'place'
     },
     {
-      text: 'Описание',
-      icon: 'description'
+      text: 'Детали',
+      icon: 'feed'
     }
   ]
 
@@ -187,7 +191,8 @@ export class AddEventComponent implements OnInit {
     description: new FormControl(),
     durationHours: new FormControl(),
     durationMinutes: new FormControl(),
-    url: new FormControl('')
+    url: new FormControl(''),
+    community: new FormControl(null)
   })
 
   public isPublishButtonDisabled: Observable<boolean> = this.eventForm.valueChanges.pipe(
@@ -205,7 +210,8 @@ export class AddEventComponent implements OnInit {
               private title: Title,
               private notificationsService: TuiNotificationsService,
               private imageNetworkService: ImageNetworkService,
-              private configService: ConfigService) {
+              private configService: ConfigService,
+              private communityStoreService: CommunityStoreService) {
     this.title.setTitle(`Новое событие`)
   }
 
@@ -232,12 +238,13 @@ export class AddEventComponent implements OnInit {
 
   private generateEventBodyByRouteAndUserId(route: Route, userId: number): BaseEventDto | BicycleEventDto {
     const eventType: EventType | null = detectEventTypeBySportType(this.eventForm.value.eventType, this.eventForm.value.sportType)
+    const community: Community | null = this.eventForm.value.community
 
     if (eventType !== null) {
       const baseEventProperties: BaseEventDto = {
         id: null,
         ownerUserId: userId,
-        communityId: null,
+        communityId: community !== null ? community.id : null,
         startDate: this.generateStartDateIsoString(),
         routeId: route.id,
         venueGeoData: JSON.stringify(this.venueCoordinates),
@@ -300,17 +307,42 @@ export class AddEventComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.communityStoreService.allCommunities$.pipe(
+      take(1),
+      tap((communities: Community[]) => {
+        const currentUser: User | null = this.userStoreService.user
+
+        if (currentUser !== null) {
+          this.userOwnerCommunities = communities.filter((community: Community) => community.ownerUserId === currentUser.id)
+        }
+      })
+    ).subscribe()
   }
 
   /**
    * Взято из примера на сайте Taiga UI. Типизация "подшаманена".
    */
   @tuiPure
-  public stringify<T>(items: ReadonlyArray<EnumValueWithLabel<T>>): TuiStringHandler<TuiContextWithImplicit<T>> {
+  public stringifyTypeSelectValue<T>(items: ReadonlyArray<EnumValueWithLabel<T>>): TuiStringHandler<TuiContextWithImplicit<T>> {
     const map: Map<T, string> = new Map(items.map((item: EnumValueWithLabel<T>) => [ item.value, item.label ]))
 
     return ({ $implicit }: TuiContextWithImplicit<T>) => {
       const tuiContextWithImplicit: string | undefined = map.get($implicit)
+
+      if (typeof tuiContextWithImplicit !== 'undefined') {
+        return tuiContextWithImplicit as any
+      }
+
+      return '' as any
+    }
+  }
+
+  @tuiPure
+  public stringifyCommunitySelectValue(items: Community[]): any {
+    const map: Map<number, string> = new Map(items.map((item: Community) => [ item.id, item.name ]))
+
+    return ({ $implicit }: TuiContextWithImplicit<Community>) => {
+      const tuiContextWithImplicit: string | undefined = map.get($implicit.id)
 
       if (typeof tuiContextWithImplicit !== 'undefined') {
         return tuiContextWithImplicit as any
