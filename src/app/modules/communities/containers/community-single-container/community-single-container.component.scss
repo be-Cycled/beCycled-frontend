@@ -1,9 +1,8 @@
 :host {
   display: block;
-  padding: 12px;
-  height: 100%;
-  overflow-y: auto;
   max-width: 900px;
+  height: 100%;
+  padding: var(--mobile-container-padding) var(--mobile-container-padding) calc(var(--menu-height) + var(--mobile-container-padding));
   margin: 0 auto;
 }
 
@@ -52,6 +51,8 @@
 
 .community-name {
   margin: 0;
+
+  line-height: 120%;
 }
 
 .community-links-container {
@@ -78,7 +79,7 @@
   --tui-primary: var(--cy-primary);
   width: 100%;
 
-  @media screen and (min-width: 600px) {
+  @media screen and (min-width: 768px) {
     width: initial;
   }
 }
@@ -89,4 +90,19 @@
 
 .community-view-control {
   margin-bottom: 12px;
+}
+
+.community-body {
+  padding-bottom: calc(var(--menu-height) + var(--mobile-container-padding));
+}
+
+@media (min-width: 768px) {
+  :host {
+    height: calc(100% - var(--header-height));
+    padding: var(--desktop-container-padding) 0;
+  }
+
+  .community-body {
+    padding-bottom: var(--desktop-container-padding);
+  }
 }

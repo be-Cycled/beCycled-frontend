@@ -36,9 +36,10 @@
 
 .sidebar {
   order: -1;
+  margin-bottom: var(--mobile-container-padding);
 }
 
-@media screen and (min-width: 599px) {
+@media screen and (min-width: 768px) {
   :host {
     flex-direction: row;
   }
@@ -50,5 +51,6 @@
   .sidebar {
     flex-basis: 300px;
     order: initial;
+    margin: 0;
   }
 }

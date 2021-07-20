@@ -1,6 +1,6 @@
 <div class="logo-container">
   <a routerLink="/">
-    <img src="/assets/full-logo.svg" alt="Логотип beCycled">
+    <img height="40" src="/assets/full-logo.svg" alt="Логотип beCycled">
   </a>
 </div>
 
@@ -45,7 +45,10 @@
   </ul>
 </nav>
 
-<div class="user-info-container" *ngIf="isUserAuthorized | async">
+<div class="user-info-container" *ngIf="isUserAuthorized$ | async">
+  <b class="user-name">
+    {{ userFirstName$ | async }}
+  </b>
   <tui-hosted-dropdown [content]="dropdownContentRef">
     <button tuiIconButton appearance="icon" type="button" shape="rounded" [icon]="iconRef"></button>
   </tui-hosted-dropdown>
@@ -53,20 +56,21 @@
   <ng-template #iconRef>
     <tui-avatar
       size="s"
-      [avatarUrl]="userAvatar | async"
+      [avatarUrl]="userAvatar$ | async"
       [rounded]="true"
     ></tui-avatar>
   </ng-template>
 
   <ng-template #dropdownContentRef>
     <tui-data-list role="menu">
-      <a tuiOption role="menuitem" [routerLink]="profileRouterLink | async">Мой профиль</a>
+      <a tuiOption role="menuitem" [routerLink]="profileRouterLink$ | async">Мой профиль</a>
       <button type="button" tuiOption role="menuitem" (click)="onClickLogoutButton()">Выйти</button>
     </tui-data-list>
   </ng-template>
 </div>
 
-<div class="unauthorized-user-info-container" *ngIf="isUserUnauthorized | async">
+<div class="unauthorized-user-info-container" *ngIf="isUserUnauthorized$ | async">
   <a class="login-button" routerLink="/auth/login" size="m" tuiButton (click)="captureRedirectUrl()">Войти</a>
-  <a class="register-button" routerLink="/auth/registration" size="m" (click)="captureRedirectUrl()" tuiButton appearance="outline">Регистрация</a>
+  <a class="register-button" routerLink="/auth/registration" size="m" (click)="captureRedirectUrl()" tuiButton
+     appearance="outline">Регистрация</a>
 </div>
