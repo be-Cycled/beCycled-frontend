@@ -6,6 +6,15 @@ tui-island {
   box-shadow: var(--default-shadow);
 }
 
+.event-card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.community-avatar {
+  border-radius: 50%;
+}
+
 .tui-island__category {
   margin-bottom: 16px;
 }

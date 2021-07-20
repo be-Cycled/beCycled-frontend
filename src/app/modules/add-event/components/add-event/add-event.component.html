@@ -37,7 +37,7 @@
         formControlName="eventType"
         tuiTextfieldSize="m"
         [tuiTextfieldLabelOutside]="true"
-        [valueContent]="stringify(eventTypesWithLabels)"
+        [valueContent]="stringifyTypeSelectValue(eventTypesWithLabels)"
       >
         <ng-template tuiDataList>
           <tui-data-list>
@@ -54,7 +54,7 @@
         formControlName="sportType"
         tuiTextfieldSize="m"
         [tuiTextfieldLabelOutside]="true"
-        [valueContent]="stringify(sportTypesWithLabels)"
+        [valueContent]="stringifyTypeSelectValue(sportTypesWithLabels)"
       >
         <ng-template tuiDataList>
           <tui-data-list>
@@ -73,7 +73,7 @@
           formControlName="bicycleCompetitionType"
           tuiTextfieldSize="m"
           [tuiTextfieldLabelOutside]="true"
-          [valueContent]="stringify(bicycleCompetitionTypesWithLabels)"
+          [valueContent]="stringifyTypeSelectValue(bicycleCompetitionTypesWithLabels)"
         >
           <ng-template tuiDataList>
             <tui-data-list>
@@ -94,7 +94,7 @@
           formControlName="bicycleType"
           tuiTextfieldSize="m"
           [tuiTextfieldLabelOutside]="true"
-          [valueContent]="stringify(bicycleTypesWithLabels)"
+          [valueContent]="stringifyTypeSelectValue(bicycleTypesWithLabels)"
         >
           <ng-template tuiDataList>
             <tui-data-list>
@@ -156,7 +156,38 @@
       class="description-form tui-space_bottom-5"
       [class.hide]="activeTabIndex !== 4"
       [formGroup]="eventForm"
+      [tuiTextfieldCleaner]="true"
     >
+      <ng-container *ngIf="userOwnerCommunities.length > 0">
+        <p class="form-label">Сообщество</p>
+        <tui-select
+          class="tui-space_bottom-3"
+          formControlName="community"
+          tuiTextfieldSize="m"
+          [valueContent]="stringifyCommunitySelectValue(userOwnerCommunities)"
+        >
+          Выберите сообщество
+          <tui-data-list-wrapper
+            *tuiDataList
+            size="l"
+            [items]="userOwnerCommunities"
+            [itemContent]="content"
+          ></tui-data-list-wrapper>
+        </tui-select>
+
+        <ng-template #content let-data>
+          <div class="community-select-item">
+            <tui-avatar
+              class="community-select-avatar"
+              size="xs"
+              [avatarUrl]="data.avatar"
+              [text]="data.name"
+            ></tui-avatar>
+            <div class="name">{{ data.name }}</div>
+          </div>
+        </ng-template>
+      </ng-container>
+
       <p class="form-label">Ссылка на мероприятие</p>
       <tui-input
         class="tui-space_bottom-3"

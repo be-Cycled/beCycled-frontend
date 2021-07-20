@@ -6,6 +6,8 @@ import { map, switchMap, take, tap } from 'rxjs/operators'
 import { UserStoreService } from '../../../../services'
 import { EventService } from '../../../../domain/services/event/event.service'
 import { BehaviorSubject } from 'rxjs'
+import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core'
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
 
 @Component({
   selector: 'cy-event-info',
@@ -15,6 +17,8 @@ import { BehaviorSubject } from 'rxjs'
 })
 export class EventInfoComponent extends AbstractEventCard implements OnChanges {
   public currentUser: User | null = null
+
+  public members: User[] = []
 
   @Input()
   public event: BaseEvent | null = null
@@ -33,7 +37,8 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
   constructor(private routeService: RouteService,
               private userService: UserService,
               private userStoreService: UserStoreService,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private dialogService: TuiDialogService) {
     super()
     this.currentUser = this.userStoreService.user
   }
@@ -56,10 +61,8 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
           switchMap((event: BaseEvent) => {
             this.event = event
 
-            return this.memberAvatars$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
-              map((users: User[]) => {
-                return this.generateSlicedAvatarUserList(users)
-              }),
+            return this.lastFourMembers$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
+              map((users: User[]) => this.updateUsersAndReturnLastFour(users)),
               tap(() => {
                 this.isJoined.next(this.checkAlreadyExist(this.event!, this.currentUser!.id))
                 this.isJoinButtonLoading = false
@@ -73,10 +76,8 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
           switchMap((event: BaseEvent) => {
             this.event = event
 
-            return this.memberAvatars$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
-              map((users: User[]) => {
-                return this.generateSlicedAvatarUserList(users)
-              }),
+            return this.lastFourMembers$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
+              map((users: User[]) => this.updateUsersAndReturnLastFour(users)),
               tap(() => {
                 this.isJoined.next(this.checkAlreadyExist(this.event!, this.currentUser!.id))
                 this.isJoinButtonLoading = false
@@ -90,22 +91,22 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
     }
   }
 
-  private generateSlicedAvatarUserList(users: User[]): string[] {
+  private updateUsersAndReturnLastFour(users: User[]): User[] {
+    this.members = users
+
     let slicedUsers: User[] = users.slice()
 
     if (users.length > 4) {
       slicedUsers = users.slice(users.length - 4)
     }
 
-    return slicedUsers.map((user: User) => user.avatar)
+    return slicedUsers
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (typeof changes.event !== 'undefined' && changes.event.currentValue !== null) {
-      this.memberAvatars$ = this.userService.readUsersByIds(changes.event.currentValue.memberUserIds).pipe(
-        map((users: User[]) => {
-          return this.generateSlicedAvatarUserList(users)
-        })
+      this.lastFourMembers$ = this.userService.readUsersByIds(changes.event.currentValue.memberUserIds).pipe(
+        map((users: User[]) => this.updateUsersAndReturnLastFour(users))
       )
 
       this.isCanJoinEvent.next(this.userStoreService.isAuth && !this.checkIsPastEvent(changes.event.currentValue))
@@ -123,5 +124,9 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
 
       this.distance = distance
     }
+  }
+
+  public showMembersDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.dialogService.open(content, { size: 'm' }).subscribe()
   }
 }
