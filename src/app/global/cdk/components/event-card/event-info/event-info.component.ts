@@ -6,6 +6,8 @@ import { map, switchMap, take, tap } from 'rxjs/operators'
 import { UserStoreService } from '../../../../services'
 import { EventService } from '../../../../domain/services/event/event.service'
 import { BehaviorSubject } from 'rxjs'
+import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core'
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
 
 @Component({
   selector: 'cy-event-info',
@@ -35,7 +37,8 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
   constructor(private routeService: RouteService,
               private userService: UserService,
               private userStoreService: UserStoreService,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private dialogService: TuiDialogService) {
     super()
     this.currentUser = this.userStoreService.user
   }
@@ -121,5 +124,9 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
 
       this.distance = distance
     }
+  }
+
+  public showMembersDialog(content: PolymorpheusContent<TuiDialogContext>): void {
+    this.dialogService.open(content, { size: 'm' }).subscribe()
   }
 }
