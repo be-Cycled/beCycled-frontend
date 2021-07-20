@@ -47,7 +47,11 @@ export class EventService {
     return this.httpClient.get<BaseEvent[]>(`${ this.configService.baseApiUrl }/events/user/${ nickname }`)
   }
 
-  /**
-   * TODO: Добавить эндпоинты присоединения к событию
-   */
+  public joinByEventId(id: number): Observable<BaseEvent> {
+    return this.httpClient.post<BaseEvent>(`${ this.configService.baseApiUrl }/events/join/${ id }`, null)
+  }
+
+  public leaveByEventId(id: number): Observable<BaseEvent> {
+    return this.httpClient.post<BaseEvent>(`${ this.configService.baseApiUrl }/events/leave/${ id }`, null)
+  }
 }

@@ -1,13 +1,24 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, fromEvent, iif, Observable, of } from 'rxjs'
-import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
-import { detectBaseEventTypeByEventType } from 'src/app/global/utils'
-import { BaseEvent, BaseEventType, Community, EventType, User, UserService } from '../../../../global/domain'
+import {
+  catchError,
+  filter,
+  finalize,
+  map,
+  pluck,
+  shareReplay,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators'
+import { BaseEvent, Community, User, UserService } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
@@ -15,6 +26,7 @@ import { EventService } from '../../../../global/domain/services/event/event.ser
 import { TelemetryService } from '../../../../global/domain/services/telemetry/telemetry.service'
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
+import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens'
 
 @Component({
   selector: 'cy-profile-container',
@@ -24,9 +36,6 @@ import { ConfigService, ImageNetworkService, UserStoreService } from '../../../.
   providers: [ TuiDestroyService ]
 })
 export class ProfileContainerComponent {
-  // 1Mb
-  public maxFileSize: number = 1_000_000
-
   public activitiesFilterControl: FormControl = this.fb.control([ 'Тренировки' ])
 
   public user: BehaviorSubject<User> = new BehaviorSubject(
@@ -191,7 +200,9 @@ export class ProfileContainerComponent {
               private destroyService: TuiDestroyService,
               private imageNetworkService: ImageNetworkService,
               private configService: ConfigService,
-              private notificationService: TuiNotificationsService) {
+              private notificationService: TuiNotificationsService,
+              @Inject(MAX_AVATAR_FILE_SIZE)
+              public readonly maxFileSize: number) {
     this.previewAvatarCalc.subscribe()
     this.titleSetter.subscribe()
   }
@@ -249,9 +260,5 @@ export class ProfileContainerComponent {
       catchError(() => this.notificationService.show('Не удалось сохранить данные пользователя', { status: TuiNotification.Error })),
       take(1)
     ).subscribe()
-  }
-
-  public detectBaseEventTypeByEventType(eventType: EventType): BaseEventType {
-    return detectBaseEventTypeByEventType(eventType)
   }
 }

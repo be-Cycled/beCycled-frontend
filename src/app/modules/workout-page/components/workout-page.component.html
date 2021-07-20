@@ -81,56 +81,7 @@
         <mgl-control mglNavigation></mgl-control>
         <mgl-control position="bottom-right" mglFullscreen></mgl-control>
       </mgl-map>
-      <ul class="icon-list">
-        <li>
-      <span class="material-icons-outlined">
-        emoji_people
-      </span>
-          <span>
-        Вид спорта: {{ sportTypeMap[detectSportTypeByEventType(workout.eventType)] }}
-      </span>
-        </li>
-        <li *ngIf="detectSportTypeByEventType(workout.eventType) === 'BICYCLE' && workout[ 'bicycleType' ] !== null">
-      <span class="material-icons-outlined">
-        pedal_bike
-      </span>
-          <span>
-        Велосипед: {{ bicycleTypeMap[workout['bicycleType']] }}
-      </span>
-        </li>
-        <li>
-      <span class="material-icons-outlined">
-        moving
-      </span>
-          <span>
-        Дистанция: {{ generateDistanceString(distance$ | async) }}
-      </span>
-        </li>
-        <li *ngIf="workout.duration > 0">
-      <span class="material-icons-outlined">
-        access_time
-      </span>
-          <span>
-        Длительность: {{ generateDurationString(workout.duration) }}
-      </span>
-        </li>
-        <li>
-      <span class="material-icons-outlined">
-        description
-      </span>
-          <span>
-        Описание: {{ workout.description }}
-      </span>
-        </li>
-        <li>
-      <span class="material-icons-outlined">
-        group
-      </span>
-          <span>
-        Участники: {{ workout.memberUserIds.length }}
-      </span>
-        </li>
-      </ul>
+      <cy-event-info [event]="workout$ | async" [route]="route$ | async"></cy-event-info>
     </ng-container>
   </tui-island>
 </tui-loader>

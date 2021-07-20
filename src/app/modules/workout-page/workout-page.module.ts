@@ -7,6 +7,7 @@ import { WorkoutPageComponent } from './components/workout-page.component'
 
 import { WorkoutPageRoutingModule } from './workout-page-routing.module'
 import { TuiButtonModule, TuiDataListModule, TuiHostedDropdownModule, TuiLoaderModule } from '@taiga-ui/core'
+import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { TuiButtonModule, TuiDataListModule, TuiHostedDropdownModule, TuiLoaderM
     TuiButtonModule,
     TuiHostedDropdownModule,
     TuiDataListModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    EventCardModule
   ]
 })
 export class WorkoutPageModule {

@@ -1,21 +1,22 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap, Router } from '@angular/router'
-import { TuiDialogContext, TuiDialogService, TuiNotificationsService } from '@taiga-ui/core'
-import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
 import { Observable } from 'rxjs'
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { AbstractEventPage } from '../../../global/cdk/components/abstract-event-page'
-import { BaseWorkout, Route } from '../../../global/domain'
-import { EventService } from '../../../global/domain/services/event/event.service'
+import { BaseWorkout, Route, User, UserService } from '../../../global/domain'
 import { RouteService } from '../../../global/domain/services/route/route.service'
-import { UserStoreService } from '../../../global/services'
 import { generateStartTime, getWorkoutListDate } from '../../../global/utils'
+import { EventService } from '../../../global/domain/services/event/event.service'
+import { TuiDialogContext, TuiDialogService, TuiNotificationsService } from '@taiga-ui/core'
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
+import { UserStoreService } from '../../../global/services'
 
 @Component({
   selector: 'cy-workout-page',
   templateUrl: './workout-page.component.html',
   styleUrls: [ './workout-page.component.scss' ],
+  host: { class: 'event-page event-card' },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkoutPageComponent extends AbstractEventPage {
@@ -38,10 +39,17 @@ export class WorkoutPageComponent extends AbstractEventPage {
     map((workout: BaseWorkout) => workout.ownerUserId === this.userStoreService.user?.id)
   )
 
+  public memberAvatars$: Observable<(string | null)[]> = this.workout$.pipe(
+    switchMap((workout: BaseWorkout) => this.userService.readUsersByIds(workout.memberUserIds).pipe(
+      map((users: User[]) => users.map((user: User) => user.avatar))
+    ))
+  )
+
   constructor(private routeService: RouteService,
               private activatedRoute: ActivatedRoute,
               private title: Title,
               private userStoreService: UserStoreService,
+              private userService: UserService,
               private dialogService: TuiDialogService,
               notificationsService: TuiNotificationsService,
               eventService: EventService,
