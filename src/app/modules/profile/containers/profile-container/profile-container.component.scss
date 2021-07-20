@@ -1,7 +1,7 @@
 :host {
   display: flex;
   flex-direction: column;
-  padding: 12px 12px var(--menu-height);
+  padding: var(--mobile-container-padding) var(--mobile-container-padding) calc(var(--menu-height) + var(--mobile-container-padding));
 }
 
 .avatar-container img {
@@ -116,10 +116,12 @@
   border-radius: var(--tui-radius-l);
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 768px) {
   :host {
     flex-direction: row;
     max-width: 980px;
+    height: calc(100% - var(--header-height));
+    padding: var(--desktop-container-padding) 0;
     margin: 0 auto;
   }
 

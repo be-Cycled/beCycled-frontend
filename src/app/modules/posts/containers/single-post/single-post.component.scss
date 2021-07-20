@@ -1,6 +1,6 @@
 :host {
   display: block;
-  padding: 1rem 1rem calc(1rem + 72px);
+  padding: var(--mobile-container-padding) var(--mobile-container-padding) calc(var(--menu-height) + var(--mobile-container-padding));
 }
 
 .poster-container {
@@ -11,10 +11,10 @@
   max-width: 100%;
 }
 
-@media screen and (min-width: 599px) {
+@media screen and (min-width: 768px) {
   :host {
     max-width: 570px;
     margin: 0 auto;
-    padding: 0;
+    padding: var(--desktop-container-padding) 0;
   }
 }

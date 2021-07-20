@@ -27,9 +27,12 @@ tui-root {
   //--tui-link-hover: #05B5FF !important;
   --background: #F0F2F3;
 
-  --header-height: 76px;
+  --header-height: 60px;
   --menu-height: 66px;
   --default-shadow: 0 4px 24px rgb(0 0 0 / 12%);
+
+  --mobile-container-padding: 12px;
+  --desktop-container-padding: 24px;
 }
 
 .event-list {
@@ -38,8 +41,6 @@ tui-root {
   max-width: 320px;
   margin-right: auto;
   margin-left: auto;
-  padding-top: 16px;
-  padding-bottom: 16px;
 }
 
 .event-item {
@@ -100,11 +101,11 @@ tui-root {
 
 .event-page {
   display: block;
-  padding: 12px 12px calc(var(--menu-height) + 12px);
+  padding: var(--mobile-container-padding) var(--mobile-container-padding) calc(var(--menu-height) + var(--mobile-container-padding));
 }
 
 @media (min-width: 768px) {
   .event-page {
-    padding: 36px;
+    padding: var(--desktop-container-padding);
   }
 }

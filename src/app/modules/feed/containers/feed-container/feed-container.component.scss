@@ -1,7 +1,7 @@
 :host {
   display: block;
   height: 100%;
-  padding: 12px 0;
+  padding: var(--mobile-container-padding) 0;
 
   & .event-list {
     max-width: none;
@@ -14,7 +14,9 @@
 }
 
 tui-loader {
+  width: 100%;
   height: 100%;
+  padding: 0 calc(50% - 684px);
 }
 
 .empty-list {
@@ -29,7 +31,7 @@ tui-loader {
 }
 
 .events-wrapper:last-of-type {
-  padding-bottom: calc(var(--menu-height) + 12px);
+  padding-bottom: calc(var(--menu-height) + var(--mobile-container-padding));
 }
 
 .date {
@@ -39,7 +41,7 @@ tui-loader {
 
   width: fit-content;
   padding: 8px 16px;
-  margin: 12px auto;
+  margin: var(--mobile-container-padding) auto;
 
   line-height: 1;
   text-align: center;
@@ -52,7 +54,7 @@ tui-loader {
 @media (min-width: 768px) {
   :host {
     height: calc(100% - var(--menu-height));
-    padding: 36px 0;
+    padding: var(--desktop-container-padding) 0;
 
     & .event-list {
       grid-template-columns: repeat(2, 1fr);
@@ -62,7 +64,7 @@ tui-loader {
   }
 
   .events-wrapper:last-of-type {
-    padding-bottom: 0;
+    padding-bottom: var(--desktop-container-padding);
   }
 }
 
