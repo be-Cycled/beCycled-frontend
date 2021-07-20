@@ -4,7 +4,7 @@ import { TuiAvatarModule, TuiIslandModule } from '@taiga-ui/kit'
 import { RouterModule } from '@angular/router'
 import { TuiLetModule } from '@taiga-ui/cdk'
 import { EventInfoComponent } from './event-info/event-info.component'
-import { TuiButtonModule } from '@taiga-ui/core'
+import { TuiButtonModule, TuiHintModule } from '@taiga-ui/core'
 import { EventCardComponent } from './event-card/event-card.component'
 import { DomainModule } from '../../../domain/domain.module'
 
@@ -20,7 +20,8 @@ import { DomainModule } from '../../../domain/domain.module'
     TuiLetModule,
     TuiButtonModule,
     TuiAvatarModule,
-    DomainModule
+    DomainModule,
+    TuiHintModule
   ],
   exports: [
     EventInfoComponent,

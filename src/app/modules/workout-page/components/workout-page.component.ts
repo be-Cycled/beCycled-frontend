@@ -39,10 +39,8 @@ export class WorkoutPageComponent extends AbstractEventPage {
     map((workout: BaseWorkout) => workout.ownerUserId === this.userStoreService.user?.id)
   )
 
-  public memberAvatars$: Observable<(string | null)[]> = this.workout$.pipe(
-    switchMap((workout: BaseWorkout) => this.userService.readUsersByIds(workout.memberUserIds).pipe(
-      map((users: User[]) => users.map((user: User) => user.avatar))
-    ))
+  public lastFourMembers$: Observable<User[]> = this.workout$.pipe(
+    switchMap((workout: BaseWorkout) => this.userService.readUsersByIds(workout.memberUserIds))
   )
 
   constructor(private routeService: RouteService,

@@ -52,14 +52,16 @@
         Описание: {{ event.description }}
       </span>
   </li>
-  <li class="event-info-item avatars-item" *tuiLet="memberAvatars$ | async as memberAvatars">
-    <ng-container *ngIf="memberAvatars !== null">
+  <li class="event-info-item avatars-item" *tuiLet="lastFourMembers$ | async as lastFourMembers">
+    <ng-container *ngIf="lastFourMembers !== null">
       <ul class="avatars-list">
-        <li class="avatar-container" *ngFor="let avatar of memberAvatars">
-          <tui-avatar size="s" [avatarUrl]="avatar"></tui-avatar>
+        <li class="avatar-container" *ngFor="let member of lastFourMembers">
+          <a [routerLink]="[ '/', 'users', member.login ]" [tuiHint]="member.login">
+            <tui-avatar size="s" [avatarUrl]="member.avatar"></tui-avatar>
+          </a>
         </li>
       </ul>
-      <span class="members-count">{{ event.memberUserIds.length }} -></span>
+      <span class="members-count">{{ members.length }} -></span>
     </ng-container>
 
     <button

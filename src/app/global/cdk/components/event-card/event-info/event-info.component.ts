@@ -16,6 +16,8 @@ import { BehaviorSubject } from 'rxjs'
 export class EventInfoComponent extends AbstractEventCard implements OnChanges {
   public currentUser: User | null = null
 
+  public members: User[] = []
+
   @Input()
   public event: BaseEvent | null = null
 
@@ -56,10 +58,8 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
           switchMap((event: BaseEvent) => {
             this.event = event
 
-            return this.memberAvatars$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
-              map((users: User[]) => {
-                return this.generateSlicedAvatarUserList(users)
-              }),
+            return this.lastFourMembers$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
+              map((users: User[]) => this.updateUsersAndReturnLastFour(users)),
               tap(() => {
                 this.isJoined.next(this.checkAlreadyExist(this.event!, this.currentUser!.id))
                 this.isJoinButtonLoading = false
@@ -73,10 +73,8 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
           switchMap((event: BaseEvent) => {
             this.event = event
 
-            return this.memberAvatars$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
-              map((users: User[]) => {
-                return this.generateSlicedAvatarUserList(users)
-              }),
+            return this.lastFourMembers$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
+              map((users: User[]) => this.updateUsersAndReturnLastFour(users)),
               tap(() => {
                 this.isJoined.next(this.checkAlreadyExist(this.event!, this.currentUser!.id))
                 this.isJoinButtonLoading = false
@@ -90,22 +88,22 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
     }
   }
 
-  private generateSlicedAvatarUserList(users: User[]): string[] {
+  private updateUsersAndReturnLastFour(users: User[]): User[] {
+    this.members = users
+
     let slicedUsers: User[] = users.slice()
 
     if (users.length > 4) {
       slicedUsers = users.slice(users.length - 4)
     }
 
-    return slicedUsers.map((user: User) => user.avatar)
+    return slicedUsers
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (typeof changes.event !== 'undefined' && changes.event.currentValue !== null) {
-      this.memberAvatars$ = this.userService.readUsersByIds(changes.event.currentValue.memberUserIds).pipe(
-        map((users: User[]) => {
-          return this.generateSlicedAvatarUserList(users)
-        })
+      this.lastFourMembers$ = this.userService.readUsersByIds(changes.event.currentValue.memberUserIds).pipe(
+        map((users: User[]) => this.updateUsersAndReturnLastFour(users))
       )
 
       this.isCanJoinEvent.next(this.userStoreService.isAuth && !this.checkIsPastEvent(changes.event.currentValue))

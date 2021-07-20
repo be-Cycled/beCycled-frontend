@@ -39,10 +39,8 @@ export class CompetitionPageComponent extends AbstractEventPage {
     map((competition: BaseCompetition) => competition.ownerUserId === this.userStoreService.user?.id)
   )
 
-  public memberAvatars$: Observable<(string | null)[]> = this.competition$.pipe(
-    switchMap((workout: BaseWorkout) => this.userService.readUsersByIds(workout.memberUserIds).pipe(
-      map((users: User[]) => users.map((user: User) => user.avatar))
-    ))
+  public lastFourMembers$: Observable<User[]> = this.competition$.pipe(
+    switchMap((workout: BaseWorkout) => this.userService.readUsersByIds(workout.memberUserIds))
   )
 
   constructor(private routeService: RouteService,
