@@ -64,7 +64,7 @@ tui-loader {
   }
 
   .events-wrapper:last-of-type {
-    padding-bottom: 0;
+    padding-bottom: var(--desktop-container-padding);
   }
 }
 
