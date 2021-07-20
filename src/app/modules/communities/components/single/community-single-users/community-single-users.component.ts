@@ -15,7 +15,7 @@ export class CommunitySingleUsersComponent implements OnInit {
 
   public userShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
-  public users: Observable<User[]> = defer(() => this.communityStoreService.communityChanges.pipe(
+  public users: Observable<User[]> = defer(() => this.communityStoreService.communityChanges$.pipe(
     switchMap((community: Community) => {
       this.userShowLoader.next(true)
 
@@ -27,7 +27,7 @@ export class CommunitySingleUsersComponent implements OnInit {
     shareReplay(1)
   ))
 
-  public community: Observable<Community> = this.communityStoreService.communityChanges.pipe()
+  public community: Observable<Community> = this.communityStoreService.communityChanges$.pipe()
 
   constructor(private communityStoreService: CommunityStoreService,
               private communityService: CommunityService) {

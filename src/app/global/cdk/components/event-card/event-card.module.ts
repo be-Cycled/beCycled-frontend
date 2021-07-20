@@ -7,6 +7,7 @@ import { EventInfoComponent } from './event-info/event-info.component'
 import { TuiButtonModule, TuiHintModule, TuiLinkModule } from '@taiga-ui/core'
 import { EventCardComponent } from './event-card/event-card.component'
 import { DomainModule } from '../../../domain/domain.module'
+import { CommunityStoreService } from '../../../../modules/communities/services'
 
 @NgModule({
   declarations: [
@@ -27,6 +28,9 @@ import { DomainModule } from '../../../domain/domain.module'
   exports: [
     EventInfoComponent,
     EventCardComponent
+  ],
+  providers: [
+    CommunityStoreService
   ]
 })
 export class EventCardModule {

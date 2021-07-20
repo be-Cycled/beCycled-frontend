@@ -15,13 +15,13 @@ import { CommunityStoreService } from '../../../services'
 })
 export class CommunitySingleMainComponent {
 
-  public events: Observable<BaseEvent[]> = this.communityStoreService.communityChanges.pipe(
+  public events: Observable<BaseEvent[]> = this.communityStoreService.communityChanges$.pipe(
     switchMap((community: Community) => this.eventService.readEventByCommunity(community.nickname).pipe(
       catchError(() => of([]))
     ))
   )
 
-  public sportTypes: Observable<SportType[]> = this.communityStoreService.communityChanges.pipe(
+  public sportTypes: Observable<SportType[]> = this.communityStoreService.communityChanges$.pipe(
     pluck('sportTypes')
   )
 
@@ -31,7 +31,7 @@ export class CommunitySingleMainComponent {
     [ SportType.run ]: `Бег`
   }
 
-  public users: Observable<User[]> = this.communityStoreService.communityChanges.pipe(
+  public users: Observable<User[]> = this.communityStoreService.communityChanges$.pipe(
     switchMap((community: Community) =>
       this.communityService.getUsersByCommunity(community.nickname).pipe(
         catchError(() => of([])),

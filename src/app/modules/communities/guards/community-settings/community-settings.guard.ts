@@ -44,7 +44,7 @@ export class CommunitySettingsGuard implements CanActivate {
           )
         }
 
-        return this.communityStoreService.communityChanges.pipe(
+        return this.communityStoreService.communityChanges$.pipe(
           map((community: Community) => community.ownerUserId === user.id)
         )
       })

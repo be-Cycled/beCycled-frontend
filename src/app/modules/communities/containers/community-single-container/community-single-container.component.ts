@@ -4,7 +4,18 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, combineLatest, EMPTY, iif, Observable } from 'rxjs'
-import { catchError, distinctUntilChanged, filter, map, pluck, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  map,
+  pluck,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from 'rxjs/operators'
 import { Community, CommunityType, User } from '../../../../global/domain'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
 import { PATH_PARAMS } from '../../../../global/models'
@@ -30,7 +41,7 @@ export class CommunitySingleContainerComponent implements OnDestroy {
 
   public communityShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
-  public communityChanges: Observable<Community> = this.communityStoreService.communityChanges
+  public communityChanges: Observable<Community> = this.communityStoreService.communityChanges$
 
   public activeTab: BehaviorSubject<CommunitySingleTab> = new BehaviorSubject<CommunitySingleTab>(CommunitySingleTab.review)
 
