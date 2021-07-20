@@ -17,6 +17,7 @@ import {
   TuiDataListWrapperModule,
   TuiInputDateModule,
   TuiInputDateTimeModule,
+  TuiInputModule,
   TuiInputNumberModule,
   TuiInputTimeModule,
   TuiIslandModule,
@@ -59,7 +60,8 @@ import { ImageNetworkService } from '../../global/services'
     TuiInputDateModule,
     TuiInputTimeModule,
     TuiUnfinishedValidatorModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiInputModule
   ],
   providers: [
     MapboxNetworkService,
