@@ -6,8 +6,7 @@ import { TuiLetModule } from '@taiga-ui/cdk'
 import { EventInfoComponent } from './event-info/event-info.component'
 import { TuiButtonModule } from '@taiga-ui/core'
 import { EventCardComponent } from './event-card/event-card.component'
-import { HTTP_INTERCEPTORS } from '@angular/common/http'
-import { AuthInterceptor } from '../../../interceptors'
+import { DomainModule } from '../../../domain/domain.module'
 
 @NgModule({
   declarations: [
@@ -20,18 +19,12 @@ import { AuthInterceptor } from '../../../interceptors'
     RouterModule,
     TuiLetModule,
     TuiButtonModule,
-    TuiAvatarModule
+    TuiAvatarModule,
+    DomainModule
   ],
   exports: [
     EventInfoComponent,
     EventCardComponent
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
   ]
 })
 export class EventCardModule {
