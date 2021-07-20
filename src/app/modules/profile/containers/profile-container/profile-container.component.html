@@ -54,15 +54,16 @@
           <a tuiLink *ngIf="!isEdit" [attr.href]="'tel:' + (phone | async)">{{ phone | async | tuiFormatPhone }}</a>
         </span>
       </li>
-      <li class="tui-list__item">
-        <span>Эл. Почта: </span>
-        <span>
-          <tui-input *ngIf="isEdit" tuiTextfieldSize="s" formControlName="email">Эл. почта</tui-input>
-          <tui-field-error *ngIf="isEdit" formControlName="email"></tui-field-error>
+      <!--   TODO: Дать возможность пользователю открывать свою почту   -->
+      <!--      <li class="tui-list__item">-->
+      <!--        <span>Эл. Почта: </span>-->
+      <!--        <span>-->
+      <!--          <tui-input *ngIf="isEdit" tuiTextfieldSize="s" formControlName="email">Эл. почта</tui-input>-->
+      <!--          <tui-field-error *ngIf="isEdit" formControlName="email"></tui-field-error>-->
 
-          <a *ngIf="!isEdit" tuiLink [attr.href]="'mailto:' + (email | async)">{{ email | async }}</a>
-        </span>
-      </li>
+      <!--          <a *ngIf="!isEdit" tuiLink [attr.href]="'mailto:' + (email | async)">{{ email | async }}</a>-->
+      <!--        </span>-->
+      <!--      </li>-->
     </ul>
   </div>
   <div *ngIf="isEdit" class="edit-actions">
