@@ -157,6 +157,17 @@
       [class.hide]="activeTabIndex !== 4"
       [formGroup]="eventForm"
     >
+      <p class="form-label">Ссылка на мероприятие</p>
+      <tui-input
+        class="tui-space_bottom-3"
+        formControlName="url"
+        tuiTextfieldSize="m"
+        [tuiTextfieldLabelOutside]="true"
+      >
+        Введите URL
+      </tui-input>
+
+      <p class="form-label">Описание</p>
       <tui-text-area
         class="description-text-area"
         formControlName="description"

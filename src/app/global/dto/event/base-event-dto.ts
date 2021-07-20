@@ -12,5 +12,6 @@ export interface BaseEventDto {
   memberUserIds: number[]
   duration: number
   description: string
+  url: string
   createdAd: null
 }

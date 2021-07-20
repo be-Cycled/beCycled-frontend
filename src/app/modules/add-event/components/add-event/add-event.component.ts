@@ -2,13 +2,32 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { Router } from '@angular/router'
-import { TUI_IS_ANDROID, TUI_IS_IOS, TUI_IS_MOBILE, TuiContextWithImplicit, TuiDay, tuiPure, TuiStringHandler, TuiTime } from '@taiga-ui/cdk'
+import {
+  TUI_IS_ANDROID,
+  TUI_IS_IOS,
+  TUI_IS_MOBILE,
+  TuiContextWithImplicit,
+  TuiDay,
+  tuiPure,
+  TuiStringHandler,
+  TuiTime
+} from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { Observable } from 'rxjs'
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
-import { BaseEventType, BicycleCompetitionType, BicycleType, DirectionType, EventType, MapboxRouteGeoData, Route, SportType, User } from '../../../../global/domain'
+import {
+  BaseEventType,
+  BicycleCompetitionType,
+  BicycleType,
+  DirectionType,
+  EventType,
+  MapboxRouteGeoData,
+  Route,
+  SportType,
+  User
+} from '../../../../global/domain'
 import { EventService } from '../../../../global/domain/services/event/event.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
@@ -167,7 +186,8 @@ export class AddEventComponent implements OnInit {
     bicycleType: new FormControl(BicycleType.any),
     description: new FormControl(),
     durationHours: new FormControl(),
-    durationMinutes: new FormControl()
+    durationMinutes: new FormControl(),
+    url: new FormControl('')
   })
 
   public isPublishButtonDisabled: Observable<boolean> = this.eventForm.valueChanges.pipe(
@@ -224,6 +244,7 @@ export class AddEventComponent implements OnInit {
         memberUserIds: [ userId ],
         duration: this.generateDurationInSeconds(),
         description: this.eventForm.value.description,
+        url: this.eventForm.value.url,
         createdAd: null,
         eventType
       }

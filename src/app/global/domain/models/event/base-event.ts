@@ -53,6 +53,11 @@ export interface BaseEvent {
   description: string
 
   /**
+   * Ссылка на мероприятие
+   */
+  url: string
+
+  /**
    * Время создания
    */
   createdAd: ISO8601
