@@ -16,13 +16,13 @@ import { UserStoreService } from '../../../../../services'
 })
 export class HeaderComponent {
 
-  public isUserAuthorized: Observable<boolean> = this.userStoreService.isAuthChanges
+  public isUserAuthorized$: Observable<boolean> = this.userStoreService.isAuthChanges
 
-  public isUserUnauthorized: Observable<boolean> = this.isUserAuthorized.pipe(
+  public isUserUnauthorized$: Observable<boolean> = this.isUserAuthorized$.pipe(
     map((isUserAuthorized: boolean) => !isUserAuthorized)
   )
 
-  public userAvatar: Observable<string> = this.userStoreService.validUserChanges.pipe(
+  public userAvatar$: Observable<string> = this.userStoreService.validUserChanges.pipe(
     map((user: User) => {
       if (user.avatar !== null) {
         return `${ user.avatar }`
@@ -32,7 +32,11 @@ export class HeaderComponent {
     })
   )
 
-  public profileRouterLink: Observable<string> = this.userStoreService.validUserChanges.pipe(
+  public userFirstName$: Observable<string | null> = this.userStoreService.validUserChanges.pipe(
+    map((user: User) => user.firstName)
+  )
+
+  public profileRouterLink$: Observable<string> = this.userStoreService.validUserChanges.pipe(
     map((user: User) => user.login),
     map((userLogin: string) => `/users/${ userLogin }`)
   )

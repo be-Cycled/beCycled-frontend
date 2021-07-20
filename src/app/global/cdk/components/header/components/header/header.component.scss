@@ -6,7 +6,7 @@
   justify-content: space-between;
   align-items: center;
   height: var(--header-height);
-  padding: 0.5rem 1rem;
+  padding: 0.5rem calc(50% - 684px);
 
   background-color: white;
 
@@ -14,8 +14,15 @@
 }
 
 .logo-container {
-  width: 150px;
   margin-right: 2rem;
+
+  a {
+    display: block;
+  }
+
+  img {
+    display: block;
+  }
 }
 
 .main-navigation-list {
@@ -24,7 +31,7 @@
 
 .active-router-link::after {
   position: absolute;
-  bottom: -16px;
+  bottom: -8px;
 
   display: block;
   width: 100%;
@@ -41,4 +48,9 @@
 
 .login-button {
   margin-right: 1rem;
+}
+
+.user-info-container {
+  display: flex;
+  align-items: center;
 }

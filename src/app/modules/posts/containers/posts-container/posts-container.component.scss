@@ -1,7 +1,7 @@
 :host {
   display: grid;
   gap: 1rem;
-  padding: 12px 12px calc(var(--menu-height) + 12px);
+  padding: var(--mobile-container-padding) var(--mobile-container-padding) calc(var(--menu-height) + var(--mobile-container-padding));
 }
 
 figure.poster {
@@ -17,9 +17,10 @@ figure.poster img {
 @media (min-width: 768px) {
   :host {
     max-width: 900px;
+    height: calc(100% - var(--header-height));
     margin: 0 auto;
     grid-template-columns: repeat(3, 300px);
-    padding: 36px 0;
+    padding: var(--desktop-container-padding) 0;
   }
 
   .title {
