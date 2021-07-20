@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { catchError, map, pluck, shareReplay, switchMap } from 'rxjs/operators'
-import { BaseEvent, BaseEventType, Community, EventType, SportType, User } from '../../../../../global/domain'
+import { BaseEvent, Community, SportType, User } from '../../../../../global/domain'
 import { CommunityService } from '../../../../../global/domain/services/community/community.service'
 import { EventService } from '../../../../../global/domain/services/event/event.service'
-import { detectBaseEventTypeByEventType } from '../../../../../global/utils'
 import { CommunityStoreService } from '../../../services'
 
 @Component({
@@ -52,9 +51,5 @@ export class CommunitySingleMainComponent {
               private communityService: CommunityService,
               public readonly activatedRoute: ActivatedRoute,
               private eventService: EventService) {
-  }
-
-  public detectBaseEventTypeByEventType(eventType: EventType): BaseEventType {
-    return detectBaseEventTypeByEventType(eventType)
   }
 }

@@ -1,0 +1,29 @@
+<tui-island
+  *ngIf="event !== null"
+  size="l"
+>
+  <h3 class="tui-island__title">{{ generateStartTime(event.startDate) }}</h3>
+  <p
+    *ngIf="detectBaseEventTypeByEventType(event.eventType) === 'WORKOUT'; else competitionParagraphRef"
+    class="tui-island__category"
+  >Тренировка</p>
+  <div class="preview-container">
+    <img [src]="routePreview$ | async">
+  </div>
+  <cy-event-info [event]="event" [route]="route$ | async"></cy-event-info>
+
+  <button
+    tuiButton
+    type="button"
+    class="tui-island__footer-button"
+    appearance="flat"
+    size="l"
+    [routerLink]="generateRouterLinkUri()"
+  >
+    Подробнее
+  </button>
+</tui-island>
+
+<ng-template #competitionParagraphRef>
+  <p class="tui-island__category">Соревнование</p>
+</ng-template>

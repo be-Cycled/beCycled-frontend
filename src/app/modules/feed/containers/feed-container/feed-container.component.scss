@@ -13,6 +13,21 @@
   }
 }
 
+tui-loader {
+  height: 100%;
+}
+
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  line-height: 175%;
+}
+
 .events-wrapper:last-of-type {
   padding-bottom: calc(var(--menu-height) + 12px);
 }
@@ -36,6 +51,7 @@
 
 @media (min-width: 768px) {
   :host {
+    height: calc(100% - var(--menu-height));
     padding: 36px 0;
 
     & .event-list {

@@ -76,64 +76,6 @@
       <mgl-control mglNavigation></mgl-control>
       <mgl-control position="bottom-right" mglFullscreen></mgl-control>
     </mgl-map>
-    <ul class="icon-list">
-      <li>
-      <span class="material-icons-outlined">
-        emoji_people
-      </span>
-        <span>
-        Вид спорта: {{ sportTypeMap[detectSportTypeByEventType(competition.eventType)] }}
-      </span>
-      </li>
-      <li
-        *ngIf="detectSportTypeByEventType(competition.eventType) === 'BICYCLE' && competition[ 'bicycleType' ] !== null">
-      <span class="material-icons-outlined">
-        pedal_bike
-      </span>
-        <span>
-        Велосипед: {{ bicycleTypeMap[competition['bicycleType']] }}
-      </span>
-      </li>
-      <li *ngIf="competition.eventType === 'BICYCLE_COMPETITION' && competition[ 'bicycleCompetitionType' ] !== null">
-      <span class="material-icons-outlined">
-        emoji_events
-      </span>
-        <span>
-        Вид гонки: {{ bicycleCompetitionTypeMap[competition['bicycleCompetitionType']] }}
-      </span>
-      </li>
-      <li>
-      <span class="material-icons-outlined">
-        moving
-      </span>
-        <span>
-        Дистанция: {{ generateDistanceString(distance$ | async) }}
-      </span>
-      </li>
-      <li *ngIf="competition.duration > 0">
-      <span class="material-icons-outlined">
-        access_time
-      </span>
-        <span>
-        Длительность: {{ generateDurationString(competition.duration) }}
-      </span>
-      </li>
-      <li>
-      <span class="material-icons-outlined">
-        description
-      </span>
-        <span>
-        Описание: {{ competition.description }}
-      </span>
-      </li>
-      <li>
-      <span class="material-icons-outlined">
-        group
-      </span>
-        <span>
-        Участники: {{ competition.memberUserIds.length }}
-      </span>
-      </li>
-    </ul>
+    <cy-event-info [event]="competition$ | async" [route]="route$ | async"></cy-event-info>
   </ng-container>
 </tui-island>

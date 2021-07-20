@@ -29,6 +29,7 @@ tui-root {
 
   --header-height: 76px;
   --menu-height: 66px;
+  --default-shadow: 0 4px 24px rgb(0 0 0 / 12%);
 }
 
 .event-list {
@@ -71,5 +72,39 @@ tui-root {
 @media (max-width: 599px) {
   tui-root {
     padding-bottom: 66px;
+  }
+}
+
+// Общие стили для событий
+
+.event-card {
+  .event-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  mgl-map {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 16px;
+
+    border-radius: var(--tui-radius-l);
+
+    overflow: hidden;
+  }
+
+  tui-hosted-dropdown .material-icons-outlined {
+    margin-right: 0;
+  }
+}
+
+.event-page {
+  display: block;
+  padding: 12px 12px calc(var(--menu-height) + 12px);
+}
+
+@media (min-width: 768px) {
+  .event-page {
+    padding: 36px;
   }
 }
