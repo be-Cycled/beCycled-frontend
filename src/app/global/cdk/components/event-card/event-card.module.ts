@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { TuiIslandModule } from '@taiga-ui/kit'
+import { TuiAvatarModule, TuiIslandModule } from '@taiga-ui/kit'
 import { RouterModule } from '@angular/router'
 import { TuiLetModule } from '@taiga-ui/cdk'
 import { EventInfoComponent } from './event-info/event-info.component'
@@ -19,7 +19,8 @@ import { AuthInterceptor } from '../../../interceptors'
     TuiIslandModule,
     RouterModule,
     TuiLetModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiAvatarModule
   ],
   exports: [
     EventInfoComponent,
