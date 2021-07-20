@@ -106,6 +106,6 @@ tui-root {
 
 @media (min-width: 768px) {
   .event-page {
-    padding: var(--desktop-container-padding);
+    padding: var(--desktop-container-padding) calc(50% - 684px);
   }
 }

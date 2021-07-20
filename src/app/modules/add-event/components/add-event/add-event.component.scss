@@ -120,6 +120,16 @@ mgl-map {
   }
 }
 
+.community-select-item {
+  display: flex;
+}
+
+.community-select-avatar {
+  margin-right: 8px;
+
+  border-radius: 50%;
+}
+
 ::ng-deep {
   .add-event-island.tui-island:not(.tui-island_hoverable):before {
     display: none;

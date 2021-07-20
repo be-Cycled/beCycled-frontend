@@ -1,5 +1,6 @@
 :host {
   display: block;
+  max-width: 280px;
 }
 
 .event-info-item {
@@ -65,6 +66,28 @@
 
     color: var(--cy-success);
   }
+}
+
+.member-list-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.member-list-avatar {
+  margin-right: 12px;
+  border-radius: 50%;
+}
+
+.member-name-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.member-status {
+  display: block;
+  margin-left: auto;
 }
 
 ::ng-deep {

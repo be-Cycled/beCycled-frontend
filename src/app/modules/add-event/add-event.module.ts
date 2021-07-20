@@ -14,6 +14,7 @@ import {
 } from '@taiga-ui/core'
 import { ReactiveFormsModule } from '@angular/forms'
 import {
+  TuiAvatarModule,
   TuiDataListWrapperModule,
   TuiInputDateModule,
   TuiInputDateTimeModule,
@@ -32,6 +33,7 @@ import { MapboxNetworkService } from '../../global/services/mapbox-network/mapbo
 import { TuiRippleModule } from '@taiga-ui/addon-mobile'
 import { RouteService } from '../../global/domain/services/route/route.service'
 import { ImageNetworkService } from '../../global/services'
+import { CommunityStoreService } from '../communities/services'
 
 @NgModule({
   declarations: [
@@ -61,12 +63,14 @@ import { ImageNetworkService } from '../../global/services'
     TuiInputTimeModule,
     TuiUnfinishedValidatorModule,
     TuiLoaderModule,
-    TuiInputModule
+    TuiInputModule,
+    TuiAvatarModule
   ],
   providers: [
     MapboxNetworkService,
     RouteService,
-    ImageNetworkService
+    ImageNetworkService,
+    CommunityStoreService
   ]
 })
 export class AddEventModule {

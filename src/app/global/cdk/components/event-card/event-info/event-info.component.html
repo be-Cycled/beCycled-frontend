@@ -52,14 +52,37 @@
         Описание: {{ event.description }}
       </span>
   </li>
-  <li class="event-info-item avatars-item" *tuiLet="memberAvatars$ | async as memberAvatars">
-    <ng-container *ngIf="memberAvatars !== null">
+  <li class="event-info-item avatars-item" *tuiLet="lastFourMembers$ | async as lastFourMembers">
+    <ng-container *ngIf="lastFourMembers !== null">
       <ul class="avatars-list">
-        <li class="avatar-container" *ngFor="let avatar of memberAvatars">
-          <tui-avatar size="s" [avatarUrl]="avatar"></tui-avatar>
+        <li class="avatar-container" *ngFor="let member of lastFourMembers">
+          <a [routerLink]="[ '/', 'users', member.login ]" [tuiHint]="member.login">
+            <tui-avatar size="s" [avatarUrl]="member.avatar"></tui-avatar>
+          </a>
         </li>
       </ul>
-      <span class="members-count">{{ event.memberUserIds.length }} -></span>
+      <button tuiLink class="members-count" (click)="showMembersDialog(membersDialogRef)">{{ members.length }}->
+      </button>
+
+      <ng-template #membersDialogRef>
+        <ul class="member-list">
+          <li class="member-list-item" *ngFor="let member of members">
+            <tui-avatar class="member-list-avatar" size="m" [avatarUrl]="member.avatar"></tui-avatar>
+            <div class="member-name-container">
+              <span *ngIf="member.firstName !== null || member.lastName !== null">
+              {{ member.firstName }} {{ member.lastName }}
+            </span>
+              <a tuiLink [routerLink]="[ '/', 'users', member.login ]">
+                {{ member.login }}
+              </a>
+            </div>
+            <span class="member-status" *ngIf="member.id === event.ownerUserId; else memberRef">Создатель</span>
+            <ng-template #memberRef>
+              <span class="member-status">Участник</span>
+            </ng-template>
+          </li>
+        </ul>
+      </ng-template>
     </ng-container>
 
     <button

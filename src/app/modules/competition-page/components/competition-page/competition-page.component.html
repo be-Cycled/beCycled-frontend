@@ -76,6 +76,16 @@
       <mgl-control mglNavigation></mgl-control>
       <mgl-control position="bottom-right" mglFullscreen></mgl-control>
     </mgl-map>
+
+    <div class="community-container" *ngIf="(currentCommunity$ | async) !== null">
+      <tui-avatar
+        class="community-avatar"
+        size="m"
+        [avatarUrl]="(currentCommunity$ | async)!.avatar"
+      ></tui-avatar>
+      <span>{{ (currentCommunity$ | async)!.name }}</span>
+    </div>
+
     <cy-event-info [event]="competition$ | async" [route]="route$ | async"></cy-event-info>
   </ng-container>
 </tui-island>

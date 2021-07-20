@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { TuiLetModule } from '@taiga-ui/cdk'
-import { TuiIslandModule } from '@taiga-ui/kit'
+import { TuiAvatarModule, TuiIslandModule } from '@taiga-ui/kit'
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 
 import { CompetitionPageRoutingModule } from './competition-page-routing.module'
@@ -22,7 +22,8 @@ import { EventCardModule } from '../../global/cdk/components/event-card/event-ca
     TuiHostedDropdownModule,
     TuiDataListModule,
     TuiButtonModule,
-    EventCardModule
+    EventCardModule,
+    TuiAvatarModule
   ]
 })
 export class CompetitionPageModule {

@@ -2,11 +2,21 @@
   *ngIf="event !== null"
   size="l"
 >
-  <h3 class="tui-island__title">{{ generateStartTime(event.startDate) }}</h3>
-  <p
-    *ngIf="detectBaseEventTypeByEventType(event.eventType) === 'WORKOUT'; else competitionParagraphRef"
-    class="tui-island__category"
-  >Тренировка</p>
+  <header class="event-card-header">
+    <div>
+      <h3 class="tui-island__title">{{ generateStartTime(event.startDate) }}</h3>
+      <p
+        *ngIf="detectBaseEventTypeByEventType(event.eventType) === 'WORKOUT'; else competitionParagraphRef"
+        class="tui-island__category"
+      >Тренировка</p>
+    </div>
+    <tui-avatar
+      *ngIf="currentCommunity !== null"
+      class="community-avatar"
+      size="m"
+      [avatarUrl]="currentCommunity.avatar"
+    ></tui-avatar>
+  </header>
   <div class="preview-container">
     <img [src]="routePreview$ | async">
   </div>
