@@ -12,7 +12,7 @@ import { UserStoreService } from '../../../../../services'
   selector: 'cy-header',
   templateUrl: './header.component.html',
   styleUrls: [ './header.component.scss' ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class HeaderComponent {
 

@@ -5,7 +5,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   SimpleChanges
 } from '@angular/core'
 import { TuiHandler, TuiIdentityMatcher } from '@taiga-ui/cdk'
@@ -35,7 +34,7 @@ import {
     }
   ]
 })
-export class EventFilterComponent implements ControlValueAccessor, OnChanges, OnInit, OnDestroy {
+export class EventFilterComponent implements ControlValueAccessor, OnChanges, OnDestroy {
   private destroy$: Subject<void> = new Subject()
 
   public queryParams: Params | null = null
@@ -111,6 +110,20 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router) {
+    switch (this.filterType) {
+      case 'event':
+        this.items = this.eventTypeItems
+        break
+      case 'sport':
+        this.items = this.sportTypeItems
+        break
+      case 'all':
+      default:
+        this.items = [ ...this.eventTypeItems, ...this.sportTypeItems ]
+    }
+
+    this.badgeSportTypeCountChanges$.subscribe()
+
     this.activatedRoute.queryParams.pipe(
       takeUntil(this.destroy$),
       tap((params: Params) => {
@@ -123,22 +136,6 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
         }
       })
     ).subscribe()
-  }
-
-  public ngOnInit(): void {
-    this.badgeSportTypeCountChanges$.subscribe()
-
-    switch (this.filterType) {
-      case 'event':
-        this.items = this.eventTypeItems
-        break
-      case 'sport':
-        this.items = this.sportTypeItems
-        break
-      case 'all':
-      default:
-        this.items = [ ...this.eventTypeItems, ...this.sportTypeItems ]
-    }
   }
 
   public ngOnDestroy(): void {

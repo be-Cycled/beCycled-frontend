@@ -57,7 +57,9 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
             this.event = event
 
             return this.memberAvatars$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
-              map((users: User[]) => users.slice(users.length - 4).map((user: User) => user.avatar)),
+              map((users: User[]) => {
+                return this.generateSlicedAvatarUserList(users)
+              }),
               tap(() => {
                 this.isJoined.next(this.checkAlreadyExist(this.event!, this.currentUser!.id))
                 this.isJoinButtonLoading = false
@@ -72,7 +74,9 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
             this.event = event
 
             return this.memberAvatars$ = this.userService.readUsersByIds(event.memberUserIds).pipe(
-              map((users: User[]) => users.slice(users.length - 4).map((user: User) => user.avatar)),
+              map((users: User[]) => {
+                return this.generateSlicedAvatarUserList(users)
+              }),
               tap(() => {
                 this.isJoined.next(this.checkAlreadyExist(this.event!, this.currentUser!.id))
                 this.isJoinButtonLoading = false
@@ -86,10 +90,22 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
     }
   }
 
+  private generateSlicedAvatarUserList(users: User[]): string[] {
+    let slicedUsers: User[] = users.slice()
+
+    if (users.length > 4) {
+      slicedUsers = users.slice(users.length - 4)
+    }
+
+    return slicedUsers.map((user: User) => user.avatar)
+  }
+
   public ngOnChanges(changes: SimpleChanges): void {
     if (typeof changes.event !== 'undefined' && changes.event.currentValue !== null) {
       this.memberAvatars$ = this.userService.readUsersByIds(changes.event.currentValue.memberUserIds).pipe(
-        map((users: User[]) => users.slice(users.length - 4).map((user: User) => user.avatar))
+        map((users: User[]) => {
+          return this.generateSlicedAvatarUserList(users)
+        })
       )
 
       this.isCanJoinEvent.next(this.userStoreService.isAuth && !this.checkIsPastEvent(changes.event.currentValue))
