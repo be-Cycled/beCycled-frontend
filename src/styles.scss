@@ -110,3 +110,27 @@ tui-root {
     padding: var(--desktop-container-padding) calc(50% - 684px);
   }
 }
+
+tui-wrapper[data-appearance='error'] {
+  background-color: hsl(0, 88%, 62%);
+  color: hsl(0, 0%, 100%);
+
+  &[data-state='hovered'] {
+    background-color: hsl(14deg 100% 61%);
+  }
+
+  &[data-state='pressed'] {
+    background-color: hsl(14deg 100% 61%);
+  }
+
+  &[data-state='disabled'] {
+    background-color: hsl(14deg 100% 61%);
+  }
+}
+
+.delete-dialog {
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+  }
+}

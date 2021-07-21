@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
-import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
+import { Router } from '@angular/router'
+import { TuiContextWithImplicit, tuiPure, TuiStringHandler } from '@taiga-ui/cdk'
+import { TuiDialogContext, TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
+import { BehaviorSubject, EMPTY, Observable, of, Subject } from 'rxjs'
 import { catchError, startWith, switchMap, tap } from 'rxjs/operators'
 import { Community, CommunityType, SportType } from '../../../../../global/domain'
 import { CommunityService } from '../../../../../global/domain/services/community/community.service'
@@ -50,6 +53,21 @@ export class CommunitySingleSettingsComponent implements OnInit {
 
   public saveButtonShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
+  public communityTypesMap: Record<CommunityType, string> = {
+    [ CommunityType.organization ]: `Организация`,
+    [ CommunityType.club ]: `Клуб`
+  }
+
+  public communityTypeKeys: CommunityType[] = Object.keys(this.communityTypesMap) as CommunityType[]
+
+  public sportTypesMap: Record<SportType, string> = {
+    [ SportType.bicycle ]: `Велосипед`,
+    [ SportType.rollerblade ]: `Роликовые коньки`,
+    [ SportType.run ]: `Бег`
+  }
+
+  public sportTypesKeys: SportType[] = Object.keys(this.sportTypesMap) as SportType[]
+
   constructor(private communityStoreService: CommunityStoreService,
               private communityService: CommunityService,
               private fb: FormBuilder,
@@ -57,7 +75,9 @@ export class CommunitySingleSettingsComponent implements OnInit {
               private imagesService: ImageNetworkService,
               private configService: ConfigService,
               @Inject(MAX_AVATAR_FILE_SIZE)
-              public readonly maxFileSize: number) {
+              public readonly maxFileSize: number,
+              private dialogService: TuiDialogService,
+              private router: Router) {
     const community: Community | null = this.communityStoreService.takeCommunity()
 
     if (community === null) {
@@ -110,6 +130,46 @@ export class CommunitySingleSettingsComponent implements OnInit {
 
         this.updateCommunity(community)
         this.avatarFileControl.patchValue(null)
+      })
+    ).subscribe()
+  }
+
+  @tuiPure
+  public communityStyleStringify(): TuiStringHandler<TuiContextWithImplicit<CommunityType>> {
+    return ({ $implicit }: TuiContextWithImplicit<CommunityType>) => {
+      if ($implicit === CommunityType.club) {
+        return `Клуб`
+      }
+
+      if ($implicit === CommunityType.organization) {
+        return `Организация`
+      }
+
+      return ``
+    }
+  }
+
+  @tuiPure
+  public sportTypesStringify(sportTypesMap: Record<SportType, string>): (value: SportType) => string {
+    return (value: SportType) => sportTypesMap[ value ]
+  }
+
+  public onClickDeleteButton(content: PolymorpheusContent<TuiDialogContext<boolean>>): void {
+    this.dialogService.open(content).pipe(
+      switchMap((agree: boolean) => {
+        if (!agree) {
+          return EMPTY
+        }
+
+        return this.communityStoreService.communityChanges$.pipe(
+          switchMap((community: Community) => this.communityService.delete(community.id).pipe(
+            tap(() => {
+              this.notificationService.show(`Сообщество успешно удалено`, { status: TuiNotification.Success }).subscribe()
+              this.router.navigateByUrl(`/communities`)
+            }),
+            catchError(() => this.notificationService.show(`Не удалось удалить сообщество`, { status: TuiNotification.Error }))
+          ))
+        )
       })
     ).subscribe()
   }
