@@ -1,7 +1,7 @@
-<section class="main-info-section" [formGroup]="editForm" *tuiLet="isEditMode | async as isEdit">
+<section class="main-info-section" [formGroup]="editForm" *tuiLet="isEditMode$ | async as isEdit">
   <div class="info-section avatar-and-name-container">
     <div class="avatar-container">
-      <img [attr.src]="avatar | async" alt="">
+      <img [attr.src]="avatar$ | async" alt="">
       <tui-input-file
         *ngIf="isEdit"
         [formControl]="avatarFileReader"
@@ -26,32 +26,33 @@
         </ng-container>
 
         <ng-container *ngIf="!isEdit">
-          {{ fullName | async }}
+          {{ fullName$ | async }}
         </ng-container>
       </h1>
-      <h2 class="user-login">{{ login | async }}</h2>
+      <h2 class="user-login">{{ login$ | async }}</h2>
     </div>
   </div>
   <div class="info-section description-container">
     <p *ngIf="isEdit">
       <tui-text-area formControlName="about">О себе</tui-text-area>
     </p>
-    <p *ngIf="!isEdit">{{ about | async }}</p>
+    <p *ngIf="!isEdit">{{ about$ | async }}</p>
   </div>
   <ng-container *ngIf="!isEdit">
-    <div *ngIf="isActiveProfileYours | async" class="info-section edit-button-container">
-      <button (click)="onClickEditButton()" class="edit-button" tuiButton size="s" type="button" iconRight="tuiIconEdit">Редактировать</button>
+    <div *ngIf="isActiveProfileYours$ | async" class="info-section edit-button-container">
+      <button (click)="onClickEditButton()" class="edit-button" tuiButton size="s" type="button"
+              iconRight="tuiIconEdit">Редактировать
+      </button>
     </div>
   </ng-container>
   <div class="info-section secondary-info">
     <ul class="tui-list">
-      <li class="tui-list__item">
-        <span>Телефон: </span>
+      <li class="tui-list__item" *ngIf="isEdit || ((phone$ | async) !== null && (phone$ | async)?.length > 0)">
         <span>
           <tui-input-phone *ngIf="isEdit" tuiTextfieldSize="s" formControlName="phone">Телефон</tui-input-phone>
           <tui-field-error *ngIf="isEdit" formControlName="phone"></tui-field-error>
 
-          <a tuiLink *ngIf="!isEdit" [attr.href]="'tel:' + (phone | async)">{{ phone | async | tuiFormatPhone }}</a>
+          <a tuiLink *ngIf="!isEdit" [attr.href]="'tel:' + (phone$ | async)">{{ phone$ | async | tuiFormatPhone }}</a>
         </span>
       </li>
       <!--   TODO: Дать возможность пользователю открывать свою почту   -->
@@ -70,12 +71,12 @@
     <button tuiButton (click)="onClickCancelButton()" size="s" appearance="secondary" type="button">Отменить</button>
     <button tuiButton (click)="onClickSaveButton()" size="s" type="button">Сохранить</button>
   </div>
-  <div class="info-section user-communities-section">
+  <div *ngIf="(userCommunities$ | async)?.length > 0" class="info-section user-communities-section">
     <h3 class="user-communities-title">Сообщества</h3>
     <ul class="community-list">
       <li
         class="community-list-item"
-        *ngFor="let community of userCommunities | async"
+        *ngFor="let community of userCommunities$ | async"
         [tuiHint]="community.name"
       >
         <a [routerLink]="[ '/', 'communities', community.nickname ]">
@@ -87,38 +88,46 @@
 </section>
 
 <section class="user-activities-section">
-  <div *ngIf="isActiveProfileYours | async" [class.is-show-map]="showMap | async" class="tracker-info-container">
-    <h2 class="section-title">Информация о трекере</h2>
-    <mgl-map
-      *ngIf="showMap | async"
-      class="mapbox-map"
-      [style]="'mapbox://styles/mapbox/streets-v11'"
-      [attributionControl]="false"
-      [center]="trackerLastPosition | async"
-      [zoom]="14"
-    >
-      <mgl-marker [lngLat]="trackerLastPosition | async" [anchor]="'center'"></mgl-marker>
-      <mgl-control mglNavigation></mgl-control>
-    </mgl-map>
-    <tui-notification *ngIf="isTrackerDoesNotExist | async">У вас нет привязанных трекеров</tui-notification>
-  </div>
-  <div class="activities-section">
+  <!-- Временно отключили информацию о трекере -->
+
+  <!--  <div *ngIf="isActiveProfileYours | async" [class.is-show-map]="showMap | async" class="tracker-info-container">-->
+  <!--    <h2 class="section-title">Информация о трекере</h2>-->
+  <!--    <mgl-map-->
+  <!--      *ngIf="showMap | async"-->
+  <!--      class="mapbox-map"-->
+  <!--      [style]="'mapbox://styles/mapbox/streets-v11'"-->
+  <!--      [attributionControl]="false"-->
+  <!--      [center]="trackerLastPosition | async"-->
+  <!--      [zoom]="14"-->
+  <!--    >-->
+  <!--      <mgl-marker [lngLat]="trackerLastPosition | async" [anchor]="'center'"></mgl-marker>-->
+  <!--      <mgl-control mglNavigation></mgl-control>-->
+  <!--    </mgl-map>-->
+  <!--    <tui-notification *ngIf="isTrackerDoesNotExist | async">У вас нет привязанных трекеров</tui-notification>-->
+  <!--  </div>-->
+  <section class="activities-section">
     <h2 class="section-title">Активность</h2>
     <div class="activities-filter-container">
-      <tui-filter
-        [formControl]="activitiesFilterControl"
-        size="s"
-        [items]="[ 'Тренировки', 'Соревнования' ]"
-      ></tui-filter>
+      <cy-event-filter [formControl]="filterFormControl" [events]="events$ | async"
+                       filterType="event"></cy-event-filter>
 
-      <button [disabled]="true" tuiButton type="button" size="m">Добавить</button>
+      <a
+        *ngIf="isActiveProfileYours$ | async"
+        tuiButton
+        class="add-button"
+        type="button"
+        size="m"
+        routerLink="/add-event"
+      >
+        <span class="material-icons-outlined">add</span>
+      </a>
     </div>
-    <div class="activities-container">
+    <div class="events-container">
       <ul class="event-list">
-        <li class="event-item" *ngFor="let event of events | async">
-          <cy-event-card [event]="event"></cy-event-card>
+        <li class="event-item" *ngFor="let event of filteredEvents$ | async">
+          <cy-event-card [event]="event" [isOnlyTimeShow]="false"></cy-event-card>
         </li>
       </ul>
     </div>
-  </div>
+  </section>
 </section>

@@ -11,6 +11,16 @@
   border-radius: 50%;
 }
 
+.add-button {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+
+  border-radius: 50%;
+
+  box-shadow: var(--default-button-shadow);
+}
+
 .avatar-and-name-container {
   display: flex;
   align-items: center;
@@ -35,6 +45,10 @@
 .community-avatar {
   max-width: 50px;
   border-radius: 50%;
+}
+
+.activities-section {
+  max-width: 672px;
 }
 
 .activities-filter-container {
@@ -116,6 +130,10 @@
   border-radius: var(--tui-radius-l);
 }
 
+.events-container {
+  padding-bottom: var(--mobile-container-padding);
+}
+
 @media screen and (min-width: 768px) {
   :host {
     flex-direction: row;
@@ -142,6 +160,10 @@
   .avatar-container img {
     width: 234px;
     height: 234px;
+  }
+
+  .events-container {
+    padding-bottom: var(--desktop-container-padding);
   }
 }
 
