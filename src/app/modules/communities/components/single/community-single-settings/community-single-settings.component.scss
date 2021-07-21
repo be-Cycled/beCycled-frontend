@@ -69,9 +69,18 @@ section.danger-zone-actions {
   font: var(--tui-font-heading-6);
 }
 
+.settings-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.additional-controls {
+  order: -1;
+}
+
 @media screen and (min-width: 599px) {
   .settings-container {
-    display: flex;
+    flex-direction: row;
     margin-bottom: 12px;
   }
 
@@ -82,6 +91,7 @@ section.danger-zone-actions {
   }
 
   .additional-controls {
+    order: 0;
     flex-basis: 250px;
   }
 
