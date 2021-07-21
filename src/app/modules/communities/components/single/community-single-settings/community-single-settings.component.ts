@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { Router } from '@angular/router'
 import { TuiContextWithImplicit, tuiPure, TuiStringHandler } from '@taiga-ui/cdk'
-import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
+import { TuiDialogContext, TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
+import { BehaviorSubject, EMPTY, Observable, of, Subject } from 'rxjs'
 import { catchError, startWith, switchMap, tap } from 'rxjs/operators'
 import { Community, CommunityType, SportType } from '../../../../../global/domain'
 import { CommunityService } from '../../../../../global/domain/services/community/community.service'
@@ -65,7 +67,9 @@ export class CommunitySingleSettingsComponent implements OnInit {
               private imagesService: ImageNetworkService,
               private configService: ConfigService,
               @Inject(MAX_AVATAR_FILE_SIZE)
-              public readonly maxFileSize: number) {
+              public readonly maxFileSize: number,
+              private dialogService: TuiDialogService,
+              private router: Router) {
     const community: Community | null = this.communityStoreService.takeCommunity()
 
     if (community === null) {
@@ -124,7 +128,6 @@ export class CommunitySingleSettingsComponent implements OnInit {
 
   @tuiPure
   public communityStyleStringify(): TuiStringHandler<TuiContextWithImplicit<CommunityType>> {
-    debugger
     return ({ $implicit }: TuiContextWithImplicit<CommunityType>) => {
       if ($implicit === CommunityType.club) {
         return `Клуб`
@@ -138,10 +141,24 @@ export class CommunitySingleSettingsComponent implements OnInit {
     }
   }
 
-  public onClickDeleteButton(): void {
-    /*this.communityStoreService.communityChanges$.pipe(
-      switchMap((community: Community) => )
-    )*/
+  public onClickDeleteButton(content: PolymorpheusContent<TuiDialogContext<boolean>>): void {
+    this.dialogService.open(content).pipe(
+      switchMap((agree: boolean) => {
+        if (!agree) {
+          return EMPTY
+        }
+
+        return this.communityStoreService.communityChanges$.pipe(
+          switchMap((community: Community) => this.communityService.delete(community.id).pipe(
+            tap(() => {
+              this.notificationService.show(`Сообщество успешно удалено`, { status: TuiNotification.Success }).subscribe()
+              this.router.navigateByUrl(`/communities`)
+            }),
+            catchError(() => this.notificationService.show(`Не удалось удалить сообщество`, { status: TuiNotification.Error }))
+          ))
+        )
+      })
+    ).subscribe()
   }
 
   private updateCommunity(community: Community): void {

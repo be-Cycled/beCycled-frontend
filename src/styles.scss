@@ -127,3 +127,10 @@ tui-wrapper[data-appearance='error'] {
     background-color: hsl(14deg 100% 61%);
   }
 }
+
+.delete-dialog {
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+  }
+}

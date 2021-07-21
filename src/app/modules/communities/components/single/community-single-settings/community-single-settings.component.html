@@ -50,7 +50,7 @@
               <p class="description-subtitle">Эта организация удалится навсегда.</p>
             </div>
 
-            <button tuiButton appearance="error" (click)="onClickDeleteButton()">Удалить</button>
+            <button tuiButton appearance="error" (click)="onClickDeleteButton(deleteDialogRef)">Удалить</button>
           </div>
         </div>
       </section>
@@ -73,3 +73,29 @@
 </form>
 
 <ng-template #communityTypeValueRef let-option>{{ communityTypesMap[ option ] }}</ng-template>
+
+<ng-template #deleteDialogRef let-completeWith="completeWith">
+  <div class="delete-dialog">
+    <p>Удалить сообщество?</p>
+
+    <div class="button-container">
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        appearance="secondary"
+        (click)="completeWith(false)"
+      >
+        Нет
+      </button>
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        (click)="completeWith(true)"
+      >
+        Да
+      </button>
+    </div>
+  </div>
+</ng-template>
