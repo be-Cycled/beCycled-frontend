@@ -45,8 +45,7 @@
   </ng-container>
   <div class="info-section secondary-info">
     <ul class="tui-list">
-      <li class="tui-list__item">
-        <span>Телефон: </span>
+      <li class="tui-list__item" *ngIf="isEdit || ((phone | async) !== null && (phone | async)?.length > 0)">
         <span>
           <tui-input-phone *ngIf="isEdit" tuiTextfieldSize="s" formControlName="phone">Телефон</tui-input-phone>
           <tui-field-error *ngIf="isEdit" formControlName="phone"></tui-field-error>
