@@ -12,6 +12,7 @@ import {
   TuiInputFileModule,
   TuiInputModule,
   TuiIslandModule,
+  TuiMultiSelectModule,
   TuiRadioBlockModule,
   TuiSelectModule,
   TuiTabsModule,
@@ -64,7 +65,8 @@ import { CommunityStoreService } from './services'
     TuiCheckboxBlockModule,
     TuiLabelModule,
     TuiFieldErrorModule,
-    TuiDataListWrapperModule
+    TuiDataListWrapperModule,
+    TuiMultiSelectModule
   ],
   providers: [
     CommunitySettingsGuard,

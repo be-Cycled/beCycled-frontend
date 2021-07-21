@@ -25,6 +25,23 @@
         </div>
 
         <div class="field">
+          <tui-multi-select
+            formControlName="sportTypes"
+            [editable]="false"
+            [tuiTextfieldLabelOutside]="true"
+            [stringify]="sportTypesStringify(sportTypesMap)"
+          >
+            Виды спорта
+            <tui-data-list-wrapper
+              *tuiDataList
+              tuiMultiSelectGroup
+              [items]="sportTypesKeys"
+              [itemContent]="sportTypesValueRef"
+            ></tui-data-list-wrapper>
+          </tui-multi-select>
+        </div>
+
+        <div class="field">
           <tui-input formControlName="url">Ссылка</tui-input>
         </div>
         <div class="field">
@@ -73,6 +90,8 @@
 </form>
 
 <ng-template #communityTypeValueRef let-option>{{ communityTypesMap[ option ] }}</ng-template>
+
+<ng-template #sportTypesValueRef let-option>{{ sportTypesMap[ option ] }}</ng-template>
 
 <ng-template #deleteDialogRef let-completeWith="completeWith">
   <div class="delete-dialog">

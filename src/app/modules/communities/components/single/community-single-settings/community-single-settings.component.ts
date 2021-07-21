@@ -60,6 +60,14 @@ export class CommunitySingleSettingsComponent implements OnInit {
 
   public communityTypeKeys: CommunityType[] = Object.keys(this.communityTypesMap) as CommunityType[]
 
+  public sportTypesMap: Record<SportType, string> = {
+    [ SportType.bicycle ]: `Велосипед`,
+    [ SportType.rollerblade ]: `Роликовые коньки`,
+    [ SportType.run ]: `Бег`
+  }
+
+  public sportTypesKeys: SportType[] = Object.keys(this.sportTypesMap) as SportType[]
+
   constructor(private communityStoreService: CommunityStoreService,
               private communityService: CommunityService,
               private fb: FormBuilder,
@@ -139,6 +147,11 @@ export class CommunitySingleSettingsComponent implements OnInit {
 
       return ``
     }
+  }
+
+  @tuiPure
+  public sportTypesStringify(sportTypesMap: Record<SportType, string>): (value: SportType) => string {
+    return (value: SportType) => sportTypesMap[ value ]
   }
 
   public onClickDeleteButton(content: PolymorpheusContent<TuiDialogContext<boolean>>): void {
