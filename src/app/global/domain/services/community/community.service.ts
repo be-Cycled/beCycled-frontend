@@ -45,4 +45,8 @@ export class CommunityService {
   public getCommunitiesByUser(login: string): Observable<Community[]> {
     return this.httpClient.get<Community[]>(`${ this.config.baseApiUrl }/communities/user/${ login }`)
   }
+
+  public delete(communityId: number): Observable<number> {
+    return this.httpClient.get<number>(`${ this.config.baseApiUrl }/communities/${ communityId }`)
+  }
 }
