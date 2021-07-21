@@ -10,12 +10,16 @@
         class="tui-island__category"
       >Тренировка</p>
     </div>
-    <tui-avatar
-      *ngIf="currentCommunity !== null"
-      class="community-avatar"
-      size="m"
-      [avatarUrl]="currentCommunity.avatar"
-    ></tui-avatar>
+    <ng-container *ngIf="currentCommunity !== null">
+      <a class="community-link" [routerLink]="[ '/', 'communities', currentCommunity.nickname ]">
+        <tui-avatar
+          class="community-avatar"
+          size="m"
+          [avatarUrl]="currentCommunity.avatar"
+          [tuiHint]="currentCommunity.name"
+        ></tui-avatar>
+      </a>
+    </ng-container>
   </header>
   <div class="preview-container">
     <img [src]="routePreview$ | async">

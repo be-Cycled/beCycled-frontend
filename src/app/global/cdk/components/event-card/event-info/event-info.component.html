@@ -57,7 +57,7 @@
       <ul class="avatars-list">
         <li class="avatar-container" *ngFor="let member of lastFourMembers">
           <a class="avatar-link" (click)="navigateAndRefresh(member.login)">
-            <tui-avatar size="s" [avatarUrl]="member.avatar"></tui-avatar>
+            <tui-avatar size="s" [avatarUrl]="member.avatar" [tuiHint]="member.login"></tui-avatar>
           </a>
         </li>
       </ul>

@@ -8,7 +8,7 @@ import { User } from '../../../../../domain'
 import { BrowserStorage, DEFAULT_AVATAR, takeBrowserStorageKey } from '../../../../../models'
 import { UserStoreService } from '../../../../../services'
 import { TuiHostedDropdownComponent } from '@taiga-ui/core'
-import { isNotEmpty } from '../../../../../utils'
+import { isEmpty } from '../../../../../utils'
 
 @Component({
   selector: 'cy-header',
@@ -66,9 +66,9 @@ export class HeaderComponent {
   public onClickDropdownItem(): void {
     this.isOpenedDropdown = false
 
-    if (isNotEmpty(this.dropdownComponent)) {
-      if (isNotEmpty(this.dropdownComponent!.nativeFocusableElement)) {
-        this.dropdownComponent!.nativeFocusableElement!.focus()
+    if (!isEmpty(this.dropdownComponent)) {
+      if (!isEmpty(this.dropdownComponent.nativeFocusableElement)) {
+        this.dropdownComponent.nativeFocusableElement!.focus()
       }
     }
   }

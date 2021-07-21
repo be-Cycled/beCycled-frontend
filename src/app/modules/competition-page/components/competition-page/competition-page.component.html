@@ -78,11 +78,13 @@
     </mgl-map>
 
     <div class="community-container" *ngIf="(currentCommunity$ | async) !== null">
-      <tui-avatar
-        class="community-avatar"
-        size="m"
-        [avatarUrl]="(currentCommunity$ | async)!.avatar"
-      ></tui-avatar>
+      <a class="community-link" [routerLink]="[ '/', 'communities', (currentCommunity$ | async)!.nickname ]">
+        <tui-avatar
+          class="community-avatar"
+          size="m"
+          [avatarUrl]="(currentCommunity$ | async)!.avatar"
+        ></tui-avatar>
+      </a>
       <span>{{ (currentCommunity$ | async)!.name }}</span>
     </div>
 
