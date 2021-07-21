@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { LOCAL_STORAGE } from '@ng-web-apis/common'
 import { Observable } from 'rxjs'
@@ -7,6 +7,7 @@ import { AuthorizationService } from '../../../../../../modules/auth/services/au
 import { User } from '../../../../../domain'
 import { BrowserStorage, DEFAULT_AVATAR, takeBrowserStorageKey } from '../../../../../models'
 import { UserStoreService } from '../../../../../services'
+import { TuiHostedDropdownComponent } from '@taiga-ui/core'
 
 @Component({
   selector: 'cy-header',
@@ -15,6 +16,7 @@ import { UserStoreService } from '../../../../../services'
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class HeaderComponent {
+  public isOpenedDropdown: boolean = false
 
   public isUserAuthorized$: Observable<boolean> = this.userStoreService.isAuthChanges
 
@@ -41,6 +43,9 @@ export class HeaderComponent {
     map((userLogin: string) => `/users/${ userLogin }`)
   )
 
+  @ViewChild(TuiHostedDropdownComponent)
+  private dropdownComponent?: TuiHostedDropdownComponent
+
   constructor(private userStoreService: UserStoreService,
               @Inject(LOCAL_STORAGE)
               private localStorage: Storage,
@@ -49,12 +54,24 @@ export class HeaderComponent {
   }
 
   public onClickLogoutButton(): void {
+    this.isOpenedDropdown = false
     this.localStorage.removeItem(takeBrowserStorageKey(BrowserStorage.accessToken))
     this.userStoreService.reset()
   }
 
   /**
-   * Метод для определения активного роута
+   * Метод, который закрывает выпадающее меню после клика по элементу списка.
+   */
+  public onClickDropdownItem(): void {
+    this.isOpenedDropdown = false
+
+    if (this.dropdownComponent && this.dropdownComponent.nativeFocusableElement) {
+      this.dropdownComponent.nativeFocusableElement.focus()
+    }
+  }
+
+  /**
+   * Метод для определения активного роута.
    */
   public isActiveRoute(url: string): boolean {
     if (this.router.url.includes(url + '?')) {

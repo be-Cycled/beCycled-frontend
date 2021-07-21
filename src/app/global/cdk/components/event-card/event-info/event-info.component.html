@@ -64,7 +64,7 @@
       <button tuiLink class="members-count" (click)="showMembersDialog(membersDialogRef)">{{ members.length }}->
       </button>
 
-      <ng-template #membersDialogRef>
+      <ng-template #membersDialogRef let-observer>
         <ul class="member-list">
           <li class="member-list-item" *ngFor="let member of members">
             <tui-avatar class="member-list-avatar" size="m" [avatarUrl]="member.avatar"></tui-avatar>
@@ -72,7 +72,7 @@
               <span *ngIf="member.firstName !== null || member.lastName !== null">
               {{ member.firstName }} {{ member.lastName }}
             </span>
-              <a tuiLink [routerLink]="[ '/', 'users', member.login ]">
+              <a tuiLink [routerLink]="[ '/', 'users', member.login ]" (click)="observer.complete()">
                 {{ member.login }}
               </a>
             </div>
