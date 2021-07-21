@@ -3,6 +3,7 @@
     "@waliot-oss/tslint-config"
   ],
   "rules": {
-    "no-redundant-jsdoc": false
+    "no-redundant-jsdoc": false,
+    "no-null-undefined-union": false
   }
 }
