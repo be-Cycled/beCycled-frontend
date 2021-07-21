@@ -16,6 +16,10 @@ export class CommunityStoreService {
     filter((community: Community | null): community is Community => community !== null)
   )
 
+  /**
+   * @todo Нужно вынести в отдельный сервис. И добавить апдейтер, чтобы при создании или обновлении сообщества
+   * этот поток перезапрашивался
+   */
   public allCommunities$: Observable<Community[]> = this.communityService.getAll().pipe(
     take(1),
     shareReplay(1)

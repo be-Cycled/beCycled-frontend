@@ -1,29 +1,59 @@
 <form class="community-settings-form" [formGroup]="communityFormGroup">
   <div class="settings-container">
     <div class="main-controls">
-      <div class="field">
-        <tui-input formControlName="name">Название *</tui-input>
-        <tui-field-error formControlName="name"></tui-field-error>
-      </div>
-
-      <div class="field">
-        <tui-input formControlName="nickname">Никнейм *</tui-input>
-        <tui-field-error formControlName="nickname"></tui-field-error>
-      </div>
-
-      <label class="field" tuiLabel label="Тип сообщества *">
-        <div tuiGroup orientation="vertical" [collapsed]="true">
-          <tui-radio-block formControlName="communityType" [item]="communityType.club">Клуб</tui-radio-block>
-          <tui-radio-block formControlName="communityType" [item]="communityType.organization">Организация</tui-radio-block>
+      <div class="fields-container">
+        <div class="field">
+          <tui-input formControlName="name">Название *</tui-input>
+          <tui-field-error formControlName="name"></tui-field-error>
         </div>
-      </label>
 
-      <div class="field">
-        <tui-input formControlName="url">Ссылка</tui-input>
+        <div class="field">
+          <tui-input formControlName="nickname">Никнейм *</tui-input>
+          <tui-field-error formControlName="nickname"></tui-field-error>
+        </div>
+
+        <div class="field">
+          <tui-select
+            formControlName="communityType"
+            [valueContent]="communityTypeValueRef"
+          >
+            Тип сообщества *
+            <tui-data-list *tuiDataList>
+              <button tuiOption *ngFor="let type of communityTypeKeys" [value]="type">{{ communityTypesMap[type] }}</button>
+            </tui-data-list>
+          </tui-select>
+        </div>
+
+        <div class="field">
+          <tui-input formControlName="url">Ссылка</tui-input>
+        </div>
+        <div class="field">
+          <tui-text-area formControlName="description">Описание</tui-text-area>
+        </div>
       </div>
-      <div class="field">
-        <tui-text-area formControlName="description">Описание</tui-text-area>
-      </div>
+
+      <section class="actions-container">
+        <button tuiButton
+                class="save-button"
+                (click)="onClickSaveButton()"
+                [showLoader]="saveButtonShowLoader | async"
+        >Сохранить</button>
+      </section>
+
+      <section class="danger-zone-actions">
+        <h2>Опасная зона</h2>
+
+        <div class="content">
+          <div class="danger-zone-action">
+            <div class="danger-zone-action-description">
+              <p class="description-title">Удалить организацию</p>
+              <p class="description-subtitle">Эта организация удалится навсегда.</p>
+            </div>
+
+            <button tuiButton appearance="error" (click)="onClickDeleteButton()">Удалить</button>
+          </div>
+        </div>
+      </section>
     </div>
 
     <aside class="additional-controls">
@@ -40,12 +70,6 @@
       ></tui-input-file>
     </aside>
   </div>
-
-  <div class="actions-container">
-    <button tuiButton
-            class="save-button"
-            (click)="onClickSaveButton()"
-            [showLoader]="saveButtonShowLoader | async"
-    >Сохранить</button>
-  </div>
 </form>
+
+<ng-template #communityTypeValueRef let-option>{{ communityTypesMap[ option ] }}</ng-template>

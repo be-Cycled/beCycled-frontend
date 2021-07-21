@@ -29,12 +29,44 @@
   width: 100%;
 }
 
-.additional-controls {
+.additional-controls,
+.actions-container,
+.fields-container {
   margin-bottom: 12px;
 }
 
 .save-button {
   width: 100%;
+}
+
+section.danger-zone-actions {
+  --danger-color: hsl(0, 88%, 62%);
+}
+
+.danger-zone-actions h2 {
+  color: var(--danger-color);
+}
+
+.danger-zone-action {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--danger-color);
+  border-radius: var(--tui-radius-m);
+  padding: 12px;
+}
+
+.danger-zone-action-description {
+  margin-bottom: 12px;
+  max-width: 80%;
+}
+
+.danger-zone-action-description p {
+  margin: 0;
+}
+
+.description-title {
+  font-weight: bold;
+  font: var(--tui-font-heading-6);
 }
 
 @media screen and (min-width: 599px) {
@@ -55,5 +87,15 @@
 
   .save-button {
     width: fit-content;
+  }
+
+  .danger-zone-action {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .danger-zone-action-description {
+    margin-bottom: 0;
   }
 }

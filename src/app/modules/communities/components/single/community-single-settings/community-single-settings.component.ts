@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { TuiContextWithImplicit, tuiPure, TuiStringHandler } from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
 import { catchError, startWith, switchMap, tap } from 'rxjs/operators'
@@ -49,6 +50,13 @@ export class CommunitySingleSettingsComponent implements OnInit {
   )
 
   public saveButtonShowLoader: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+
+  public communityTypesMap: Record<CommunityType, string> = {
+    [ CommunityType.organization ]: `Организация`,
+    [ CommunityType.club ]: `Клуб`
+  }
+
+  public communityTypeKeys: CommunityType[] = Object.keys(this.communityTypesMap) as CommunityType[]
 
   constructor(private communityStoreService: CommunityStoreService,
               private communityService: CommunityService,
@@ -112,6 +120,28 @@ export class CommunitySingleSettingsComponent implements OnInit {
         this.avatarFileControl.patchValue(null)
       })
     ).subscribe()
+  }
+
+  @tuiPure
+  public communityStyleStringify(): TuiStringHandler<TuiContextWithImplicit<CommunityType>> {
+    debugger
+    return ({ $implicit }: TuiContextWithImplicit<CommunityType>) => {
+      if ($implicit === CommunityType.club) {
+        return `Клуб`
+      }
+
+      if ($implicit === CommunityType.organization) {
+        return `Организация`
+      }
+
+      return ``
+    }
+  }
+
+  public onClickDeleteButton(): void {
+    /*this.communityStoreService.communityChanges$.pipe(
+      switchMap((community: Community) => )
+    )*/
   }
 
   private updateCommunity(community: Community): void {

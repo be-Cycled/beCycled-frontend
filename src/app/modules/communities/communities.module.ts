@@ -6,6 +6,7 @@ import { TuiButtonModule, TuiDataListModule, TuiGroupModule, TuiHintModule, TuiL
 import {
   TuiAvatarModule,
   TuiCheckboxBlockModule,
+  TuiDataListWrapperModule,
   TuiFieldErrorModule,
   TuiFilterModule,
   TuiInputFileModule,
@@ -62,7 +63,8 @@ import { CommunityStoreService } from './services'
     TuiRadioBlockModule,
     TuiCheckboxBlockModule,
     TuiLabelModule,
-    TuiFieldErrorModule
+    TuiFieldErrorModule,
+    TuiDataListWrapperModule
   ],
   providers: [
     CommunitySettingsGuard,
