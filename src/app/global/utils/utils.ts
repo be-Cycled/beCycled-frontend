@@ -9,6 +9,6 @@ export function buildCountString(count: number, words: string[]): string {
   return (count % 10 === 1) ? `${ count } ${ words[ 0 ] }` : `${ count } ${ words[ 1 ] }`
 }
 
-export function isNotEmpty(item: any): boolean {
-  return item !== null && typeof item !== 'undefined'
+export function isEmpty(item: any): item is null | undefined {
+  return item === null || typeof item === 'undefined'
 }
