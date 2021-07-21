@@ -1,7 +1,7 @@
-<section class="main-info-section" [formGroup]="editForm" *tuiLet="isEditMode | async as isEdit">
+<section class="main-info-section" [formGroup]="editForm" *tuiLet="isEditMode$ | async as isEdit">
   <div class="info-section avatar-and-name-container">
     <div class="avatar-container">
-      <img [attr.src]="avatar | async" alt="">
+      <img [attr.src]="avatar$ | async" alt="">
       <tui-input-file
         *ngIf="isEdit"
         [formControl]="avatarFileReader"
@@ -26,31 +26,33 @@
         </ng-container>
 
         <ng-container *ngIf="!isEdit">
-          {{ fullName | async }}
+          {{ fullName$ | async }}
         </ng-container>
       </h1>
-      <h2 class="user-login">{{ login | async }}</h2>
+      <h2 class="user-login">{{ login$ | async }}</h2>
     </div>
   </div>
   <div class="info-section description-container">
     <p *ngIf="isEdit">
       <tui-text-area formControlName="about">О себе</tui-text-area>
     </p>
-    <p *ngIf="!isEdit">{{ about | async }}</p>
+    <p *ngIf="!isEdit">{{ about$ | async }}</p>
   </div>
   <ng-container *ngIf="!isEdit">
-    <div *ngIf="isActiveProfileYours | async" class="info-section edit-button-container">
-      <button (click)="onClickEditButton()" class="edit-button" tuiButton size="s" type="button" iconRight="tuiIconEdit">Редактировать</button>
+    <div *ngIf="isActiveProfileYours$ | async" class="info-section edit-button-container">
+      <button (click)="onClickEditButton()" class="edit-button" tuiButton size="s" type="button"
+              iconRight="tuiIconEdit">Редактировать
+      </button>
     </div>
   </ng-container>
   <div class="info-section secondary-info">
     <ul class="tui-list">
-      <li class="tui-list__item" *ngIf="isEdit || ((phone | async) !== null && (phone | async)?.length > 0)">
+      <li class="tui-list__item" *ngIf="isEdit || ((phone$ | async) !== null && (phone$ | async)?.length > 0)">
         <span>
           <tui-input-phone *ngIf="isEdit" tuiTextfieldSize="s" formControlName="phone">Телефон</tui-input-phone>
           <tui-field-error *ngIf="isEdit" formControlName="phone"></tui-field-error>
 
-          <a tuiLink *ngIf="!isEdit" [attr.href]="'tel:' + (phone | async)">{{ phone | async | tuiFormatPhone }}</a>
+          <a tuiLink *ngIf="!isEdit" [attr.href]="'tel:' + (phone$ | async)">{{ phone$ | async | tuiFormatPhone }}</a>
         </span>
       </li>
       <!--   TODO: Дать возможность пользователю открывать свою почту   -->
@@ -69,12 +71,12 @@
     <button tuiButton (click)="onClickCancelButton()" size="s" appearance="secondary" type="button">Отменить</button>
     <button tuiButton (click)="onClickSaveButton()" size="s" type="button">Сохранить</button>
   </div>
-  <div *ngIf="(userCommunities | async)?.length > 0" class="info-section user-communities-section">
+  <div *ngIf="(userCommunities$ | async)?.length > 0" class="info-section user-communities-section">
     <h3 class="user-communities-title">Сообщества</h3>
     <ul class="community-list">
       <li
         class="community-list-item"
-        *ngFor="let community of userCommunities | async"
+        *ngFor="let community of userCommunities$ | async"
         [tuiHint]="community.name"
       >
         <a [routerLink]="[ '/', 'communities', community.nickname ]">
@@ -106,10 +108,11 @@
   <section class="activities-section">
     <h2 class="section-title">Активность</h2>
     <div class="activities-filter-container">
-      <cy-event-filter [events]="events | async" filterType="event"></cy-event-filter>
+      <cy-event-filter [formControl]="filterFormControl" [events]="events$ | async"
+                       filterType="event"></cy-event-filter>
 
       <a
-        *ngIf="isActiveProfileYours | async"
+        *ngIf="isActiveProfileYours$ | async"
         tuiButton
         class="add-button"
         type="button"
@@ -121,7 +124,7 @@
     </div>
     <div class="events-container">
       <ul class="event-list">
-        <li class="event-item" *ngFor="let event of events | async">
+        <li class="event-item" *ngFor="let event of filteredEvents$ | async">
           <cy-event-card [event]="event" [isOnlyTimeShow]="false"></cy-event-card>
         </li>
       </ul>

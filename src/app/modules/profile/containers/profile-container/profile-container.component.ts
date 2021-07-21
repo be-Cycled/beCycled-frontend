@@ -18,7 +18,15 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators'
-import { BaseEvent, Community, User, UserService } from '../../../../global/domain'
+import {
+  BaseCompetition,
+  BaseEvent,
+  BaseEventType,
+  BaseWorkout,
+  Community,
+  User,
+  UserService
+} from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
@@ -27,6 +35,8 @@ import { TelemetryService } from '../../../../global/domain/services/telemetry/t
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
 import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens'
+import { FilterTag } from '../../../../global/cdk/components/event-filter'
+import { detectBaseEventTypeByEventType } from '../../../../global/utils'
 
 @Component({
   selector: 'cy-profile-container',
@@ -36,18 +46,16 @@ import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens'
   providers: [ TuiDestroyService ]
 })
 export class ProfileContainerComponent {
-  public activitiesFilterControl: FormControl = this.fb.control([ 'Тренировки' ])
-
-  public user: BehaviorSubject<User> = new BehaviorSubject(
+  public user$: BehaviorSubject<User> = new BehaviorSubject(
     this.activatedRoute.snapshot.data.profileUser
   )
 
-  public avatarUrl: Observable<string | null> = this.user.pipe(
+  public avatarUrl$: Observable<string | null> = this.user$.pipe(
     takeUntil(this.destroy$),
     pluck('avatar')
   )
 
-  public fullName: Observable<string | null> = this.user.pipe(
+  public fullName$: Observable<string | null> = this.user$.pipe(
     takeUntil(this.destroy$),
     map((user: User) => {
       if (user.firstName === null && user.lastName === null) {
@@ -58,37 +66,37 @@ export class ProfileContainerComponent {
     })
   )
 
-  public login: Observable<string> = this.user.pipe(
+  public login$: Observable<string> = this.user$.pipe(
     takeUntil(this.destroy$),
     pluck('login')
   )
 
-  public about: Observable<string | null> = this.user.pipe(
+  public about$: Observable<string | null> = this.user$.pipe(
     takeUntil(this.destroy$),
     pluck('about')
   )
 
-  public phone: Observable<string | null> = this.user.pipe(
+  public phone$: Observable<string | null> = this.user$.pipe(
     takeUntil(this.destroy$),
     pluck('phone')
   )
 
-  public email: Observable<string | null> = this.user.pipe(
+  public email$: Observable<string | null> = this.user$.pipe(
     takeUntil(this.destroy$),
     pluck('email')
   )
 
-  public userCommunities: Observable<Community[]> = this.user.pipe(
+  public userCommunities$: Observable<Community[]> = this.user$.pipe(
     takeUntil(this.destroy$),
     switchMap((user: User) => this.communityService.getCommunitiesByUser(user.login))
   )
 
-  public events: Observable<BaseEvent[]> = this.user.pipe(
+  public events$: Observable<BaseEvent[]> = this.user$.pipe(
     takeUntil(this.destroy$),
     switchMap((user: User) => this.eventService.readEventByUser(user.login))
   )
 
-  public isActiveProfileYours: Observable<boolean> = combineLatest([
+  public isActiveProfileYours$: Observable<boolean> = combineLatest([
     this.activatedRoute.paramMap.pipe(
       startWith((this.activatedRoute.snapshot.paramMap)),
       map((paramMap: ParamMap) => paramMap.get('login'))
@@ -100,7 +108,7 @@ export class ProfileContainerComponent {
     shareReplay(1)
   )
 
-  public isEditMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+  public isEditMode$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
   public editForm: FormGroup = this.fb.group({
     avatar: this.fb.control(null),
@@ -113,20 +121,20 @@ export class ProfileContainerComponent {
 
   public avatarFileReader: FormControl = this.fb.control(null)
 
-  public avatar: Observable<string> = this.isEditMode.pipe(
+  public avatar$: Observable<string> = this.isEditMode$.pipe(
     takeUntil(this.destroy$),
     switchMap((isEditMode: boolean) => {
       const inEditCase: Observable<string> = this.editForm.get('avatar')!.valueChanges.pipe(
         shareReplay(1)
       )
 
-      const inReadCase: Observable<string> = this.avatarUrl as Observable<string>
+      const inReadCase: Observable<string> = this.avatarUrl$ as Observable<string>
 
       return iif(() => isEditMode, inEditCase, inReadCase)
     })
   )
 
-  private previewAvatarCalc: Observable<any> = this.avatarFileReader.valueChanges.pipe(
+  private previewAvatarCalc$: Observable<any> = this.avatarFileReader.valueChanges.pipe(
     takeUntil(this.destroy$),
     tap((file: File | null) => {
       if (file === null) {
@@ -145,7 +153,7 @@ export class ProfileContainerComponent {
     })
   )
 
-  public userTracker: Observable<Tracker | null> = this.userStoreService.validUserChanges.pipe(
+  public userTracker$: Observable<Tracker | null> = this.userStoreService.validUserChanges.pipe(
     takeUntil(this.destroy$),
     switchMap((user: User) => {
       return this.trackerService.getByUser(user.login).pipe(
@@ -155,7 +163,7 @@ export class ProfileContainerComponent {
     shareReplay(1)
   )
 
-  public trackerLastTelemetry: Observable<Telemetry | null> = this.userTracker.pipe(
+  public trackerLastTelemetry$: Observable<Telemetry | null> = this.userTracker$.pipe(
     takeUntil(this.destroy$),
     switchMap((tracker: Tracker | null) => {
       if (tracker === null) {
@@ -167,27 +175,27 @@ export class ProfileContainerComponent {
     shareReplay(1)
   )
 
-  public trackerLastPosition: Observable<[ number, number ]> = this.trackerLastTelemetry.pipe(
+  public trackerLastPosition$: Observable<[ number, number ]> = this.trackerLastTelemetry$.pipe(
     takeUntil(this.destroy$),
     filter((telemetry: Telemetry | null): telemetry is Telemetry => telemetry !== null),
     map((telemetry: Telemetry) => [ telemetry.longitude, telemetry.latitude ] as [ number, number ])
   )
 
-  public isTrackerDoesNotExist: Observable<boolean> = this.userTracker.pipe(
+  public isTrackerDoesNotExist$: Observable<boolean> = this.userTracker$.pipe(
     takeUntil(this.destroy$),
     map((tracker: Tracker | null) => tracker === null)
   )
 
-  public showMap: Observable<boolean> = combineLatest([
-    this.userTracker,
-    this.trackerLastTelemetry
+  public showMap$: Observable<boolean> = combineLatest([
+    this.userTracker$,
+    this.trackerLastTelemetry$
   ]).pipe(
     takeUntil(this.destroy$),
     map(([ tracker, lastTelemetry ]: [ Tracker | null, Telemetry | null ]) => tracker !== null && lastTelemetry !== null),
     shareReplay(1)
   )
 
-  private titleSetter: Observable<User> = this.user.pipe(
+  private titleSetter$: Observable<User> = this.user$.pipe(
     takeUntil(this.destroy$),
     tap((user: User) => {
       if (user.firstName !== null && user.firstName !== '' && user.lastName !== null && user.lastName !== '') {
@@ -201,6 +209,47 @@ export class ProfileContainerComponent {
       }
 
       this.title.setTitle(user.login)
+    })
+  )
+
+  public filterFormControl: FormControl = new FormControl([])
+
+  /**
+   * TODO: Копипаста. Подумать над DRY.
+   */
+  public filteredEvents$: Observable<BaseEvent[]> = combineLatest([
+    this.events$,
+    this.filterFormControl.valueChanges.pipe(
+      startWith(this.filterFormControl.value)
+    )
+  ]).pipe(
+    map(([ events, filters ]: [ BaseEvent[], FilterTag[] ]) => {
+      let isWorkoutFilterActivated: boolean = false
+      let isCompetitionFilterActivated: boolean = false
+
+      filters.forEach((item: FilterTag) => {
+        if (item.value === BaseEventType.workout) {
+          isWorkoutFilterActivated = true
+        }
+
+        if (item.value === BaseEventType.competition) {
+          isCompetitionFilterActivated = true
+        }
+      })
+
+      let sortedEvents: (BaseWorkout | BaseCompetition)[] = events
+
+      if (isWorkoutFilterActivated && !isCompetitionFilterActivated) {
+        sortedEvents = events.filter((event: BaseWorkout | BaseCompetition) =>
+          detectBaseEventTypeByEventType(event.eventType) === BaseEventType.workout)
+      }
+
+      if (isCompetitionFilterActivated && !isWorkoutFilterActivated) {
+        sortedEvents = events.filter((event: BaseWorkout | BaseCompetition) =>
+          detectBaseEventTypeByEventType(event.eventType) === BaseEventType.competition)
+      }
+
+      return sortedEvents
     })
   )
 
@@ -219,8 +268,8 @@ export class ProfileContainerComponent {
               private destroy$: TuiDestroyService,
               @Inject(MAX_AVATAR_FILE_SIZE)
               public readonly maxFileSize: number) {
-    this.previewAvatarCalc.subscribe()
-    this.titleSetter.subscribe()
+    this.previewAvatarCalc$.subscribe()
+    this.titleSetter$.subscribe()
   }
 
   public updateUser(): void {
@@ -232,7 +281,7 @@ export class ProfileContainerComponent {
     this.userService.updateUser(result.id, result).pipe(
       finalize(() => this.onClickCancelButton()),
       tap((user: User) => {
-        this.user.next(user)
+        this.user$.next(user)
         this.userStoreService.setUser(user)
       }),
       catchError(() => EMPTY)
@@ -240,7 +289,7 @@ export class ProfileContainerComponent {
   }
 
   public onClickEditButton(): void {
-    this.isEditMode.next(true)
+    this.isEditMode$.next(true)
 
     const user: User | null = this.userStoreService.user
 
@@ -252,7 +301,7 @@ export class ProfileContainerComponent {
   }
 
   public onClickCancelButton(): void {
-    this.isEditMode.next(false)
+    this.isEditMode$.next(false)
   }
 
   public onClickSaveButton(): void {
