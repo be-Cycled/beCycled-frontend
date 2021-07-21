@@ -43,10 +43,12 @@ export class ProfileContainerComponent {
   )
 
   public avatarUrl: Observable<string | null> = this.user.pipe(
+    takeUntil(this.destroy$),
     pluck('avatar')
   )
 
   public fullName: Observable<string | null> = this.user.pipe(
+    takeUntil(this.destroy$),
     map((user: User) => {
       if (user.firstName === null && user.lastName === null) {
         return null
@@ -57,26 +59,32 @@ export class ProfileContainerComponent {
   )
 
   public login: Observable<string> = this.user.pipe(
+    takeUntil(this.destroy$),
     pluck('login')
   )
 
   public about: Observable<string | null> = this.user.pipe(
+    takeUntil(this.destroy$),
     pluck('about')
   )
 
   public phone: Observable<string | null> = this.user.pipe(
+    takeUntil(this.destroy$),
     pluck('phone')
   )
 
   public email: Observable<string | null> = this.user.pipe(
+    takeUntil(this.destroy$),
     pluck('email')
   )
 
   public userCommunities: Observable<Community[]> = this.user.pipe(
+    takeUntil(this.destroy$),
     switchMap((user: User) => this.communityService.getCommunitiesByUser(user.login))
   )
 
   public events: Observable<BaseEvent[]> = this.user.pipe(
+    takeUntil(this.destroy$),
     switchMap((user: User) => this.eventService.readEventByUser(user.login))
   )
 
@@ -87,6 +95,7 @@ export class ProfileContainerComponent {
     ),
     this.userStoreService.validUserChanges.pipe()
   ]).pipe(
+    takeUntil(this.destroy$),
     map(([ userLogin, user ]: [ string | null, User ]) => userLogin === user.login),
     shareReplay(1)
   )
@@ -105,6 +114,7 @@ export class ProfileContainerComponent {
   public avatarFileReader: FormControl = this.fb.control(null)
 
   public avatar: Observable<string> = this.isEditMode.pipe(
+    takeUntil(this.destroy$),
     switchMap((isEditMode: boolean) => {
       const inEditCase: Observable<string> = this.editForm.get('avatar')!.valueChanges.pipe(
         shareReplay(1)
@@ -117,6 +127,7 @@ export class ProfileContainerComponent {
   )
 
   private previewAvatarCalc: Observable<any> = this.avatarFileReader.valueChanges.pipe(
+    takeUntil(this.destroy$),
     tap((file: File | null) => {
       if (file === null) {
         this.editForm.patchValue({ avatar: this.userStoreService.user!.avatar })
@@ -135,6 +146,7 @@ export class ProfileContainerComponent {
   )
 
   public userTracker: Observable<Tracker | null> = this.userStoreService.validUserChanges.pipe(
+    takeUntil(this.destroy$),
     switchMap((user: User) => {
       return this.trackerService.getByUser(user.login).pipe(
         catchError(() => of(null))
@@ -144,6 +156,7 @@ export class ProfileContainerComponent {
   )
 
   public trackerLastTelemetry: Observable<Telemetry | null> = this.userTracker.pipe(
+    takeUntil(this.destroy$),
     switchMap((tracker: Tracker | null) => {
       if (tracker === null) {
         return of(null)
@@ -155,11 +168,13 @@ export class ProfileContainerComponent {
   )
 
   public trackerLastPosition: Observable<[ number, number ]> = this.trackerLastTelemetry.pipe(
+    takeUntil(this.destroy$),
     filter((telemetry: Telemetry | null): telemetry is Telemetry => telemetry !== null),
     map((telemetry: Telemetry) => [ telemetry.longitude, telemetry.latitude ] as [ number, number ])
   )
 
   public isTrackerDoesNotExist: Observable<boolean> = this.userTracker.pipe(
+    takeUntil(this.destroy$),
     map((tracker: Tracker | null) => tracker === null)
   )
 
@@ -167,12 +182,13 @@ export class ProfileContainerComponent {
     this.userTracker,
     this.trackerLastTelemetry
   ]).pipe(
+    takeUntil(this.destroy$),
     map(([ tracker, lastTelemetry ]: [ Tracker | null, Telemetry | null ]) => tracker !== null && lastTelemetry !== null),
     shareReplay(1)
   )
 
   private titleSetter: Observable<User> = this.user.pipe(
-    takeUntil(this.destroyService),
+    takeUntil(this.destroy$),
     tap((user: User) => {
       if (user.firstName !== null && user.firstName !== '' && user.lastName !== null && user.lastName !== '') {
         this.title.setTitle(`${ user.login } (${ user.firstName } ${ user.lastName })`)
@@ -197,10 +213,10 @@ export class ProfileContainerComponent {
               private trackerService: TrackerService,
               private telemetryService: TelemetryService,
               private title: Title,
-              private destroyService: TuiDestroyService,
               private imageNetworkService: ImageNetworkService,
               private configService: ConfigService,
               private notificationService: TuiNotificationsService,
+              private destroy$: TuiDestroyService,
               @Inject(MAX_AVATAR_FILE_SIZE)
               public readonly maxFileSize: number) {
     this.previewAvatarCalc.subscribe()

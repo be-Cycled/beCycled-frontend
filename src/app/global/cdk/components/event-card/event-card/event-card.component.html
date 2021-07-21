@@ -4,7 +4,7 @@
 >
   <header class="event-card-header">
     <div>
-      <h3 class="tui-island__title">{{ generateStartTime(event.startDate) }}</h3>
+      <h3 class="tui-island__title">{{ generateStartTime(event.startDate, isOnlyTimeShow) }}</h3>
       <p
         *ngIf="detectBaseEventTypeByEventType(event.eventType) === 'WORKOUT'; else competitionParagraphRef"
         class="tui-island__category"

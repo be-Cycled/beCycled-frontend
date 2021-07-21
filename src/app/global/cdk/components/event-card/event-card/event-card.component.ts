@@ -19,6 +19,9 @@ export class EventCardComponent extends AbstractEventCard implements OnChanges {
   @Input()
   public event: BaseEvent | null = null
 
+  @Input()
+  public isOnlyTimeShow: boolean = true
+
   public route$: Observable<Route> = defer(() => this.routeService.readById(this.event?.routeId!)).pipe(
     shareReplay(1)
   )

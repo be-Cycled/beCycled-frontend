@@ -38,6 +38,10 @@
   overflow: hidden;
 }
 
+.avatar-link {
+  cursor: pointer;
+}
+
 .avatar-container:not(:first-of-type) {
   margin-left: -12px;
 }
