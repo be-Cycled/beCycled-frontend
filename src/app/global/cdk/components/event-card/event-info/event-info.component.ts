@@ -8,6 +8,7 @@ import { EventService } from '../../../../domain/services/event/event.service'
 import { BehaviorSubject } from 'rxjs'
 import { TuiDialogContext, TuiDialogService } from '@taiga-ui/core'
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'cy-event-info',
@@ -38,7 +39,8 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
               private userService: UserService,
               private userStoreService: UserStoreService,
               private eventService: EventService,
-              private dialogService: TuiDialogService) {
+              private dialogService: TuiDialogService,
+              private router: Router) {
     super()
     this.currentUser = this.userStoreService.user
   }
@@ -128,5 +130,13 @@ export class EventInfoComponent extends AbstractEventCard implements OnChanges {
 
   public showMembersDialog(content: PolymorpheusContent<TuiDialogContext>): void {
     this.dialogService.open(content, { size: 'm' }).subscribe()
+  }
+
+  /**
+   * TODO: Костыль! Найти решение, чтобы обновлялся контент!
+   */
+  public navigateAndRefresh(nickname: string): void {
+    this.router.navigateByUrl(`/users`, { skipLocationChange: true }).then(() =>
+      this.router.navigate([ '/', 'users', nickname ]))
   }
 }
