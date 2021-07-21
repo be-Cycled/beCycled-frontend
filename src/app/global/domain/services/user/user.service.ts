@@ -36,4 +36,11 @@ export class UserService {
   public readAllUsers(): Observable<User[]> {
     return this.httpClient.get<User[]>(`${ this.configService.baseApiUrl }/users/all`)
   }
+
+  /**
+   * @todo Вынести это в отдельный сервис UserAccountsService
+   */
+  public updatePassword(newPassword: string): Observable<void> {
+    return this.httpClient.put<void>(`${ this.configService.baseApiUrl }/user-accounts/password`, newPassword)
+  }
 }

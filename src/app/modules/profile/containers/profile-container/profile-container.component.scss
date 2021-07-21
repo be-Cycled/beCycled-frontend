@@ -34,12 +34,30 @@
   color: var(--tui-base-07);
 }
 
-.edit-button {
-  width: 100%;
-}
-
 .info-section:not(:last-child) {
   margin-bottom: 1rem;
+}
+
+.info-section.button-container {
+  .button {
+    width: 100%;
+
+    &:not(:last-child) {
+      margin-bottom: 12px;
+    }
+  }
+}
+
+.password-update-dialog {
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .content {
+    margin-bottom: 12px;
+  }
 }
 
 .community-avatar {
