@@ -49,7 +49,7 @@
   <b class="user-name">
     {{ userFirstName$ | async }}
   </b>
-  <tui-hosted-dropdown [content]="dropdownContentRef">
+  <tui-hosted-dropdown [content]="dropdownContentRef" [(open)]="isOpenedDropdown">
     <button tuiIconButton appearance="icon" type="button" shape="rounded" [icon]="iconRef"></button>
   </tui-hosted-dropdown>
 
@@ -63,8 +63,10 @@
 
   <ng-template #dropdownContentRef>
     <tui-data-list role="menu">
-      <a tuiOption role="menuitem" [routerLink]="profileRouterLink$ | async">Мой профиль</a>
-      <button type="button" tuiOption role="menuitem" (click)="onClickLogoutButton()">Выйти</button>
+      <a tuiOption role="menuitem" [routerLink]="profileRouterLink$ | async" (click)="onClickDropdownItem()">Мой
+        профиль</a>
+      <button type="button" tuiOption role="menuitem" (click)="onClickLogoutButton(); onClickDropdownItem()">Выйти
+      </button>
     </tui-data-list>
   </ng-template>
 </div>

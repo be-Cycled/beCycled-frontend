@@ -33,8 +33,18 @@ export abstract class AbstractEventListPage {
     map(([ events, filters ]: [ (BaseWorkout | BaseCompetition)[], FilterTag[] ]) => {
       let activatedSportTypeFilters: string[] = []
 
-      const isWorkoutFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === BaseEventType.workout).length !== 0
-      const isCompetitionFilterActivated: boolean = filters.filter((item: FilterTag) => item.value === BaseEventType.competition).length !== 0
+      let isWorkoutFilterActivated: boolean = false
+      let isCompetitionFilterActivated: boolean = false
+
+      filters.forEach((item: FilterTag) => {
+        if (item.value === BaseEventType.workout) {
+          isWorkoutFilterActivated = true
+        }
+
+        if (item.value === BaseEventType.competition) {
+          isCompetitionFilterActivated = true
+        }
+      })
 
       if (filters.length > 0) {
         activatedSportTypeFilters = filters.filter((item: any) =>
