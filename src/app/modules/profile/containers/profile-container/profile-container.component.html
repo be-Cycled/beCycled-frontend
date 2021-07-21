@@ -106,11 +106,7 @@
   <section class="activities-section">
     <h2 class="section-title">Активность</h2>
     <div class="activities-filter-container">
-      <tui-filter
-        [formControl]="activitiesFilterControl"
-        size="s"
-        [items]="[ 'Тренировки', 'Соревнования' ]"
-      ></tui-filter>
+      <cy-event-filter [events]="events | async" filterType="event"></cy-event-filter>
 
       <a
         *ngIf="isActiveProfileYours | async"

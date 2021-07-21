@@ -110,17 +110,7 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router) {
-    switch (this.filterType) {
-      case 'event':
-        this.items = this.eventTypeItems
-        break
-      case 'sport':
-        this.items = this.sportTypeItems
-        break
-      case 'all':
-      default:
-        this.items = [ ...this.eventTypeItems, ...this.sportTypeItems ]
-    }
+    this.updateFilterType(this.filterType)
 
     this.badgeSportTypeCountChanges$.subscribe()
 
@@ -141,6 +131,20 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
   public ngOnDestroy(): void {
     this.destroy$.next()
     this.destroy$.complete()
+  }
+
+  private updateFilterType(filterType: FilterType): void {
+    switch (filterType) {
+      case 'event':
+        this.items = this.eventTypeItems
+        break
+      case 'sport':
+        this.items = this.sportTypeItems
+        break
+      case 'all':
+      default:
+        this.items = [ ...this.eventTypeItems, ...this.sportTypeItems ]
+    }
   }
 
   private updateSportTypeBadgesCount(events: BaseWorkout[] | BaseCompetition[]): void {
@@ -282,11 +286,17 @@ export class EventFilterComponent implements ControlValueAccessor, OnChanges, On
   public writeValue(obj: any): void {
   }
 
-  public ngOnChanges({ events }: SimpleChanges): void {
-    if (events.currentValue !== null) {
-      this.updateAllBadgesCount(events.currentValue)
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes.events.currentValue !== null) {
+      this.updateAllBadgesCount(changes.events.currentValue)
 
       this.applyFilterFromQueryParams()
+    }
+
+    if (typeof changes.filterType !== 'undefined') {
+      if (changes.filterType.currentValue !== null) {
+        this.updateFilterType(changes.filterType.currentValue)
+      }
     }
   }
 

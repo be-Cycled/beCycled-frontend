@@ -27,6 +27,7 @@ import { ProfileContainerComponent } from './containers/profile-container/profil
 
 import { ProfileRoutingModule } from './profile-routing.module'
 import { ImageNetworkService } from '../../global/services'
+import { EventFilterModule } from '../../global/cdk/components/event-filter'
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { ImageNetworkService } from '../../global/services'
     TuiFieldErrorModule,
     NgxMapboxGLModule,
     TuiNotificationModule,
-    TuiHintModule
+    TuiHintModule,
+    EventFilterModule
   ],
   providers: [
     ImageNetworkService
