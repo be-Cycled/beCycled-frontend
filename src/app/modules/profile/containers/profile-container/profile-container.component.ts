@@ -3,30 +3,12 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { ActivatedRoute, ParamMap } from '@angular/router'
 import { TuiDestroyService } from '@taiga-ui/cdk'
-import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
+import { TuiDialogContext, TuiDialogService, TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
+import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus'
 import { BehaviorSubject, combineLatest, EMPTY, fromEvent, iif, Observable, of } from 'rxjs'
-import {
-  catchError,
-  filter,
-  finalize,
-  map,
-  pluck,
-  shareReplay,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-  tap
-} from 'rxjs/operators'
-import {
-  BaseCompetition,
-  BaseEvent,
-  BaseEventType,
-  BaseWorkout,
-  Community,
-  User,
-  UserService
-} from '../../../../global/domain'
+import { catchError, filter, finalize, map, pluck, shareReplay, startWith, switchMap, take, takeUntil, tap } from 'rxjs/operators'
+import { FilterTag } from '../../../../global/cdk/components/event-filter'
+import { BaseCompetition, BaseEvent, BaseEventType, BaseWorkout, Community, User, UserService } from '../../../../global/domain'
 import { Telemetry } from '../../../../global/domain/models/telemetry'
 import { Tracker } from '../../../../global/domain/models/tracker'
 import { CommunityService } from '../../../../global/domain/services/community/community.service'
@@ -35,7 +17,6 @@ import { TelemetryService } from '../../../../global/domain/services/telemetry/t
 import { TrackerService } from '../../../../global/domain/services/tracker/tracker.service'
 import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
 import { MAX_AVATAR_FILE_SIZE } from '../../../../global/tokens'
-import { FilterTag } from '../../../../global/cdk/components/event-filter'
 import { detectBaseEventTypeByEventType } from '../../../../global/utils'
 
 @Component({
@@ -96,6 +77,11 @@ export class ProfileContainerComponent {
     switchMap((user: User) => this.eventService.readEventByUser(user.login))
   )
 
+  /**
+   * @todo Не обновляется поток, после того как пользователь вышел из.
+   * Токен удалился, пользователь стал NULL, но страница профиля думает
+   * что пользователь авторизован и кнопка "Редактировать" не обновляется
+   */
   public isActiveProfileYours$: Observable<boolean> = combineLatest([
     this.activatedRoute.paramMap.pipe(
       startWith((this.activatedRoute.snapshot.paramMap)),
@@ -120,6 +106,8 @@ export class ProfileContainerComponent {
   })
 
   public avatarFileReader: FormControl = this.fb.control(null)
+
+  public newPasswordControl: FormControl = this.fb.control(null)
 
   public avatar$: Observable<string> = this.isEditMode$.pipe(
     takeUntil(this.destroy$),
@@ -267,7 +255,8 @@ export class ProfileContainerComponent {
               private notificationService: TuiNotificationsService,
               private destroy$: TuiDestroyService,
               @Inject(MAX_AVATAR_FILE_SIZE)
-              public readonly maxFileSize: number) {
+              public readonly maxFileSize: number,
+              private dialogService: TuiDialogService) {
     this.previewAvatarCalc$.subscribe()
     this.titleSetter$.subscribe()
   }
@@ -298,6 +287,22 @@ export class ProfileContainerComponent {
     }
 
     this.editForm.patchValue(user)
+  }
+
+  public onClickPasswordChangeButton(templateRef: PolymorpheusContent<TuiDialogContext<string>>): void {
+    this.dialogService.open(templateRef, { size: 's', label: 'Обновление пароля' }).pipe(
+      take(1),
+      switchMap((value: string | null) => {
+        if (value === null) {
+          return EMPTY
+        }
+
+        return this.userService.updatePassword(value).pipe(
+          switchMap(() => this.notificationService.show(`Пароль успешно обновлен`, { status: TuiNotification.Success })),
+          catchError(() => this.notificationService.show(`Не удалось обновить пароль`, { status: TuiNotification.Error }))
+        )
+      })
+    ).subscribe()
   }
 
   public onClickCancelButton(): void {
