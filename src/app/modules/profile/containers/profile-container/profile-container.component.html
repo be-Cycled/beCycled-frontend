@@ -39,10 +39,11 @@
     <p *ngIf="!isEdit">{{ about$ | async }}</p>
   </div>
   <ng-container *ngIf="!isEdit">
-    <div *ngIf="isActiveProfileYours$ | async" class="info-section edit-button-container">
-      <button (click)="onClickEditButton()" class="edit-button" tuiButton size="s" type="button"
+    <div *ngIf="isActiveProfileYours$ | async" class="info-section button-container">
+      <button (click)="onClickEditButton()" class="button" tuiButton size="m" type="button"
               iconRight="tuiIconEdit">Редактировать
       </button>
+      <button tuiButton class="button" size="s" type="button" (click)="onClickPasswordChangeButton(passwordUpdateDialogRef)">Обновить пароль</button>
     </div>
   </ng-container>
   <div class="info-section secondary-info">
@@ -123,3 +124,31 @@
     </div>
   </section>
 </section>
+
+<ng-template #passwordUpdateDialogRef let-completeWith='completeWith'>
+  <div class="password-update-dialog">
+    <div class="content">
+      <tui-input-password [formControl]="newPasswordControl">Новый пароль</tui-input-password>
+    </div>
+
+    <div class="button-container">
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        appearance="secondary"
+        (click)="completeWith(null)"
+      >
+        Отменить
+      </button>
+      <button
+        tuiButton
+        type="button"
+        size="m"
+        (click)="completeWith(newPasswordControl.value)"
+      >
+        Обновить
+      </button>
+    </div>
+  </div>
+</ng-template>

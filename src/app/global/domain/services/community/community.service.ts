@@ -47,6 +47,6 @@ export class CommunityService {
   }
 
   public delete(communityId: number): Observable<number> {
-    return this.httpClient.get<number>(`${ this.config.baseApiUrl }/communities/${ communityId }`)
+    return this.httpClient.delete<number>(`${ this.config.baseApiUrl }/communities/${ communityId }`)
   }
 }
