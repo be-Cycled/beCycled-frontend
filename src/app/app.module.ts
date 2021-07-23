@@ -13,8 +13,7 @@ import { version } from '../../package.json'
 import { environment } from '../environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
-import { HeaderModule } from './global/cdk/components/header/header.module'
-import { MenuModule } from './global/cdk/components/menu/menu.module'
+import { HeaderModule, MenuModule, ToolbarModule } from './global/cdk'
 import { DomainModule } from './global/domain/domain.module'
 import { MAPBOX_TOKEN } from './global/models'
 import { APP_VERSION, IS_MOBILE, isMobileFactory } from './global/tokens'
@@ -57,7 +56,8 @@ class BeCycledTitle {
       // Register the ServiceWorker as soon as the app is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
-    })
+    }),
+    ToolbarModule
   ],
   providers: [
     {

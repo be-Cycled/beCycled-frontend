@@ -75,6 +75,11 @@ tui-root {
   tui-root {
     padding-bottom: 66px;
   }
+
+  tui-root.is-toolbar-show tui-portal-host > .content {
+    // Высота toolbar-а
+    padding-top: 56px;
+  }
 }
 
 // Общие стили для событий
