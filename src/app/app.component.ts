@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core'
 import { LOCAL_STORAGE, WINDOW } from '@ng-web-apis/common'
 import { combineLatest, defer, fromEvent, Observable, of } from 'rxjs'
-import { catchError, map, mapTo, shareReplay, startWith, take, tap } from 'rxjs/operators'
+import { catchError, map, pluck, shareReplay, startWith, take, tap } from 'rxjs/operators'
 import { ToolbarService } from './global/cdk/components/toolbar/services/toolbar/toolbar.service'
 import { User, UserService } from './global/domain'
 import { BrowserStorage, takeBrowserStorageKey } from './global/models'
@@ -14,11 +14,14 @@ import { IS_MOBILE } from './global/tokens'
   styleUrls: [ './app.component.scss' ]
 })
 export class AppComponent {
-  private isAppInstalledEvent$: Observable<boolean> = fromEvent(this.window, 'appinstalled').pipe(
-    mapTo(true),
-    startWith(false),
-    shareReplay(1)
-  )
+  private isAppInstalledEvent$: Observable<boolean> = defer(() => {
+    const mediaQueryList: MediaQueryList = this.window.matchMedia(`(display-mode: standalone)`)
+
+    return fromEvent<MediaQueryListEvent>(mediaQueryList, 'change').pipe(
+      pluck('matches'),
+      startWith(mediaQueryList.matches)
+    )
+  })
 
   public isMobileChanges: Observable<boolean> = this.isMobile
 
