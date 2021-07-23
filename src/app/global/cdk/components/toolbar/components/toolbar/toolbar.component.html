@@ -1,0 +1,11 @@
+<button tuiIconButton appearance="flat" *ngIf="isShowBackButton$ | async" (click)="onClickBackButton()" [icon]="backArrowRef"></button>
+
+<button tuiIconButton appearance="flat" [icon]="shareIconsRef"></button>
+
+<ng-template #shareIconsRef>
+  <span class="material-icons-outlined">share</span>
+</ng-template>
+
+<ng-template #backArrowRef>
+  <span class="material-icons-outlined">arrow_back</span>
+</ng-template>
