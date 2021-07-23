@@ -1,0 +1,37 @@
+:host {
+  display: flex;
+  background-color: white;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.share-dialog {
+  margin: -32px -24px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 12px 0;
+}
+
+.cancel-button,
+.share-button {
+  width: 100%;
+}
+
+.share-button {
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.share-button ::ng-deep .content {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.cancel-button {
+  padding: 0 24px;
+}

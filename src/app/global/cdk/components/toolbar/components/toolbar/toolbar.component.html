@@ -1,0 +1,49 @@
+<div class="button-container">
+  <button tuiIconButton
+          appearance="flat"
+          (click)="onClickBackButton()"
+          [icon]="backArrowRef"></button>
+</div>
+
+<div class="button-container">
+  <button tuiIconButton
+          appearance="flat"
+          (click)="onClickShareButton(shareDialogRef)"
+          [icon]="shareIconRef"></button>
+</div>
+
+<ng-template #backArrowRef>
+  <span class="material-icons-outlined">arrow_back</span>
+</ng-template>
+
+<ng-template #shareDialogRef let-observer>
+  <div class="share-dialog">
+    <button class="share-button share-copy-button"
+            tuiButton
+            appearance="flat"
+            size="m"
+            (click)="onClickShareCopyButton(); observer.complete()"
+            [icon]="linkIconRef">Скопировать ссылку на страницу</button>
+
+    <button class="share-button share-native-button"
+            tuiButton
+            appearance="flat"
+            size="m"
+            (click)="onClickShareNativeButton(); observer.complete()"
+            [icon]="shareIconRef">Поделиться через ...</button>
+
+    <button class="cancel-button"
+            appearance="secondary"
+            tuiButton
+            (click)="observer.complete()"
+            size="m">Отменить</button>
+  </div>
+</ng-template>
+
+<ng-template #shareIconRef>
+  <span class="material-icons-outlined">share</span>
+</ng-template>
+
+<ng-template #linkIconRef>
+  <span class="material-icons-outlined">link</span>
+</ng-template>
