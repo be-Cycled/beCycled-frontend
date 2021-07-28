@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { BehaviorSubject, defer, Observable, of } from 'rxjs'
 import { catchError, shareReplay, switchMap, take, tap } from 'rxjs/operators'
-import { Community, User } from '../../../../../global/domain'
-import { CommunityService } from '../../../../../global/domain/services/community/community.service'
+import { Community, User, UserService } from '../../../../../global/domain'
 import { CommunityStoreService } from '../../../services'
 
 @Component({
@@ -19,7 +18,7 @@ export class CommunitySingleUsersComponent implements OnInit {
     switchMap((community: Community) => {
       this.userShowLoader.next(true)
 
-      return this.communityService.getUsersByCommunity(community.nickname).pipe(
+      return this.userService.readUsersByCommunity(community.nickname).pipe(
         tap(() => this.userShowLoader.next(false)),
         catchError(() => of([]))
       )
@@ -30,11 +29,10 @@ export class CommunitySingleUsersComponent implements OnInit {
   public community: Observable<Community> = this.communityStoreService.communityChanges$.pipe()
 
   constructor(private communityStoreService: CommunityStoreService,
-              private communityService: CommunityService) {
+              private userService: UserService) {
   }
 
   public ngOnInit(): void {
     this.users.pipe(take(1)).subscribe()
   }
-
 }
