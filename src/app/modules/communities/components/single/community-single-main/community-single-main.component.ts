@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { catchError, map, pluck, shareReplay, switchMap } from 'rxjs/operators'
-import { BaseEvent, Community, SportType, User } from '../../../../../global/domain'
-import { CommunityService } from '../../../../../global/domain/services/community/community.service'
+import { BaseEvent, Community, SportType, User, UserService } from '../../../../../global/domain'
 import { EventService } from '../../../../../global/domain/services/event/event.service'
 import { CommunityStoreService } from '../../../services'
 
@@ -33,7 +32,7 @@ export class CommunitySingleMainComponent {
 
   public users: Observable<User[]> = this.communityStoreService.communityChanges$.pipe(
     switchMap((community: Community) =>
-      this.communityService.getUsersByCommunity(community.nickname).pipe(
+      this.userService.readUsersByCommunity(community.nickname).pipe(
         catchError(() => of([])),
         shareReplay({ bufferSize: 1, refCount: true })
       ))
@@ -48,8 +47,8 @@ export class CommunitySingleMainComponent {
   )
 
   constructor(private communityStoreService: CommunityStoreService,
-              private communityService: CommunityService,
               public readonly activatedRoute: ActivatedRoute,
-              private eventService: EventService) {
+              private eventService: EventService,
+              private userService: UserService) {
   }
 }
