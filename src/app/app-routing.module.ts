@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router'
 import { AboutModule } from './modules/about/about.module'
 import { AddEventModule } from './modules/add-event/add-event.module'
 import { AfficheModule } from './modules/affiche/affiche.module'
+import { AgreementsModule } from './modules/agreements/agreements.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CommunitiesModule } from './modules/communities/communities.module'
 import { CompetitionPageModule } from './modules/competition-page/competition-page.module'
@@ -56,6 +57,10 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: () => import('./modules/about/about.module').then((m: { AboutModule: AboutModule }) => m.AboutModule)
+  },
+  {
+    path: 'agreements',
+    loadChildren: () => import('./modules/agreements/agreements.module').then((m: { AgreementsModule: AgreementsModule }) => m.AgreementsModule)
   }
 ]
 
