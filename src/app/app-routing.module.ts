@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
+import { AboutModule } from './modules/about/about.module'
 import { AddEventModule } from './modules/add-event/add-event.module'
 import { AfficheModule } from './modules/affiche/affiche.module'
 import { AuthModule } from './modules/auth/auth.module'
@@ -51,6 +52,10 @@ const routes: Routes = [
   {
     path: 'add-event',
     loadChildren: () => import('./modules/add-event/add-event.module').then((module: { AddEventModule: AddEventModule }) => module.AddEventModule)
+  },
+  {
+    path: 'about',
+    loadChildren: () => import('./modules/about/about.module').then((m: { AboutModule: AboutModule }) => m.AboutModule)
   }
 ]
 
