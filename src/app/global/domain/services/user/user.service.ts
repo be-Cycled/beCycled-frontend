@@ -43,4 +43,8 @@ export class UserService {
   public updatePassword(newPassword: string): Observable<void> {
     return this.httpClient.put<void>(`${ this.configService.baseApiUrl }/user-accounts/password`, newPassword)
   }
+
+  public readUsersByCommunity(communityNickname: string): Observable<User[]> {
+    return this.httpClient.get<User[]>(`${ this.configService.baseApiUrl }/users/community/nickname/${ communityNickname }`)
+  }
 }

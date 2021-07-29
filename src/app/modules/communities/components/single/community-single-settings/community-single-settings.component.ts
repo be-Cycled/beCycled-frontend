@@ -118,7 +118,7 @@ export class CommunitySingleSettingsComponent implements OnInit {
 
     const formData: FormData = new FormData()
 
-    formData.append('imageFile', newAvatar, newAvatar.name)
+    formData.append('file', newAvatar, newAvatar.name)
 
     this.imagesService.uploadImage(formData).pipe(
       tap((image: string) => {

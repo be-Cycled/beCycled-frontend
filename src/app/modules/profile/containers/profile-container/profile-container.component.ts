@@ -319,7 +319,7 @@ export class ProfileContainerComponent {
 
     const uploadImageData: FormData = new FormData()
 
-    uploadImageData.append('imageFile', avatarFile, avatarFile.name)
+    uploadImageData.append('file', avatarFile, avatarFile.name)
 
     this.imageNetworkService.uploadImage(uploadImageData).pipe(
       tap((imageName: string) => {
