@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 @Component({
   selector: 'cy-about-container',
@@ -6,12 +6,6 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
   styleUrls: [ './about-container.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AboutContainerComponent implements OnInit {
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
+export class AboutContainerComponent {
 
 }
