@@ -1,13 +1,18 @@
-import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { ConfigService } from '../../../services'
+import { Inject, Injectable } from '@angular/core'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { ConfigService, UserStoreService } from '../../../services'
 import { Observable } from 'rxjs'
 import { BaseEvent } from '../../models'
 import { BaseCompetitionDto, BaseWorkoutDto } from '../../../dto'
+import { BrowserStorage, takeBrowserStorageKey } from '../../../models'
+import { LOCAL_STORAGE } from '@ng-web-apis/common'
 
 @Injectable()
 export class EventService {
-  constructor(private httpClient: HttpClient,
+  constructor(@Inject(LOCAL_STORAGE)
+              private localStorage: Storage,
+              private userStoreService: UserStoreService,
+              private httpClient: HttpClient,
               private configService: ConfigService) {
   }
 
@@ -48,10 +53,20 @@ export class EventService {
   }
 
   public joinByEventId(id: number): Observable<BaseEvent> {
-    return this.httpClient.post<BaseEvent>(`${ this.configService.baseApiUrl }/events/join/${ id }`, null)
+    const key: string = takeBrowserStorageKey(BrowserStorage.accessToken)
+    const accessToken: string | null = this.localStorage.getItem(key)
+
+    return this.httpClient.post<BaseEvent>(`${ this.configService.baseApiUrl }/events/join/${ id }`, null, {
+      headers: new HttpHeaders().set(`Authorization`, `Bearer ${ accessToken }`)
+    })
   }
 
   public leaveByEventId(id: number): Observable<BaseEvent> {
-    return this.httpClient.post<BaseEvent>(`${ this.configService.baseApiUrl }/events/leave/${ id }`, null)
+    const key: string = takeBrowserStorageKey(BrowserStorage.accessToken)
+    const accessToken: string | null = this.localStorage.getItem(key)
+
+    return this.httpClient.post<BaseEvent>(`${ this.configService.baseApiUrl }/events/leave/${ id }`, null, {
+      headers: new HttpHeaders().set(`Authorization`, `Bearer ${ accessToken }`)
+    })
   }
 }
