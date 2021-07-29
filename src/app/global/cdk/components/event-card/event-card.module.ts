@@ -6,7 +6,6 @@ import { TuiLetModule } from '@taiga-ui/cdk'
 import { EventInfoComponent } from './event-info/event-info.component'
 import { TuiButtonModule, TuiHintModule, TuiLinkModule } from '@taiga-ui/core'
 import { EventCardComponent } from './event-card/event-card.component'
-import { DomainModule } from '../../../domain/domain.module'
 import { CommunityStoreService } from '../../../../modules/communities/services'
 
 @NgModule({
@@ -21,7 +20,6 @@ import { CommunityStoreService } from '../../../../modules/communities/services'
     TuiLetModule,
     TuiButtonModule,
     TuiAvatarModule,
-    DomainModule,
     TuiHintModule,
     TuiLinkModule
   ],

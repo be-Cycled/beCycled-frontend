@@ -34,6 +34,7 @@ import { TuiRippleModule } from '@taiga-ui/addon-mobile'
 import { RouteService } from '../../global/domain/services/route/route.service'
 import { ImageNetworkService } from '../../global/services'
 import { CommunityStoreService } from '../communities/services'
+import { DomainModule } from '../../global/domain/domain.module'
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { CommunityStoreService } from '../communities/services'
     TuiUnfinishedValidatorModule,
     TuiLoaderModule,
     TuiInputModule,
-    TuiAvatarModule
+    TuiAvatarModule,
+    DomainModule
   ],
   providers: [
     MapboxNetworkService,
