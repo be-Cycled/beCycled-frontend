@@ -635,8 +635,10 @@ export class AddEventComponent implements OnInit {
                   const url: string = `/${ eventType.toLowerCase() }s/${ event.id }`
 
                   this.router.navigateByUrl(url).then(() => {
+                    this.cd.detectChanges()
+
                     this.notificationsService
-                      .show('Тренировка успешно добавлена', {
+                      .show('Событие успешно добавлено', {
                         status: TuiNotification.Success
                       }).subscribe()
                   })
