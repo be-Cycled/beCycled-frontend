@@ -1,14 +1,36 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Title } from '@angular/platform-browser'
 import { Router } from '@angular/router'
-import { TUI_IS_ANDROID, TUI_IS_IOS, TUI_IS_MOBILE, TuiContextWithImplicit, TuiDay, tuiPure, TuiStringHandler, TuiTime } from '@taiga-ui/cdk'
+import {
+  TUI_IS_ANDROID,
+  TUI_IS_IOS,
+  TUI_IS_MOBILE,
+  TuiContextWithImplicit,
+  TuiDay,
+  TuiDestroyService,
+  tuiPure,
+  TuiStringHandler,
+  TuiTime
+} from '@taiga-ui/cdk'
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
 import { Observable } from 'rxjs'
 import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
-import { BaseEventType, BicycleCompetitionType, BicycleType, Community, DirectionType, EventType, MapboxRouteGeoData, Route, SportType, User } from '../../../../global/domain'
+import {
+  BaseEvent,
+  BaseEventType,
+  BicycleCompetitionType,
+  BicycleType,
+  Community,
+  DirectionType,
+  EventType,
+  MapboxRouteGeoData,
+  Route,
+  SportType,
+  User
+} from '../../../../global/domain'
 import { EventService } from '../../../../global/domain/services/event/event.service'
 import { RouteService } from '../../../../global/domain/services/route/route.service'
 import { BaseEventDto, BicycleCompetitionDto } from '../../../../global/dto'
@@ -16,7 +38,12 @@ import { BicycleWorkoutDto } from '../../../../global/dto/event/bicycle-workout-
 import { ISO8601 } from '../../../../global/models'
 import { ConfigService, ImageNetworkService, UserStoreService } from '../../../../global/services'
 import { MapboxNetworkService } from '../../../../global/services/mapbox-network/mapbox-network.service'
-import { detectEventTypeBySportType, generateBounds, generateGeoJsonFeature } from '../../../../global/utils'
+import {
+  detectBaseEventTypeByEventType,
+  detectEventTypeBySportType,
+  generateBounds,
+  generateGeoJsonFeature
+} from '../../../../global/utils'
 import { CommunityStoreService } from '../../../communities/services'
 
 const blankGeoJsonFeature: GeoJSON.Feature<GeoJSON.Geometry> = {
@@ -56,7 +83,8 @@ type BicycleEventDto = BicycleWorkoutDto | BicycleCompetitionDto
     {
       provide: TUI_IS_MOBILE,
       useValue: false
-    }
+    },
+    TuiDestroyService
   ]
 })
 export class AddEventComponent implements OnInit {
@@ -168,7 +196,7 @@ export class AddEventComponent implements OnInit {
     startTime: new FormControl(null, Validators.required),
     sportType: new FormControl(SportType.bicycle, Validators.required),
     bicycleType: new FormControl(BicycleType.any),
-    description: new FormControl(),
+    description: new FormControl(''),
     durationHours: new FormControl(),
     durationMinutes: new FormControl(),
     url: new FormControl(''),
@@ -186,12 +214,14 @@ export class AddEventComponent implements OnInit {
               private userStoreService: UserStoreService,
               private eventService: EventService,
               private routeService: RouteService,
-              private routerService: Router,
+              private router: Router,
               private title: Title,
+              private destroy$: TuiDestroyService,
               private notificationsService: TuiNotificationsService,
               private imageNetworkService: ImageNetworkService,
               private configService: ConfigService,
-              private communityStoreService: CommunityStoreService) {
+              private communityStoreService: CommunityStoreService,
+              private cd: ChangeDetectorRef) {
     this.title.setTitle(`Новое событие`)
   }
 
@@ -358,7 +388,6 @@ export class AddEventComponent implements OnInit {
 
     this.startPoint = new mapboxgl.Marker(startPoint)
     this.endPoint = new mapboxgl.Marker(endPoint)
-    this.venueMarker = new mapboxgl.Marker({ color: '#FF6639' })
   }
 
   private getCurrentDirectionType(): DirectionType {
@@ -437,6 +466,11 @@ export class AddEventComponent implements OnInit {
       if (this.activeTabIndex === 3) {
 
         this.venueCoordinates = coordinates
+
+        if (this.venueMarker === null) {
+          this.venueMarker = new mapboxgl.Marker({ color: '#FF6639' })
+        }
+
         this.venueMarker?.setLngLat(coordinates).addTo(this.map)
       } else {
 
@@ -575,36 +609,39 @@ export class AddEventComponent implements OnInit {
                * Загружаем сгенерированное preview на сервер
                */
               this.imageNetworkService.uploadImage(uploadImageData).pipe(
+                take(1),
                 switchMap((imageName: string) => {
                   this.preview = `${ this.configService.apiImageUrl }/${ imageName }`
 
                   /**
                    * Создаем маршрут с указанием в preview имени файла с картинкой
                    */
-                  return this.createRouteByUserId(currentUser.id).pipe(
-                    switchMap((route: Route) => {
-
-                      /**
-                       * Создаем событие в зависимости от выбранного типа
-                       */
-                      return this.eventService.create(this.generateEventBodyByRouteAndUserId(route, currentUser.id)).pipe(
-                        tap(() => {
-                          this.isLoading = false
-
-                          this.notificationsService
-                            .show('Тренировка успешно добавлена', {
-                              status: TuiNotification.Success
-                            }).subscribe()
-
-                          this.routerService.navigateByUrl('/')
-                        })
-                      )
-                    })
-                  )
+                  return this.createRouteByUserId(currentUser.id)
                 }),
-                take(1)
-              ).subscribe()
+                switchMap((route: Route) => {
 
+                  /**
+                   * Создаем событие в зависимости от выбранного типа
+                   */
+                  return this.eventService.create(this.generateEventBodyByRouteAndUserId(route, currentUser.id))
+                }),
+                tap((event: BaseEvent) => {
+                  this.isLoading = false
+
+                  /**
+                   * Создаем URL для редиректа в зависимости от типа события
+                   */
+                  const eventType: BaseEventType = detectBaseEventTypeByEventType(event.eventType)
+                  const url: string = `/${ eventType.toLowerCase() }s/${ event.id }`
+
+                  this.router.navigateByUrl(url).then(() => {
+                    this.notificationsService
+                      .show('Тренировка успешно добавлена', {
+                        status: TuiNotification.Success
+                      }).subscribe()
+                  })
+                })
+              ).subscribe()
             })
           })
         }
