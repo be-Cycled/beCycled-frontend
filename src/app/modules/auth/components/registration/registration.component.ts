@@ -41,7 +41,8 @@ export class RegistrationComponent {
       email: this.fb.control(null, [ Validators.required, Validators.email ]),
       login: this.fb.control(null, [ Validators.required, Validators.pattern(/^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i) ]),
       password: this.fb.control(null, Validators.required),
-      confirmPassword: this.fb.control(null, Validators.required)
+      confirmPassword: this.fb.control(null, Validators.required),
+      userAgreement: this.fb.control(false, Validators.requiredTrue)
     },
     { validators: checkPasswordEquality }
   )
