@@ -99,17 +99,17 @@ export abstract class AbstractEventPage extends AbstractEventCard {
     this.isLoading = true
 
     this.eventService.delete(id).pipe(
+      take(1),
       tap(() => {
-        this.notificationsService
-          .show('Событие успешно удалено', {
-            status: TuiNotification.Success
-          }).subscribe()
-
         this.isLoading = false
 
-        this.router.navigateByUrl('/')
-      }),
-      take(1)
+        this.router.navigateByUrl('/').then(() => {
+          this.notificationsService
+            .show('Событие успешно удалено', {
+              status: TuiNotification.Success
+            }).subscribe()
+        })
+      })
     ).subscribe()
   }
 }

@@ -44,7 +44,7 @@
         Длительность: {{ generateDurationString(event.duration) }}
       </span>
   </li>
-  <li class="event-info-item">
+  <li class="event-info-item" *ngIf="event.description.length > 0">
       <span class="material-icons-outlined">
         description
       </span>
