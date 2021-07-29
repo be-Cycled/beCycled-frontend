@@ -16,8 +16,8 @@ import {
 import { TuiNotification, TuiNotificationsService } from '@taiga-ui/core'
 import { TUI_MOBILE_AWARE } from '@taiga-ui/kit'
 import mapboxgl, { AnyLayer, LngLat, LngLatBoundsLike } from 'mapbox-gl'
-import { Observable } from 'rxjs'
-import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { EMPTY, Observable } from 'rxjs'
+import { catchError, map, startWith, switchMap, take, tap } from 'rxjs/operators'
 import {
   BaseEvent,
   BaseEventType,
@@ -571,11 +571,11 @@ export class AddEventComponent implements OnInit {
   }
 
   public onPublishButtonClick(): void {
+    this.isLoading = true
     this.drawTrackPointsOnCanvas()
 
     const currentUser: User | null = this.userStoreService.user
     if (currentUser !== null) {
-      this.isLoading = true
 
       /**
        * Готовим точки для фитинга карты
@@ -640,6 +640,14 @@ export class AddEventComponent implements OnInit {
                         status: TuiNotification.Success
                       }).subscribe()
                   })
+                }),
+                catchError(() => {
+                  this.notificationsService
+                    .show('Произошла ошибка при добавлении события', {
+                      status: TuiNotification.Error
+                    }).subscribe()
+
+                  return EMPTY
                 })
               ).subscribe()
             })
@@ -652,6 +660,13 @@ export class AddEventComponent implements OnInit {
        */
       this.map!.getContainer().classList.add('resized')
       this.map!.resize().fitBounds(bounds, { padding: 20, linear: true, animate: false }, { fitBoundsEnd: true })
+    } else {
+      this.isLoading = false
+
+      this.notificationsService
+        .show('Произошла ошибка при добавлении события', {
+          status: TuiNotification.Error
+        }).subscribe()
     }
   }
 
