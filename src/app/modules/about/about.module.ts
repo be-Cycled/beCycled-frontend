@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
+import { TuiLinkModule } from '@taiga-ui/core'
 
 import { AboutRoutingModule } from './about-routing.module'
 import { AboutContainerComponent } from './containers/about-container/about-container.component'
@@ -10,7 +11,8 @@ import { AboutContainerComponent } from './containers/about-container/about-cont
   ],
   imports: [
     CommonModule,
-    AboutRoutingModule
+    AboutRoutingModule,
+    TuiLinkModule
   ]
 })
 export class AboutModule {
