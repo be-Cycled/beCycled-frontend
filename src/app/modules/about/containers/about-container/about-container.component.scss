@@ -27,8 +27,8 @@
   text-align: center;
 }
 
-.brand-logo-figure.icon-logo img {
-  width: 56px;
+.brand-logo-figure img {
+  height: 66px;
 }
 
 .brand-color-list {
@@ -44,10 +44,6 @@
 
 .brand-color-item {
   display: flex;
-}
-
-.brand-color-item:not(:last-child) {
-  margin-right: 12px;
 }
 
 .property-name {
@@ -73,8 +69,8 @@
   text-align: center;
 }
 
-.section:not(:last-child) {
-  margin-bottom: 24px;
+.section {
+  margin-bottom: 36px;
 }
 
 .partner-list-item img {
@@ -87,6 +83,43 @@
   text-align: center;
 }
 
+.brand-logo-figure.full-logo,
+.brand-color-item:not(:last-child) {
+  margin-right: 12px;
+}
+
+.team-list-item img {
+  --size: 120px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+}
+
+.team-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  text-align: center;
+}
+
+.team-list-item figure {
+  margin: 0;
+}
+
+.section.copyright {
+  text-align: center;
+}
+
+.section.copyright {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.copyright-span {
+  order: -1;
+}
+
 @media (min-width: 768px) {
   :host {
     max-width: 900px;
@@ -95,12 +128,13 @@
     padding: var(--desktop-container-padding) 0;
   }
 
-  .brand-logo-figure.full-logo {
-    margin-right: 12px;
+  .brand-logo-figure.full-logo,
+  .brand-color-item:not(:last-child) {
+    margin-right: 72px;
   }
 
   .contact-list {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(6, 1fr);
   }
 
   .partner-list-item img {
@@ -110,5 +144,24 @@
 
   .partner-list {
     display: flex;
+  }
+
+  .team-list {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .section.copyright {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .copyright-span {
+    order: 0;
+    margin: 0 12px;
+  }
+
+  .section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 36px;
   }
 }
