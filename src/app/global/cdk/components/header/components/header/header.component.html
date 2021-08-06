@@ -73,8 +73,8 @@
 
   <ng-template #dropdownContentRef>
     <tui-data-list role="menu">
-      <a tuiOption role="menuitem" [routerLink]="profileRouterLink$ | async" (click)="onClickDropdownItem()">Мой
-        профиль</a>
+      <a tuiOption role="menuitem" [routerLink]="profileRouterLink$ | async" (click)="onClickDropdownItem()">Мой профиль</a>
+      <a tuiOption role="menuitem" [routerLink]="profileSettings$ | async" (click)="onClickDropdownItem()">Мои настройки</a>
       <button type="button" tuiOption role="menuitem" (click)="onClickLogoutButton(); onClickDropdownItem()">Выйти
       </button>
     </tui-data-list>

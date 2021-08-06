@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, Inject, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { LOCAL_STORAGE } from '@ng-web-apis/common'
+import { TuiHostedDropdownComponent } from '@taiga-ui/core'
 import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { map, pluck } from 'rxjs/operators'
 import { AuthorizationService } from '../../../../../../modules/auth/services/authorization/authorization.service'
 import { User } from '../../../../../domain'
 import { BrowserStorage, DEFAULT_AVATAR, takeBrowserStorageKey } from '../../../../../models'
 import { UserStoreService } from '../../../../../services'
-import { TuiHostedDropdownComponent } from '@taiga-ui/core'
 import { isEmpty } from '../../../../../utils'
 
 @Component({
@@ -40,8 +40,13 @@ export class HeaderComponent {
   )
 
   public profileRouterLink$: Observable<string> = this.userStoreService.validUserChanges.pipe(
-    map((user: User) => user.login),
+    pluck('login'),
     map((userLogin: string) => `/users/${ userLogin }`)
+  )
+
+  public profileSettings$: Observable<string> = this.userStoreService.validUserChanges.pipe(
+    pluck('login'),
+    map((userLogin: string) => `/users/${ userLogin }/settings`)
   )
 
   @ViewChild(TuiHostedDropdownComponent)

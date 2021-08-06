@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { UserByLoginResolver } from '../../global/resolvers'
-import { ProfileContainerComponent } from './containers/profile-container/profile-container.component'
+import { ProfileContainerComponent, ProfileSettingsContainerComponent } from './containers'
 
 const routes: Routes = [
   {
@@ -10,6 +10,10 @@ const routes: Routes = [
     resolve: {
       profileUser: UserByLoginResolver
     }
+  },
+  {
+    path: ':login/settings',
+    component: ProfileSettingsContainerComponent
   }
 ]
 

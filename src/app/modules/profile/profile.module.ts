@@ -18,13 +18,14 @@ import { NgxMapboxGLModule } from 'ngx-mapbox-gl'
 import { EventCardModule } from '../../global/cdk/components/event-card/event-card.module'
 import { EventFilterModule } from '../../global/cdk/components/event-filter'
 import { ImageNetworkService } from '../../global/services'
-import { ProfileContainerComponent } from './containers/profile-container/profile-container.component'
+import { ProfileContainerComponent, ProfileSettingsContainerComponent } from './containers'
 
 import { ProfileRoutingModule } from './profile-routing.module'
 
 @NgModule({
   declarations: [
-    ProfileContainerComponent
+    ProfileContainerComponent,
+    ProfileSettingsContainerComponent
   ],
   imports: [
     CommonModule,
