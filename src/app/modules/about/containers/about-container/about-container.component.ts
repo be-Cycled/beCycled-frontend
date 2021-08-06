@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core'
+import { APP_VERSION } from '../../../../global/tokens'
 
 @Component({
   selector: 'cy-about-container',
@@ -8,4 +9,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core'
 })
 export class AboutContainerComponent {
   public year: number = new Date().getFullYear()
+
+  constructor(@Inject(APP_VERSION) public readonly appVersion: string) {
+  }
 }
